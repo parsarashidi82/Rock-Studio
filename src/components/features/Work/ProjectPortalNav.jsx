@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate } from "react-router-dom";
-import gsap from "gsap";
 
 const CARD_WIDTH = 250;
 const CARD_HEIGHT = 160;
@@ -10,133 +8,53 @@ function clamp(v, min, max) {
   return Math.min(Math.max(v, min), max);
 }
 
-export default function ProjectPortalNav({ nextProject, prevProject }) {
-  const navigate = useNavigate();
-
+export default function ProjectPortalNav({
+  nextProject,
+  prevProject,
+  onNavigate,
+  isTransitioning = false,
+}) {
   const [activeSide, setActiveSide] = useState(null); // 'left' | 'right' | null
-  const [isNavigating, setIsNavigating] = useState(false);
-  const [portalLayer, setPortalLayer] = useState(null);
 
   const followerRef = useRef(null);
-  const portalElRef = useRef(null);
-  const portalTitleRef = useRef(null);
-
   const posRef = useRef({ x: 0, y: 0 });
   const targetPosRef = useRef({ x: 0, y: 0 });
   const mouseRef = useRef({ x: 0, y: 0, active: false, side: null });
   const rafRef = useRef(null);
 
-  // پاکسازی انیمیشن هنگام آن‌مانت
-  useEffect(() => {
-    const el = followerRef.current;
-    const portalEl = portalElRef.current;
-    return () => {
-      if (el) gsap.killTweensOf(el);
-      if (portalEl) gsap.killTweensOf(portalEl);
-    };
-  }, []);
-
-  // شروع انیمیشن گسترش پورتال تمام‌صفحه به سبک Portal Carousel
-  const goToProject = useCallback(
-    (targetProject) => {
-      if (!targetProject || isNavigating) return;
-      setIsNavigating(true);
-
-      const follower = followerRef.current;
-      const followerRect = follower?.getBoundingClientRect();
-
-      const origin =
-        followerRect && followerRect.width > 0
-          ? {
-              left: followerRect.left,
-              top: followerRect.top,
-              width: followerRect.width,
-              height: followerRect.height,
-            }
-          : {
-              left: posRef.current.x || window.innerWidth - CARD_WIDTH - 24,
-              top: posRef.current.y || window.innerHeight / 2 - CARD_HEIGHT / 2,
-              width: CARD_WIDTH,
-              height: CARD_HEIGHT,
-            };
-
-      // مخفی کردن پیش‌نمایش کوچک کرسر تا با پورتال گسترش‌یابنده ادغام شود
+  // کلیک روی پروژه بعدی یا قبلی
+  const triggerNavigation = useCallback(
+    (targetProject, side) => {
+      if (!targetProject || isTransitioning) return;
       setActiveSide(null);
-
-      setPortalLayer({
-        project: targetProject,
-        origin,
-      });
+      if (onNavigate) {
+        onNavigate(targetProject, {
+          x: mouseRef.current.x,
+          y: mouseRef.current.y || window.innerHeight / 2,
+          side,
+        });
+      }
     },
-    [isNavigating],
+    [isTransitioning, onNavigate]
   );
 
-  // اجرای انیمیشن گسترش تمام‌صفحه (Expanding Layer) با GSAP
-  useEffect(() => {
-    if (!portalLayer) return;
-    const el = portalElRef.current;
-    const title = portalTitleRef.current;
-    if (!el) return;
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // انتقال روت به پروژه جدید
-        navigate(`/projects/${portalLayer.project.slug}`);
-        window.scrollTo({ top: 0, behavior: "instant" });
-
-        // فید اوت نرم لایه برای رونمایی از صفحه جدید
-        gsap.to(el, {
-          opacity: 0,
-          duration: 0.45,
-          delay: 0.1,
-          ease: "power2.out",
-          onComplete: () => {
-            setPortalLayer(null);
-            setIsNavigating(false);
-          },
-        });
-      },
-    });
-
-    // گسترش کارت از موقعیت ماوس به اندازه کل پنجره با منحنی اکسپوننشال
-    tl.to(el, {
-      left: 0,
-      top: 0,
-      width: "100vw",
-      height: "100vh",
-      borderRadius: 0,
-      duration: 0.75,
-      ease: "expo.inOut",
-    });
-
-    // طلوع همزمان عنوان و مشخصات پروژه جدید
-    if (title) {
-      tl.fromTo(
-        title,
-        { yPercent: 60, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 0.55, ease: "expo.out" },
-        "-=0.45",
-      );
-    }
-  }, [portalLayer, navigate]);
-
-  // پشتیبانی از کلیدهای کیبورد
+  // پشتیبانی از کلیدهای کیبورد (ArrowRight برای بعدی، ArrowLeft برای قبلی)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
       if (e.key === "ArrowRight" && nextProject) {
-        goToProject(nextProject);
+        triggerNavigation(nextProject, "right");
       } else if (e.key === "ArrowLeft" && prevProject) {
-        goToProject(prevProject);
+        triggerNavigation(prevProject, "left");
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [nextProject, prevProject, goToProject]);
+  }, [nextProject, prevProject, triggerNavigation]);
 
-  // رویدادهای هاور و حرکت ماوس روی محدوده سمت راست
+  // رویدادهای حرکت ماوس در سمت راست
   const handleRightMove = (e) => {
-    if (isNavigating || portalLayer) return;
+    if (isTransitioning) return;
     const x = e.clientX;
     const y = e.clientY;
     const w = window.innerWidth;
@@ -154,9 +72,9 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
     }
   };
 
-  // رویدادهای هاور و حرکت ماوس روی محدوده سمت چپ
+  // رویدادهای حرکت ماوس در سمت چپ
   const handleLeftMove = (e) => {
-    if (isNavigating || portalLayer) return;
+    if (isTransitioning) return;
     const x = e.clientX;
     const y = e.clientY;
     const w = window.innerWidth;
@@ -184,7 +102,7 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
   useEffect(() => {
     const tick = () => {
       const follower = followerRef.current;
-      if (follower && mouseRef.current.active && !portalLayer) {
+      if (follower && mouseRef.current.active && !isTransitioning) {
         const target = targetPosRef.current;
         posRef.current.x += (target.x - posRef.current.x) * 0.2;
         posRef.current.y += (target.y - posRef.current.y) * 0.2;
@@ -199,7 +117,7 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [portalLayer]);
+  }, [isTransitioning]);
 
   const activeProject = activeSide === "right" ? nextProject : prevProject;
   const isRight = activeSide === "right";
@@ -209,12 +127,12 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
   return createPortal(
     <>
       {/* محدوده فعال لبه سمت چپ (پروژه قبلی) */}
-      {prevProject && (
+      {prevProject && !isTransitioning && (
         <div
           onPointerEnter={handleLeftMove}
           onPointerMove={handleLeftMove}
           onPointerLeave={handleLeave}
-          onClick={() => goToProject(prevProject)}
+          onClick={() => triggerNavigation(prevProject, "left")}
           className={`fixed left-0 top-0 bottom-0 z-40 w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
             activeSide === "left"
               ? "bg-gradient-to-r from-[#67E8F9]/15 via-[#67E8F9]/5 to-transparent"
@@ -242,12 +160,12 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
       )}
 
       {/* محدوده فعال لبه سمت راست (پروژه بعدی) */}
-      {nextProject && (
+      {nextProject && !isTransitioning && (
         <div
           onPointerEnter={handleRightMove}
           onPointerMove={handleRightMove}
           onPointerLeave={handleLeave}
-          onClick={() => goToProject(nextProject)}
+          onClick={() => triggerNavigation(nextProject, "right")}
           className={`fixed right-0 top-0 bottom-0 z-40 w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
             activeSide === "right"
               ? "bg-gradient-to-l from-[#67E8F9]/15 via-[#67E8F9]/5 to-transparent"
@@ -275,7 +193,7 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
       )}
 
       {/* کارت شناور پیش‌نمایش ماوس */}
-      {activeProject && !portalLayer && (
+      {activeProject && !isTransitioning && (
         <div
           ref={followerRef}
           className={`pointer-events-none fixed left-0 top-0 z-50 will-change-transform transition-opacity duration-200 ${
@@ -307,47 +225,6 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
                 {activeProject.title}
               </p>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* لایه پورتال تمام‌صفحه گسترش‌یابنده (Expanding Portal Layer) */}
-      {portalLayer && (
-        <div
-          ref={portalElRef}
-          className="fixed z-[99999] overflow-hidden bg-[#050508] shadow-[0_0_120px_rgba(103,232,249,0.4)] will-change-transform"
-          style={{
-            left: portalLayer.origin.left,
-            top: portalLayer.origin.top,
-            width: portalLayer.origin.width,
-            height: portalLayer.origin.height,
-            borderRadius: "14px",
-          }}
-        >
-          <img
-            src={portalLayer.project.image}
-            alt={portalLayer.project.title}
-            className="h-full w-full object-cover"
-          />
-
-          {/* گرادیان‌ها و افکت محوکننده سینمایی */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-[#050508]/50 to-transparent" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,rgba(5,5,8,0.85)_100%)]" />
-
-          {/* تایتل رولینگ که در مرکز-پایین طلوع می‌کند */}
-          <div
-            ref={portalTitleRef}
-            className="pointer-events-none absolute bottom-16 left-8 md:bottom-24 md:left-20 z-10 flex flex-col gap-2.5"
-          >
-            <div className="flex items-center gap-2">
-              <span className="h-2 w-2 rounded-full bg-[#67E8F9] shadow-[0_0_12px_#67E8F9]" />
-              <span className="font-mono text-xs md:text-sm uppercase tracking-[0.3em] text-[#67E8F9]">
-                {portalLayer.project.category} · Launching Case Study
-              </span>
-            </div>
-            <h2 className="text-3xl md:text-6xl font-bold tracking-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)]">
-              {portalLayer.project.title}
-            </h2>
           </div>
         </div>
       )}

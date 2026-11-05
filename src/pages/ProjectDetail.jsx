@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
 import ProjectPortalNav from "@/components/features/Work/ProjectPortalNav";
@@ -12,23 +12,8 @@ function formatTime(seconds) {
   return `${m < 10 ? "0" : ""}${m}:${s < 10 ? "0" : ""}${s}`;
 }
 
-export default function ProjectDetail() {
-  const { slug } = useParams();
-  const project = projects.find((p) => p.slug === slug);
-
-  // محاسبه پروژه بعدی و قبلی برای چرخش پیوسته
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
-  const count = projects.length;
-  const nextProject =
-    currentIndex !== -1
-      ? projects[(currentIndex + 1) % count]
-      : projects[0];
-  const prevProject =
-    currentIndex !== -1
-      ? projects[(currentIndex - 1 + count) % count]
-      : projects[count - 1];
-
-  // استیت‌های ویدیو پلیر
+// کامپوننت نمای کامل محتوای پروژه
+function ProjectView({ project, nextProject, onNextClick }) {
   const videoRef = useRef(null);
   const progressContainerRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,12 +24,6 @@ export default function ProjectDetail() {
   const [showControls, setShowControls] = useState(true);
   const controlsTimeoutRef = useRef(null);
 
-  // اسکرول به ابتدای صفحه هنگام باز شدن یا تغییر اسلاگ
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [slug]);
-
-  // رویدادهای ویدیو
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -111,34 +90,15 @@ export default function ProjectDetail() {
     }, 2800);
   };
 
-  if (!project) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center bg-[#050508] px-6 text-center text-white">
-        <p className="font-mono text-sm uppercase tracking-[0.3em] text-[#67E8F9]">
-          404 · Project Not Found
-        </p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
-          We couldn&apos;t find this case study.
-        </h1>
-        <Link
-          to="/"
-          className="mt-8 rounded-full border border-white/20 px-6 py-2.5 font-mono text-xs uppercase tracking-widest text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508]"
-        >
-          ← Return to Home
-        </Link>
-      </main>
-    );
-  }
-
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-[#050508]/90 text-white selection:bg-[#67E8F9] selection:text-[#050508]">
-      {/* هلو و گرادیان پس‌زمینه */}
+    <div className="relative min-h-screen bg-[#050508] text-white selection:bg-[#67E8F9] selection:text-[#050508]">
+      {/* هاله گرادیان پس‌زمینه */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(103,232,249,0.12),transparent_70%)]" />
 
       {/* نوار ناوبری اختصاصی پروژه */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050508]/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050508]/85 backdrop-blur-md">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 md:px-12">
           <Link
             to="/#work"
@@ -181,12 +141,7 @@ export default function ProjectDetail() {
       {/* بدنه اصلی */}
       <main className="relative mx-auto max-w-7xl px-6 pb-28 pt-12 md:px-12 md:pt-16">
         {/* عنوان و هدر پروژه */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="max-w-4xl"
-        >
+        <div className="max-w-4xl">
           <div className="flex items-center gap-3">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#67E8F9]" />
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
@@ -201,15 +156,10 @@ export default function ProjectDetail() {
           <p className="mt-6 text-lg leading-relaxed text-white/70 md:text-xl">
             {project.description}
           </p>
-        </motion.div>
+        </div>
 
         {/* شبکه اطلاعات بنتو (Bento Metadata) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-12 grid grid-cols-2 gap-4 border-y border-white/10 py-8 md:grid-cols-4 md:gap-8"
-        >
+        <div className="mt-12 grid grid-cols-2 gap-4 border-y border-white/10 py-8 md:grid-cols-4 md:gap-8">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
               Client
@@ -260,22 +210,16 @@ export default function ProjectDetail() {
               </p>
             )}
           </div>
-        </motion.div>
+        </div>
 
         {/* مدیا پلیر اختصاصی / شوکیس اصلی */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-14"
-        >
+        <div className="mt-14">
           {project.video ? (
             <div
               className="group relative overflow-hidden rounded-2xl border border-white/10 bg-black shadow-[0_30px_90px_-20px_rgba(0,0,0,0.8)]"
               onMouseMove={handleMouseMovePlayer}
               onMouseLeave={() => isPlaying && setShowControls(false)}
             >
-              {/* هاله نئونی ظریف در پس‌زمینه ویدیو */}
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.06),transparent_60%)]" />
 
               <video
@@ -288,7 +232,6 @@ export default function ProjectDetail() {
                 className="aspect-video w-full cursor-pointer object-cover"
               />
 
-              {/* دکمه بزرگ مرکزی Play هنگام توقف */}
               {!isPlaying && (
                 <button
                   type="button"
@@ -305,13 +248,11 @@ export default function ProjectDetail() {
                 </button>
               )}
 
-              {/* کنترل بار مدرن شیشه‌ای */}
               <div
                 className={`absolute inset-x-0 bottom-0 z-20 flex flex-col gap-2 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 transition-opacity duration-300 md:p-6 ${
                   showControls || !isPlaying ? "opacity-100" : "pointer-events-none opacity-0"
                 }`}
               >
-                {/* نوار پیشرفت اسکراب */}
                 <div
                   ref={progressContainerRef}
                   onClick={handleSeek}
@@ -327,7 +268,6 @@ export default function ProjectDetail() {
                   />
                 </div>
 
-                {/* دکمه‌های کنترل و زمان‌سنج */}
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex items-center gap-4">
                     <button
@@ -414,15 +354,10 @@ export default function ProjectDetail() {
               />
             </div>
           )}
-        </motion.div>
+        </div>
 
         {/* خدمات، تگ‌ها و جزئیات پروژه */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-20 grid grid-cols-1 gap-12 border-t border-white/10 pt-16 md:grid-cols-3"
-        >
+        <div className="mt-20 grid grid-cols-1 gap-12 border-t border-white/10 pt-16 md:grid-cols-3">
           <div>
             <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-[#67E8F9]">
               Services Provided
@@ -471,49 +406,181 @@ export default function ProjectDetail() {
               Start A Project →
             </Link>
           </div>
-        </motion.div>
+        </div>
 
         {/* پروژه بعدی (Next Case Study Card) */}
-        <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-28 border-t border-white/10 pt-16"
-        >
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-white/40">
-            Next Case Study
-          </p>
+        {nextProject && (
+          <section className="mt-28 border-t border-white/10 pt-16">
+            <p className="font-mono text-xs uppercase tracking-[0.3em] text-white/40">
+              Next Case Study
+            </p>
 
-          <Link
-            to={`/projects/${nextProject.slug}`}
-            className="group mt-6 block overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-8 transition-all duration-500 hover:border-[#67E8F9]/50 hover:bg-white/[0.04] md:p-12"
-          >
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-              <div>
-                <span className="font-mono text-xs uppercase tracking-widest text-[#67E8F9]">
-                  {nextProject.category}
-                </span>
-                <h3 className="mt-2 text-3xl font-semibold tracking-tight text-white transition-colors group-hover:text-[#67E8F9] md:text-5xl">
-                  {nextProject.title}
-                </h3>
-                <p className="mt-3 max-w-xl text-sm text-white/60 md:text-base">
-                  {nextProject.description}
-                </p>
-              </div>
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => onNextClick && onNextClick(nextProject)}
+              className="group mt-6 block cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02] p-8 transition-all duration-500 hover:border-[#67E8F9]/50 hover:bg-white/[0.04] md:p-12"
+            >
+              <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                <div>
+                  <span className="font-mono text-xs uppercase tracking-widest text-[#67E8F9]">
+                    {nextProject.category}
+                  </span>
+                  <h3 className="mt-2 text-3xl font-semibold tracking-tight text-white transition-colors group-hover:text-[#67E8F9] md:text-5xl">
+                    {nextProject.title}
+                  </h3>
+                  <p className="mt-3 max-w-xl text-sm text-white/60 md:text-base">
+                    {nextProject.description}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-white/80 group-hover:text-[#67E8F9]">
-                <span>View Project</span>
-                <span className="transition-transform duration-300 group-hover:translate-x-2">
-                  →
-                </span>
+                <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-white/80 group-hover:text-[#67E8F9]">
+                  <span>View Project</span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-2">
+                    →
+                  </span>
+                </div>
               </div>
             </div>
-          </Link>
-        </motion.section>
+          </section>
+        )}
       </main>
+    </div>
+  );
+}
+
+export default function ProjectDetail() {
+  const { slug } = useParams();
+  const navigate = useNavigate();
+
+  const [transitioning, setTransitioning] = useState(null); // { targetProject, origin }
+
+  const currentProject = projects.find((p) => p.slug === slug);
+
+  const currentIndex = projects.findIndex((p) => p.slug === slug);
+  const count = projects.length;
+  const nextProject =
+    currentIndex !== -1 ? projects[(currentIndex + 1) % count] : projects[0];
+  const prevProject =
+    currentIndex !== -1
+      ? projects[(currentIndex - 1 + count) % count]
+      : projects[count - 1];
+
+  // اسکرول به بالا در بارگذاری اولیه
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [slug]);
+
+  // مدیریت ناوبری زوم روی کل صفحه مقصد
+  const handleNavigate = (targetProject, origin) => {
+    if (!targetProject || transitioning) return;
+    setTransitioning({
+      targetProject,
+      origin: origin || { x: window.innerWidth - 80, y: window.innerHeight / 2, side: "right" },
+    });
+  };
+
+  const handleAnimationComplete = () => {
+    if (!transitioning) return;
+    const targetSlug = transitioning.targetProject.slug;
+    navigate(`/projects/${targetSlug}`, { replace: true });
+    window.scrollTo({ top: 0, behavior: "instant" });
+    setTransitioning(null);
+  };
+
+  if (!currentProject) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center bg-[#050508] px-6 text-center text-white">
+        <p className="font-mono text-sm uppercase tracking-[0.3em] text-[#67E8F9]">
+          404 · Project Not Found
+        </p>
+        <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">
+          We couldn&apos;t find this case study.
+        </h1>
+        <Link
+          to="/"
+          className="mt-8 rounded-full border border-white/20 px-6 py-2.5 font-mono text-xs uppercase tracking-widest text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508]"
+        >
+          ← Return to Home
+        </Link>
+      </main>
+    );
+  }
+
+  // محاسبه مبدأ زوم براساس مکان دقیق ماوس کاربر
+  const originStyle = transitioning
+    ? {
+        transformOrigin:
+          transitioning.origin.side === "right"
+            ? `92% ${transitioning.origin.y}px`
+            : transitioning.origin.side === "left"
+              ? `8% ${transitioning.origin.y}px`
+              : "50% 50%",
+      }
+    : {};
+
+  return (
+    <div className="relative min-h-screen bg-[#050508]">
+      {/* نمای فعلی پروژه (بدون پرش، پیوسته در پس‌زمینه) */}
+      <ProjectView
+        project={currentProject}
+        nextProject={nextProject}
+        onNextClick={(p) =>
+          handleNavigate(p, {
+            x: window.innerWidth / 2,
+            y: window.innerHeight * 0.75,
+            side: "center",
+          })
+        }
+      />
+
+      {/* زوم مستقیم و خیره‌کننده کل صفحه پروژه جدید از محل کرسر (Direct Full-Page Zoom) */}
+      {transitioning && (
+        <motion.div
+          initial={{
+            scale: 0.22,
+            opacity: 0,
+            borderRadius: "28px",
+            boxShadow: "0 30px 100px rgba(0,0,0,0.95), 0 0 60px rgba(103,232,249,0.35)",
+          }}
+          animate={{
+            scale: 1,
+            opacity: 1,
+            borderRadius: "0px",
+            boxShadow: "0 0 0 rgba(0,0,0,0)",
+          }}
+          transition={{
+            duration: 0.82,
+            ease: [0.16, 1, 0.3, 1], // Expo-out curve
+          }}
+          onAnimationComplete={handleAnimationComplete}
+          style={originStyle}
+          className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden bg-[#050508] will-change-transform"
+        >
+          {/* محتوای واقعی و کامل صفحه جدید که گسترش می‌یابد */}
+          <ProjectView
+            project={transitioning.targetProject}
+            nextProject={
+              projects[
+                (projects.findIndex(
+                  (p) => p.slug === transitioning.targetProject.slug,
+                ) +
+                  1) %
+                  projects.length
+              ]
+            }
+          />
+        </motion.div>
+      )}
 
       {/* سیستم پیش‌نمایش شناور و ناوبری پورتال گوشه‌های صفحه */}
-      <ProjectPortalNav key={slug} nextProject={nextProject} prevProject={prevProject} />
+      <ProjectPortalNav
+        key={slug}
+        nextProject={nextProject}
+        prevProject={prevProject}
+        onNavigate={handleNavigate}
+        isTransitioning={Boolean(transitioning)}
+      />
     </div>
   );
 }
