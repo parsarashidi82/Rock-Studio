@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 
@@ -144,7 +145,9 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
   const activeProject = activeSide === "right" ? nextProject : prevProject;
   const isRight = activeSide === "right";
 
-  return (
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <>
       {/* محدوده فعال لبه سمت چپ (پروژه قبلی) - سرتاسر ارتفاع صفحه */}
       {prevProject && (
@@ -252,6 +255,7 @@ export default function ProjectPortalNav({ nextProject, prevProject }) {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body,
   );
 }
