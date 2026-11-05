@@ -42,18 +42,18 @@ function Letter({ char, i, progress, tint = null }) {
   const start = (i / (TOTAL - 1)) * (LETTERS_END - span);
   const end = start + span;
 
-  const y = useTransform(progress, [start, end], ["115%", "0%"], { ease });
-  const rotate = useTransform(progress, [start, end], [7, 0], { ease });
+  const y = useTransform(progress, [start, end], ["135%", "0%"], { ease });
+  const rotate = useTransform(progress, [start, end], [4, 0], { ease });
   const opacity = useTransform(progress, [start, start + span * 0.6], [0, 1]);
   const filter = useTransform(
     progress,
     [start, end],
-    ["blur(10px)", "blur(0px)"],
+    ["blur(6px)", "blur(0px)"],
   );
 
   return (
     <motion.span
-      className="inline-block origin-bottom-left will-change-transform"
+      className="inline-block origin-bottom will-change-transform"
       style={{
         y,
         rotate,
@@ -108,20 +108,20 @@ export default function Statement() {
         {/* تیتر */}
         <h2
           aria-label="We turn ideas into experiences."
-          className="relative text-center font-semibold uppercase leading-[0.95] tracking-tight text-white text-[clamp(2.5rem,9vw,8.5rem)]"
+          className="relative text-center font-semibold uppercase leading-[1.08] tracking-tight text-white text-[clamp(2.5rem,9vw,8.5rem)]"
         >
           <span aria-hidden className="block">
             {PARSED.map((words, li) => (
               <span
                 key={li}
-                className="flex flex-wrap justify-center gap-x-[0.28em]"
+                className="flex flex-wrap justify-center gap-x-[0.28em] py-1"
               >
                 {words.map((letters, wi) => {
                   const isAccent = li === 1 && wi === 1;
                   return (
                     <span
                       key={wi}
-                      className="inline-flex overflow-hidden pb-[0.08em]"
+                      className="inline-flex overflow-hidden pt-[0.18em] pb-[0.25em] px-[0.12em] -mt-[0.18em] -mb-[0.25em] -mx-[0.12em]"
                     >
                       {letters.map((l, k) => (
                         <Letter
