@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
+import ProjectPortalNav from "@/components/features/Work/ProjectPortalNav";
 
 // فرمت‌بندی ثانیه به mm:ss
 function formatTime(seconds) {
@@ -15,12 +16,17 @@ export default function ProjectDetail() {
   const { slug } = useParams();
   const project = projects.find((p) => p.slug === slug);
 
-  // محاسبه پروژه بعدی برای چرخش پیوسته
+  // محاسبه پروژه بعدی و قبلی برای چرخش پیوسته
   const currentIndex = projects.findIndex((p) => p.slug === slug);
+  const count = projects.length;
   const nextProject =
     currentIndex !== -1
-      ? projects[(currentIndex + 1) % projects.length]
+      ? projects[(currentIndex + 1) % count]
       : projects[0];
+  const prevProject =
+    currentIndex !== -1
+      ? projects[(currentIndex - 1 + count) % count]
+      : projects[count - 1];
 
   // استیت‌های ویدیو پلیر
   const videoRef = useRef(null);
@@ -505,6 +511,9 @@ export default function ProjectDetail() {
           </Link>
         </motion.section>
       </main>
+
+      {/* سیستم پیش‌نمایش شناور و ناوبری پورتال گوشه‌های صفحه */}
+      <ProjectPortalNav nextProject={nextProject} prevProject={prevProject} />
     </div>
   );
 }
