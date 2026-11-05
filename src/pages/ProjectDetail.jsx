@@ -555,7 +555,7 @@ export default function ProjectDetail() {
           }}
           onAnimationComplete={handleAnimationComplete}
           style={originStyle}
-          className="fixed inset-0 z-50 overflow-y-auto overflow-x-hidden bg-[#050508] will-change-transform"
+          className="fixed inset-0 z-50 overflow-hidden pointer-events-none select-none bg-[#050508] will-change-transform"
         >
           {/* محتوای واقعی و کامل صفحه جدید که گسترش می‌یابد */}
           <ProjectView

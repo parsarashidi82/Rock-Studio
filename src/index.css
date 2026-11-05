@@ -21,6 +21,20 @@ body,
   min-height: 100%;
 }
 
+/* حذف نوار اسکرول مرورگر در کل صفحه برای نمای تمیز، سینماتیک و بدون پرش */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+}
+
+::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge, Opera */
+  width: 0px;
+  height: 0px;
+  background: transparent;
+}
+
 @keyframes dr-fade-in {
   from {
     opacity: 0;
