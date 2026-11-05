@@ -42,21 +42,21 @@ function Letter({ char, i, progress, tint = null }) {
   const start = (i / (TOTAL - 1)) * (LETTERS_END - span);
   const end = start + span;
 
-  const y = useTransform(progress, [start, end], ["135%", "0%"], { ease });
-  const rotate = useTransform(progress, [start, end], [4, 0], { ease });
-  const opacity = useTransform(progress, [start, start + span * 0.6], [0, 1]);
+  const y = useTransform(progress, [start, end], ["36px", "0px"], { ease });
+  const scale = useTransform(progress, [start, end], [0.92, 1], { ease });
+  const opacity = useTransform(progress, [start, start + span * 0.75], [0, 1]);
   const filter = useTransform(
     progress,
     [start, end],
-    ["blur(6px)", "blur(0px)"],
+    ["blur(8px)", "blur(0px)"],
   );
 
   return (
     <motion.span
-      className="inline-block origin-bottom will-change-transform"
+      className="inline-block will-change-transform"
       style={{
         y,
-        rotate,
+        scale,
         opacity,
         filter,
         color: tint === null ? undefined : mix(tint),
@@ -121,7 +121,7 @@ export default function Statement() {
                   return (
                     <span
                       key={wi}
-                      className="inline-flex overflow-hidden pt-[0.18em] pb-[0.25em] px-[0.12em] -mt-[0.18em] -mb-[0.25em] -mx-[0.12em]"
+                      className="inline-flex"
                     >
                       {letters.map((l, k) => (
                         <Letter
