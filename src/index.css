@@ -10,8 +10,8 @@
   --dr-core: #ffffff;
   --dr-vignette: 0.72;
   --dr-grain: 0.04;
-  --dr-bloom-blur: 10px;
-  --dr-bloom-opacity: 0.45;
+  --dr-bloom-blur: 12px;
+  --dr-bloom-opacity: 0.25;
 }
 
 html,

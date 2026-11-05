@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       {/* Dynamic Background Data Rain strictly behind everything */}
-      <DataRain className="-z-50" />
+      <DataRain className="-z-50" count={750} flowSpeed={0.85} />
       <div className="relative z-10 isolate">
         <Routes>
           <Route path="/" element={<Home />} />

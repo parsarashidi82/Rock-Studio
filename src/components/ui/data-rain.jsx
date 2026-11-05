@@ -17,10 +17,10 @@ const DEFAULT_MID = [34, 211, 238]; // #22d3ee
 const DEFAULT_HOT = [103, 232, 249]; // #67e8f9 (Rock Studio Cyan)
 const DEFAULT_CORE = [255, 255, 255]; // #ffffff
 
-const BASE_ALPHA = [0.2, 0.32, 0.48];
-const BASE_WIDTH = [0.7, 0.9, 1.2];
-const ALPHA_GAIN = 1.3;
-const HEAD_WIDTH = 1.4;
+const BASE_ALPHA = [0.12, 0.22, 0.35];
+const BASE_WIDTH = [0.65, 0.85, 1.1];
+const ALPHA_GAIN = 1.0;
+const HEAD_WIDTH = 1.2;
 
 // precomputed per-step filter coefficients (the step is fixed)
 const K_RELAX = 1 - Math.exp(-STEP / 0.12);
@@ -268,7 +268,7 @@ export default function DataRain(props) {
     };
 
     const applyCount = (uniform) => {
-      const auto = clamp(Math.round((w * h) / 520), 1200, 5200);
+      const auto = clamp(Math.round((w * h) / 1900), 400, 1100);
       const requested = propsRef.current.count;
       targetCount = clamp(Math.round(requested !== undefined ? requested : auto), 1, MAX);
       setActive(targetCount * quality, uniform);
