@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const DEFAULT_ITEMS = Array.from({ length: 15 }, (_, i) => {
   const ids = [
@@ -31,6 +32,96 @@ const columnFactor = (index, variance) => {
   const pseudo = ((index * 0.6180339887 + 0.35) % 1) * 2 - 1;
   return 1 + variance * pseudo;
 };
+
+function TileVideo({ src, poster, hoverClip, isActive, className }) {
+  const videoRef = useRef(null);
+  const [showPoster, setShowPoster] = useState(true);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !src) return;
+
+    const start = hoverClip?.start ?? 0;
+
+    if (isActive) {
+      try {
+        el.currentTime = start;
+      } catch {
+        // ignore if not ready
+      }
+      const playPromise = el.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    } else {
+      el.pause();
+      try {
+        el.currentTime = start;
+      } catch {
+        // ignore
+      }
+    }
+  }, [isActive, src, hoverClip]);
+
+  const handleTimeUpdate = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    const start = hoverClip?.start ?? 0;
+    const end = hoverClip?.end;
+
+    if (typeof end === "number" && el.currentTime >= end) {
+      el.pause();
+      try {
+        el.currentTime = start;
+      } catch {
+        // ignore
+      }
+    }
+  };
+
+  const handleEnded = () => {
+    const el = videoRef.current;
+    if (!el) return;
+    const start = hoverClip?.start ?? 0;
+    el.pause();
+    try {
+      el.currentTime = start;
+    } catch {
+      // ignore
+    }
+  };
+
+  return (
+    <div className="relative h-full w-full overflow-hidden">
+      <video
+        ref={videoRef}
+        src={src}
+        muted
+        playsInline
+        preload="metadata"
+        onPlay={() => setShowPoster(false)}
+        onPause={() => setShowPoster(true)}
+        onEnded={handleEnded}
+        onTimeUpdate={handleTimeUpdate}
+        className={className}
+      />
+      {poster && (
+        <img
+          src={poster}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className={cx(
+            className,
+            "absolute inset-0 pointer-events-none transition-opacity duration-300",
+            showPoster ? "opacity-100" : "opacity-0",
+          )}
+        />
+      )}
+    </div>
+  );
+}
 
 const DriftWall = ({
   items = DEFAULT_ITEMS,
@@ -58,11 +149,14 @@ const DriftWall = ({
   style,
   newTab = true, // ← جدید
   onActiveChange, // ← جدید
+  previewDuration = 9500, // مدت زمان اسکرول نرم پیش‌نمایش به میلی‌ثانیه
 }) => {
   const containerRef = useRef(null);
   const planeRef = useRef(null);
   const trackRefs = useRef([]);
   const rafRef = useRef(null);
+
+  const downRef = useRef(null);
 
   const offsetsRef = useRef([]);
   const velocitiesRef = useRef([]);
@@ -75,10 +169,10 @@ const DriftWall = ({
   const [containerHeight, setContainerHeight] = useState(600);
   const [activeId, setActiveId] = useState(null);
   const activeIdRef = useRef(null);
-  const [reduced, setReduced] = useState(false);
+  const releaseTimerRef = useRef(null);
+  const [reduced, setReduced] = useState(prefersReducedMotion);
 
   useEffect(() => {
-    setReduced(prefersReducedMotion());
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onChange = (e) => setReduced(e.matches);
     mq.addEventListener("change", onChange);
@@ -216,11 +310,19 @@ const DriftWall = ({
   ]);
 
   const activate = useCallback((id, index) => {
+    if (releaseTimerRef.current) {
+      clearTimeout(releaseTimerRef.current);
+      releaseTimerRef.current = null;
+    }
     activeIdRef.current = id;
     hoveredColRef.current = index;
     setActiveId(id);
   }, []);
   const release = useCallback(() => {
+    if (releaseTimerRef.current) {
+      clearTimeout(releaseTimerRef.current);
+      releaseTimerRef.current = null;
+    }
     activeIdRef.current = null;
     hoveredColRef.current = -1;
     setActiveId(null);
@@ -238,14 +340,26 @@ const DriftWall = ({
       }
       const hit = document.elementFromPoint(e.clientX, e.clientY);
       const tile = hit && hit.closest ? hit.closest("[data-tile-id]") : null;
-      if (!tile) return;
+      if (!tile) {
+        if (activeIdRef.current !== null && !releaseTimerRef.current) {
+          releaseTimerRef.current = setTimeout(() => {
+            release();
+            releaseTimerRef.current = null;
+          }, 160);
+        }
+        return;
+      }
+      if (releaseTimerRef.current) {
+        clearTimeout(releaseTimerRef.current);
+        releaseTimerRef.current = null;
+      }
       const id = tile.dataset.tileId;
       if (id === activeIdRef.current) return;
       activeIdRef.current = id;
       hoveredColRef.current = Number(tile.dataset.col);
       setActiveId(id);
     },
-    [parallax, reduced],
+    [parallax, reduced, release],
   );
 
   const handlePointerLeaveWall = useCallback(() => {
@@ -253,6 +367,42 @@ const DriftWall = ({
     pointerRef.current = { x: 0, y: 0 };
     release();
   }, [release]);
+
+  const handlePointerDown = useCallback((e) => {
+    const hit = document.elementFromPoint(e.clientX, e.clientY);
+    const tile = hit?.closest?.("[data-tile-id]");
+    downRef.current = {
+      id: tile?.dataset.tileId ?? activeIdRef.current,
+      x: e.clientX,
+      y: e.clientY,
+    };
+  }, []);
+
+  const navigate = useNavigate();
+
+  const handleClick = useCallback(
+    (e) => {
+      // اگر کلیک مستقیم روی خود تایل افتاده، Link یا a خودشان عمل می‌کنند
+      if (e.target.closest?.("[data-tile-id]")) return;
+
+      const down = downRef.current;
+      if (!down?.id) return;
+      // کشیدن موس کلیک حساب نمی‌شود
+      if (Math.hypot(e.clientX - down.x, e.clientY - down.y) > 10) return;
+
+      const [c, , i] = down.id.split("-").map(Number);
+      const item = columnItems[c]?.[i];
+      if (!item?.href) return;
+
+      if (item.href.startsWith("http")) {
+        if (newTab) window.open(item.href, "_blank", "noopener,noreferrer");
+        else window.location.assign(item.href);
+      } else {
+        navigate(item.href);
+      }
+    },
+    [columnItems, navigate, newTab],
+  );
 
   const maskStyle =
     "radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%), " +
@@ -269,6 +419,7 @@ const DriftWall = ({
       "--dw-gray": grayscale ? 1 : 0,
       "--dw-overlay": overlayColor,
       "--dw-edge": `${Math.max(0, (1 - fade) * 100)}%`,
+      "--dw-scroll-duration": `${previewDuration}ms`,
       perspective: `${perspective}px`,
       perspectiveOrigin: "50% 50%",
       WebkitMaskImage: maskStyle,
@@ -288,6 +439,7 @@ const DriftWall = ({
       overlayColor,
       fade,
       perspective,
+      previewDuration,
       maskStyle,
       style,
     ],
@@ -298,7 +450,7 @@ const DriftWall = ({
     "w-full h-[calc(var(--dw-tile-h)+var(--dw-gap))] [transform-style:preserve-3d]",
   );
   const innerClass = cx(
-    "pointer-events-none absolute inset-[calc(var(--dw-gap)/2)] block overflow-hidden bg-[#0b0b12]",
+    "absolute inset-[calc(var(--dw-gap)/2)] block overflow-hidden bg-[#0b0b12]",
     "rounded-[var(--dw-radius)] opacity-[var(--dw-dim)] [transform:translateZ(0)]",
     "transition-[transform,opacity,box-shadow] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
     "group-[.is-active]/tile:opacity-100 group-[.is-active]/tile:[transform:translateZ(var(--dw-lift))]",
@@ -312,6 +464,15 @@ const DriftWall = ({
     "transition-[filter] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
     "group-[.is-active]/tile:[filter:grayscale(0)_saturate(1.05)] group-focus-visible/tile:[filter:grayscale(0)_saturate(1.05)]",
   );
+  const scrollImgClass = cx(
+    "block w-full select-none will-change-transform",
+    "[filter:grayscale(var(--dw-gray))_saturate(0.92)]",
+    "[transform:translate3d(0,0,0)]",
+    "transition-[transform,filter] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]",
+    "group-[.is-active]/tile:[transform:translate3d(0,calc(-100%+var(--dw-tile-h)),0)] group-[.is-active]/tile:duration-[var(--dw-scroll-duration)] group-[.is-active]/tile:ease-[cubic-bezier(0.35,0,0.25,1)] group-[.is-active]/tile:[filter:grayscale(0)_saturate(1.05)]",
+    "group-hover/tile:[transform:translate3d(0,calc(-100%+var(--dw-tile-h)),0)] group-hover/tile:duration-[var(--dw-scroll-duration)] group-hover/tile:ease-[cubic-bezier(0.35,0,0.25,1)] group-hover/tile:[filter:grayscale(0)_saturate(1.05)]",
+    "group-focus-visible/tile:[transform:translate3d(0,calc(-100%+var(--dw-tile-h)),0)] group-focus-visible/tile:duration-[var(--dw-scroll-duration)] group-focus-visible/tile:ease-[cubic-bezier(0.35,0,0.25,1)] group-focus-visible/tile:[filter:grayscale(0)_saturate(1.05)]",
+  );
   const overlayClass = cx(
     "pointer-events-none absolute inset-0 bg-[var(--dw-overlay)] opacity-[0.42]",
     "transition-opacity duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
@@ -319,37 +480,74 @@ const DriftWall = ({
   );
 
   const renderTile = (item, id, colIndex) => {
+    const isCurrentActive = activeId === id;
+    const isVideo = Boolean(item.video);
+    const isScrollable = Boolean(item.fullImage && !isVideo);
+
     const inner = (
       <span className={innerClass}>
-        <img
-          src={item.image}
-          alt={item.title ?? ""}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className={imgClass}
-        />
+        {isVideo ? (
+          <TileVideo
+            src={item.video}
+            poster={item.image}
+            hoverClip={item.hoverClip}
+            isActive={isCurrentActive}
+            className={cx(
+              "block h-full w-full select-none object-cover",
+              "[filter:grayscale(var(--dw-gray))_saturate(0.92)]",
+              "transition-[filter] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
+              "group-[.is-active]/tile:[filter:grayscale(0)_saturate(1.08)] group-focus-visible/tile:[filter:grayscale(0)_saturate(1.08)]",
+            )}
+          />
+        ) : isScrollable ? (
+          <img
+            src={item.fullImage}
+            alt={item.title ?? ""}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className={scrollImgClass}
+          />
+        ) : (
+          <img
+            src={item.image}
+            alt={item.title ?? ""}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className={imgClass}
+          />
+        )}
         <span className={overlayClass} aria-hidden="true" />
       </span>
     );
     const commonProps = {
-      className: cx(tileClass, activeId === id && "is-active"),
+      className: cx(tileClass, isCurrentActive && "is-active"),
       "data-tile-id": id,
       "data-col": colIndex,
+      onPointerEnter: () => activate(id, colIndex),
       onFocus: () => activate(id, colIndex),
       onBlur: release,
     };
     if (item.href) {
+      const isExternal = item.href.startsWith("http");
+      if (isExternal) {
+        return (
+          <a
+            key={id}
+            href={item.href}
+            target={newTab ? "_blank" : undefined}
+            rel={newTab ? "noreferrer noopener" : undefined}
+            {...commonProps}
+          >
+            {inner}
+          </a>
+        );
+      }
       return (
-        <a
-          key={id}
-          href={item.href}
-          target={newTab ? "_blank" : undefined}
-          rel={newTab ? "noreferrer noopener" : undefined}
-          {...commonProps}
-        >
+        <Link key={id} to={item.href} {...commonProps}>
           {inner}
-        </a>
+        </Link>
       );
     }
     return (
@@ -371,6 +569,8 @@ const DriftWall = ({
       className={cx("relative h-full w-full overflow-hidden", className)}
       style={cssVars}
       onPointerMove={handlePointerMove}
+      onPointerDown={handlePointerDown}
+      onClick={handleClick}
       onPointerEnter={() => {
         wallHoveredRef.current = true;
       }}

@@ -1,13 +1,18 @@
 import { useState } from "react";
 
-import { projects } from "../../../data/projects";
-import DriftWall from "../../ui/DriftWall";
+import { projects } from "@/data/projects";
+import DriftWall from "./DriftWall";
 
 const items = projects.map((p) => ({
   image: p.image,
+  fullImage: p.fullImage,
+  video: p.video,
+  hoverClip: p.hoverClip,
+  slug: p.slug,
   title: p.title,
   category: p.category,
-  href: p.externalUrl || `/projects/${p.slug}`,
+  href: `/projects/${p.slug}`,
+  externalUrl: p.externalUrl,
 }));
 
 export default function Work() {
@@ -42,7 +47,7 @@ export default function Work() {
         dim={0.55}
         radius={14}
         overlayColor="#050508"
-        newTab={false}
+        newTab={true}
         onActiveChange={handleActive}
       />
 

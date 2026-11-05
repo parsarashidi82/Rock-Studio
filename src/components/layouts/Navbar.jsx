@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -7,7 +7,7 @@ import {
 } from "framer-motion";
 
 const HERO_ID = "top"; // id سکشن Hero
-const OPEN_AT = 0.8; // هدر در ۸۰٪ اسکرول Hero باز می‌شود
+const OPEN_AT = 0.2; // هدر در ۲۰٪ اسکرول Hero باز می‌شود
 
 const LINKS = [
   { label: "Work", href: "#work" },
@@ -68,26 +68,28 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
 
-  const check = (y) => {
+  const check = useCallback((y) => {
     const hero = document.getElementById(HERO_ID);
     // مسافت اسکرول Hero = ارتفاعش منهای یک صفحه
     const range = hero
       ? hero.offsetHeight - window.innerHeight
       : window.innerHeight * 2;
-    setVisible(y > range * OPEN_AT);
-  };
+    const isVisible = y > range * OPEN_AT;
+    setVisible(isVisible);
+    if (!isVisible) {
+      setOpen(false);
+    }
+  }, []);
 
   useMotionValueEvent(scrollY, "change", check);
 
-  // اگر صفحه وسط اسکرول رفرش شد، وضعیت درست از همان اول تنظیم شود
+  // اگر صفحه وسط اسکرول رفرش شد، وضعیت درست پس از رندر اولیه تنظیم شود
   useEffect(() => {
-    check(window.scrollY);
-  }, []);
-
-  // وقتی هدر جمع شد منوی موبایل هم بسته شود
-  useEffect(() => {
-    if (!visible) setOpen(false);
-  }, [visible]);
+    const frameId = requestAnimationFrame(() => {
+      check(window.scrollY);
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [check]);
 
   return (
     <>

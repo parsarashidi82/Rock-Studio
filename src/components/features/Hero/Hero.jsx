@@ -8,17 +8,18 @@ import {
   useTransform,
 } from "framer-motion";
 
-import { useTextLayout } from "../../../hooks/useTextLayout";
-import { createLetterSeeds } from "../../../lib/seededRandom";
-import { useIdle } from "../../../hooks/useIdle";
+import { useTextLayout } from "@/hooks/useTextLayout";
+import { useIdle } from "@/hooks/useIdle";
+import { createLetterSeeds } from "@/lib/seededRandom";
 import ScatterLetter from "./ScatterLetter";
 import TechText from "./TechText";
+import HeroMessage from "./HeroMessage";
 
 const TEXT = "Rok Studio"; // اگر حروف بزرگ می‌خواهی: "ROK STUDIO"
 const FONT_WEIGHT = 600;
 const FONT_SIZE = 150;
 const LETTER_SPACING = -0.05;
-const ANIMATION_END = 0.7;
+const ANIMATION_END = 0.5;
 
 export default function Hero() {
   const sectionRef = useRef(null);
@@ -29,6 +30,14 @@ export default function Hero() {
     target: sectionRef,
     offset: ["start start", "end end"],
   });
+  // پیشرفت کل اسکرول برای پیام‌ها و محو شدن انتهای Hero
+  const story = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 30,
+    mass: 0.4,
+  });
+  const heroOpacity = useTransform(story, [0.92, 1], [1, 0]);
+  const heroScale = useTransform(story, [0.92, 1], [1, 1.04]);
   // پیشرفت انیمیشن در ۸۰٪ اسکرول به ۱ می‌رسد و بعد همان‌جا می‌ماند
   const scaled = useTransform(scrollYProgress, [0, ANIMATION_END], [0, 1]);
   const progress = useSpring(scaled, {
@@ -55,8 +64,8 @@ export default function Hero() {
   // TechText فقط وقتی حروف نشستند mount می‌شود
   const [techOn, setTechOn] = useState(false);
   useMotionValueEvent(progress, "change", (v) => {
-  setTechOn(v > 0.5);
-});
+    setTechOn(v > 0.5);
+  });
 
   const techRef = useRef(null);
 
@@ -72,71 +81,78 @@ export default function Hero() {
   }, [idle]);
 
   return (
-    <section ref={sectionRef} className="relative h-[350vh] bg-[#050508]">
+    <section id="top" ref={sectionRef} className="relative h-[300vh] bg-[#050508]">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Glow */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(103,232,249,0.12),transparent_35%)]" />
-
-        {/* استیج: فونت از اینجا به هر دو لایه به ارث می‌رسد */}
-        <div ref={stageRef} className="absolute inset-0 font-sans">
-          {/* لایه‌ی حروف پراکنده */}
-          {layout && (
-            <motion.div
-              className="pointer-events-none absolute inset-0"
-              style={{ opacity: lettersOpacity }}
-            >
-              {layout.glyphs.map((glyph) => (
-                <ScatterLetter
-                  key={glyph.index}
-                  glyph={glyph}
-                  seed={seeds[glyph.index]}
-                  layout={layout}
-                  progress={progress}
-                  time={time}
-                  fontWeight={FONT_WEIGHT}
-                />
-              ))}
-            </motion.div>
-          )}
-
-          {/* لایه‌ی TechText */}
-          {layout && techOn && (
-            <motion.div
-              ref={techRef}
-              className="absolute inset-0"
-              style={{ opacity: techOpacity }}
-            >
-              <TechText
-                text={TEXT}
-                fontWeight={FONT_WEIGHT}
-                fontSize={layout.size}
-                reveal="letter"
-                dashLength={4}
-                dashGap={2}
-                specks={15}
-                color="#ffffff"
-                accentColor="#67E8F9"
-                letterSpacing={LETTER_SPACING}
-                reach={200}
-                softness={0.7}
-                strokeWidth={1.5}
-                speed={0.5}
-                lineStyle="dashed"
-                selection
-                labels
-                draggable
-                sweep={idle}
-              />
-            </motion.div>
-          )}
-        </div>
-
-        {/* راهنمای اسکرول */}
         <motion.div
-          style={{ opacity: hintOpacity }}
-          className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40"
+          style={{ opacity: heroOpacity, scale: heroScale }}
+          className="absolute inset-0"
         >
-          Scroll
+          {/* Glow */}
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(103,232,249,0.12),transparent_35%)]" />
+
+          {/* استیج: فونت از اینجا به هر دو لایه به ارث می‌رسد */}
+          <div ref={stageRef} className="absolute inset-0 font-sans">
+            {/* لایه‌ی حروف پراکنده */}
+            {layout && (
+              <motion.div
+                className="pointer-events-none absolute inset-0"
+                style={{ opacity: lettersOpacity }}
+              >
+                {layout.glyphs.map((glyph) => (
+                  <ScatterLetter
+                    key={glyph.index}
+                    glyph={glyph}
+                    seed={seeds[glyph.index]}
+                    layout={layout}
+                    progress={progress}
+                    time={time}
+                    fontWeight={FONT_WEIGHT}
+                  />
+                ))}
+              </motion.div>
+            )}
+
+            {/* لایه‌ی TechText */}
+            {layout && techOn && (
+              <motion.div
+                ref={techRef}
+                className="absolute inset-0"
+                style={{ opacity: techOpacity }}
+              >
+                <TechText
+                  text={TEXT}
+                  fontWeight={FONT_WEIGHT}
+                  fontSize={layout.size}
+                  reveal="letter"
+                  dashLength={4}
+                  dashGap={2}
+                  specks={15}
+                  color="#ffffff"
+                  accentColor="#67E8F9"
+                  letterSpacing={LETTER_SPACING}
+                  reach={200}
+                  softness={0.7}
+                  strokeWidth={1.5}
+                  speed={0.5}
+                  lineStyle="dashed"
+                  selection
+                  labels
+                  draggable
+                  sweep={idle}
+                />
+              </motion.div>
+            )}
+          </div>
+
+          <HeroMessage progress={story} />
+
+          {/* راهنمای اسکرول */}
+          <motion.div
+            style={{ opacity: hintOpacity }}
+            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[16px] uppercase tracking-[0.3em] text-white/40"
+          >
+            Scroll
+          </motion.div>
         </motion.div>
       </div>
     </section>
