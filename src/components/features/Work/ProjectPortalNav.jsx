@@ -12,7 +12,6 @@ export default function ProjectPortalNav({
   nextProject,
   prevProject,
   onNavigate,
-  isTransitioning = false,
 }) {
   const [activeSide, setActiveSide] = useState(null); // 'left' | 'right' | null
 
@@ -25,17 +24,16 @@ export default function ProjectPortalNav({
   // کلیک روی پروژه بعدی یا قبلی
   const triggerNavigation = useCallback(
     (targetProject, side) => {
-      if (!targetProject || isTransitioning) return;
-      setActiveSide(null);
+      if (!targetProject) return;
       if (onNavigate) {
         onNavigate(targetProject, {
-          x: mouseRef.current.x,
+          x: mouseRef.current.x || (side === "right" ? window.innerWidth - 80 : 80),
           y: mouseRef.current.y || window.innerHeight / 2,
           side,
         });
       }
     },
-    [isTransitioning, onNavigate]
+    [onNavigate]
   );
 
   // پشتیبانی از کلیدهای کیبورد (ArrowRight برای بعدی، ArrowLeft برای قبلی)
@@ -54,7 +52,6 @@ export default function ProjectPortalNav({
 
   // رویدادهای حرکت ماوس در سمت راست
   const handleRightMove = (e) => {
-    if (isTransitioning) return;
     const x = e.clientX;
     const y = e.clientY;
     const w = window.innerWidth;
@@ -74,7 +71,6 @@ export default function ProjectPortalNav({
 
   // رویدادهای حرکت ماوس در سمت چپ
   const handleLeftMove = (e) => {
-    if (isTransitioning) return;
     const x = e.clientX;
     const y = e.clientY;
     const w = window.innerWidth;
@@ -102,7 +98,7 @@ export default function ProjectPortalNav({
   useEffect(() => {
     const tick = () => {
       const follower = followerRef.current;
-      if (follower && mouseRef.current.active && !isTransitioning) {
+      if (follower && mouseRef.current.active) {
         const target = targetPosRef.current;
         posRef.current.x += (target.x - posRef.current.x) * 0.2;
         posRef.current.y += (target.y - posRef.current.y) * 0.2;
@@ -117,7 +113,7 @@ export default function ProjectPortalNav({
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [isTransitioning]);
+  }, []);
 
   const activeProject = activeSide === "right" ? nextProject : prevProject;
   const isRight = activeSide === "right";
@@ -127,13 +123,13 @@ export default function ProjectPortalNav({
   return createPortal(
     <>
       {/* محدوده فعال لبه سمت چپ (پروژه قبلی) */}
-      {prevProject && !isTransitioning && (
+      {prevProject && (
         <div
           onPointerEnter={handleLeftMove}
           onPointerMove={handleLeftMove}
           onPointerLeave={handleLeave}
           onClick={() => triggerNavigation(prevProject, "left")}
-          className={`fixed left-0 top-0 bottom-0 z-40 w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
+          className={`fixed left-0 top-0 bottom-0 z-[70] w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
             activeSide === "left"
               ? "bg-gradient-to-r from-[#67E8F9]/15 via-[#67E8F9]/5 to-transparent"
               : "bg-transparent hover:bg-gradient-to-r hover:from-white/[0.03] hover:to-transparent"
@@ -160,13 +156,13 @@ export default function ProjectPortalNav({
       )}
 
       {/* محدوده فعال لبه سمت راست (پروژه بعدی) */}
-      {nextProject && !isTransitioning && (
+      {nextProject && (
         <div
           onPointerEnter={handleRightMove}
           onPointerMove={handleRightMove}
           onPointerLeave={handleLeave}
           onClick={() => triggerNavigation(nextProject, "right")}
-          className={`fixed right-0 top-0 bottom-0 z-40 w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
+          className={`fixed right-0 top-0 bottom-0 z-[70] w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
             activeSide === "right"
               ? "bg-gradient-to-l from-[#67E8F9]/15 via-[#67E8F9]/5 to-transparent"
               : "bg-transparent hover:bg-gradient-to-l hover:from-white/[0.03] hover:to-transparent"
@@ -193,10 +189,10 @@ export default function ProjectPortalNav({
       )}
 
       {/* کارت شناور پیش‌نمایش ماوس */}
-      {activeProject && !isTransitioning && (
+      {activeProject && (
         <div
           ref={followerRef}
-          className={`pointer-events-none fixed left-0 top-0 z-50 will-change-transform transition-opacity duration-200 ${
+          className={`pointer-events-none fixed left-0 top-0 z-[80] will-change-transform transition-opacity duration-200 ${
             activeSide ? "opacity-100" : "opacity-0"
           }`}
           style={{ width: `${CARD_WIDTH}px` }}

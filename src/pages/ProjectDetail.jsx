@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { projects } from "@/data/projects";
@@ -453,17 +453,19 @@ export default function ProjectDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
-  const [transitioning, setTransitioning] = useState(null); // { targetProject, origin }
-
   const currentProject = projects.find((p) => p.slug === slug);
+  const [underlyingProject, setUnderlyingProject] = useState(null);
+  const [transitioning, setTransitioning] = useState(null); // { targetProject, origin, id }
 
-  const currentIndex = projects.findIndex((p) => p.slug === slug);
+  // پروژه مبنای فعلی (در حال رفتن به آن یا باز شده)
+  const focusProject = transitioning?.targetProject || underlyingProject || currentProject;
+  const focusIndex = projects.findIndex((p) => p.slug === focusProject?.slug);
   const count = projects.length;
   const nextProject =
-    currentIndex !== -1 ? projects[(currentIndex + 1) % count] : projects[0];
+    focusIndex !== -1 ? projects[(focusIndex + 1) % count] : projects[0];
   const prevProject =
-    currentIndex !== -1
-      ? projects[(currentIndex - 1 + count) % count]
+    focusIndex !== -1
+      ? projects[(focusIndex - 1 + count) % count]
       : projects[count - 1];
 
   // اسکرول به بالا در بارگذاری اولیه
@@ -471,19 +473,26 @@ export default function ProjectDetail() {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [slug]);
 
-  // مدیریت ناوبری زوم روی کل صفحه مقصد
-  const handleNavigate = (targetProject, origin) => {
-    if (!targetProject || transitioning) return;
-    setTransitioning({
-      targetProject,
-      origin: origin || { x: window.innerWidth - 80, y: window.innerHeight / 2, side: "right" },
+  // مدیریت ناوبری زوم روی کل صفحه مقصد (امکان تعویض سریع و متوالی پروژه‌ها)
+  const handleNavigate = useCallback((targetProject, origin) => {
+    if (!targetProject) return;
+    setTransitioning((prev) => {
+      if (prev?.targetProject) {
+        setUnderlyingProject(prev.targetProject);
+      }
+      return {
+        targetProject,
+        origin: origin || { x: window.innerWidth - 80, y: window.innerHeight / 2, side: "right" },
+        id: Date.now(),
+      };
     });
-  };
+  }, []);
 
   const handleAnimationComplete = () => {
     if (!transitioning) return;
-    const targetSlug = transitioning.targetProject.slug;
-    navigate(`/projects/${targetSlug}`, { replace: true });
+    const target = transitioning.targetProject;
+    setUnderlyingProject(null);
+    navigate(`/projects/${target.slug}`, { replace: true });
     window.scrollTo({ top: 0, behavior: "instant" });
     setTransitioning(null);
   };
@@ -523,7 +532,7 @@ export default function ProjectDetail() {
     <div className="relative min-h-screen bg-[#050508]">
       {/* نمای فعلی پروژه (بدون پرش، پیوسته در پس‌زمینه) */}
       <ProjectView
-        project={currentProject}
+        project={underlyingProject || currentProject}
         nextProject={nextProject}
         onNextClick={(p) =>
           handleNavigate(p, {
@@ -537,6 +546,7 @@ export default function ProjectDetail() {
       {/* زوم مستقیم و خیره‌کننده کل صفحه پروژه جدید از محل کرسر (Direct Full-Page Zoom) */}
       {transitioning && (
         <motion.div
+          key={transitioning.targetProject.slug}
           initial={{
             scale: 0.22,
             opacity: 0,
@@ -550,7 +560,7 @@ export default function ProjectDetail() {
             boxShadow: "0 0 0 rgba(0,0,0,0)",
           }}
           transition={{
-            duration: 0.82,
+            duration: 0.65,
             ease: [0.16, 1, 0.3, 1], // Expo-out curve
           }}
           onAnimationComplete={handleAnimationComplete}
@@ -575,11 +585,9 @@ export default function ProjectDetail() {
 
       {/* سیستم پیش‌نمایش شناور و ناوبری پورتال گوشه‌های صفحه */}
       <ProjectPortalNav
-        key={slug}
         nextProject={nextProject}
         prevProject={prevProject}
         onNavigate={handleNavigate}
-        isTransitioning={Boolean(transitioning)}
       />
     </div>
   );
