@@ -127,7 +127,7 @@ export default function ProjectDetail() {
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-[#050508] text-white selection:bg-[#67E8F9] selection:text-[#050508]">
+    <div className="min-h-screen bg-[#050508]/85 backdrop-blur-[2px] text-white selection:bg-[#67E8F9] selection:text-[#050508]">
       {/* هلو و گرادیان پس‌زمینه */}
       <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(103,232,249,0.12),transparent_70%)]" />
 

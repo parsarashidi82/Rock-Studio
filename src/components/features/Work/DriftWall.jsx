@@ -92,7 +92,7 @@ function TileVideo({ src, poster, hoverClip, isActive, className }) {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden bg-[#0b0b12]">
       <video
         ref={videoRef}
         src={src}
@@ -404,12 +404,14 @@ const DriftWall = ({
     [columnItems, navigate, newTab],
   );
 
-  const maskStyle =
-    "radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%), " +
-    "linear-gradient(to top, #000 var(--dw-edge), transparent 100%)";
+  const hasMask = fade > 0;
+  const maskStyle = hasMask
+    ? "radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%), " +
+      "linear-gradient(to top, #000 var(--dw-edge), transparent 100%)"
+    : undefined;
 
-  const cssVars = useMemo(
-    () => ({
+  const cssVars = useMemo(() => {
+    const vars = {
       "--dw-tile-w": `${tileWidth}px`,
       "--dw-tile-h": `${tileHeight}px`,
       "--dw-gap": `${gap}px`,
@@ -422,28 +424,30 @@ const DriftWall = ({
       "--dw-scroll-duration": `${previewDuration}ms`,
       perspective: `${perspective}px`,
       perspectiveOrigin: "50% 50%",
-      WebkitMaskImage: maskStyle,
-      maskImage: maskStyle,
-      WebkitMaskComposite: "source-in",
-      maskComposite: "intersect",
       ...style,
-    }),
-    [
-      tileWidth,
-      tileHeight,
-      gap,
-      radius,
-      lift,
-      dim,
-      grayscale,
-      overlayColor,
-      fade,
-      perspective,
-      previewDuration,
-      maskStyle,
-      style,
-    ],
-  );
+    };
+    if (maskStyle) {
+      vars.WebkitMaskImage = maskStyle;
+      vars.maskImage = maskStyle;
+      vars.WebkitMaskComposite = "source-in";
+      vars.maskComposite = "intersect";
+    }
+    return vars;
+  }, [
+    tileWidth,
+    tileHeight,
+    gap,
+    radius,
+    lift,
+    dim,
+    grayscale,
+    overlayColor,
+    fade,
+    perspective,
+    previewDuration,
+    maskStyle,
+    style,
+  ]);
 
   const tileClass = cx(
     "group/tile relative block flex-none cursor-pointer outline-none",
@@ -451,7 +455,7 @@ const DriftWall = ({
   );
   const innerClass = cx(
     "absolute inset-[calc(var(--dw-gap)/2)] block overflow-hidden bg-[#0b0b12]",
-    "rounded-[var(--dw-radius)] opacity-[var(--dw-dim)] [transform:translateZ(0)]",
+    "rounded-[var(--dw-radius)] opacity-100 [transform:translateZ(0)]",
     "transition-[transform,opacity,box-shadow] duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
     "group-[.is-active]/tile:opacity-100 group-[.is-active]/tile:[transform:translateZ(var(--dw-lift))]",
     "group-[.is-active]/tile:shadow-[0_24px_60px_-18px_rgba(0,0,0,0.7)]",
@@ -566,7 +570,7 @@ const DriftWall = ({
   return (
     <div
       ref={containerRef}
-      className={cx("relative h-full w-full overflow-hidden", className)}
+      className={cx("relative h-full w-full overflow-hidden isolate [transform-style:flat]", className)}
       style={cssVars}
       onPointerMove={handlePointerMove}
       onPointerDown={handlePointerDown}

@@ -96,7 +96,7 @@ export default function Statement() {
     <section
       ref={sectionRef}
       id="statement"
-      className="relative h-[250vh] bg-[#050508]"
+      className="relative z-10 h-[250vh] bg-transparent"
     >
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-6">
         {/* Glow که با اسکرول قوی‌تر می‌شود */}

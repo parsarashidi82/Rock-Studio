@@ -27,7 +27,7 @@ export default function Work() {
   return (
     <section
       id="work"
-      className="relative h-screen w-full overflow-hidden bg-[#050508]"
+      className="relative z-20 h-screen w-full overflow-hidden isolate bg-transparent"
     >
       <DriftWall
         items={items}
@@ -43,8 +43,8 @@ export default function Work() {
         variance={0.45}
         parallax={0.6}
         lift={64}
-        fade={0.6}
-        dim={0.55}
+        fade={0}
+        dim={1}
         radius={14}
         overlayColor="#050508"
         newTab={true}

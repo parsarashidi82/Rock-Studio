@@ -81,7 +81,7 @@ export default function Hero() {
   }, [idle]);
 
   return (
-    <section id="top" ref={sectionRef} className="relative h-[300vh] bg-[#050508]">
+    <section id="top" ref={sectionRef} className="relative z-10 h-[300vh] bg-transparent">
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <motion.div
           style={{ opacity: heroOpacity, scale: heroScale }}
