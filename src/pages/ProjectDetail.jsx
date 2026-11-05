@@ -513,7 +513,7 @@ export default function ProjectDetail() {
       </main>
 
       {/* سیستم پیش‌نمایش شناور و ناوبری پورتال گوشه‌های صفحه */}
-      <ProjectPortalNav nextProject={nextProject} prevProject={prevProject} />
+      <ProjectPortalNav key={slug} nextProject={nextProject} prevProject={prevProject} />
     </div>
   );
 }
