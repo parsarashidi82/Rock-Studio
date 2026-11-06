@@ -29,7 +29,7 @@ const FOUNDERS = [
       top: "-9%",
       width: "250%",
     },
-    range: [0.15, 0.23, 0.35, 0.42],
+    range: [0.14, 0.20, 0.36, 0.41],
     target: { x: "-24vw", y: "-4vh", scale: 1.18 },
   },
   {
@@ -51,7 +51,7 @@ const FOUNDERS = [
       top: "-26%",
       width: "385%",
     },
-    range: [0.44, 0.51, 0.63, 0.70],
+    range: [0.44, 0.50, 0.66, 0.71],
     target: { x: "-22vw", y: "-4vh", scale: 1.25 },
   },
   {
@@ -73,7 +73,7 @@ const FOUNDERS = [
       top: "-4%",
       width: "250%",
     },
-    range: [0.72, 0.79, 0.90, 0.96],
+    range: [0.74, 0.80, 0.91, 0.96],
     target: { x: "24vw", y: "-4vh", scale: 1.18 },
   },
 ];
@@ -141,6 +141,13 @@ function StoryBioCard({ founder, progress }) {
 function DetachablePortrait({ founder, progress }) {
   const [inStart, inEnd, outStart, outEnd] = founder.range;
 
+  // پرتره جداشونده فقط و فقط در بازه زمانی اختصاصی همان فرد پدیدار می‌شود
+  const portraitOpacity = useTransform(
+    progress,
+    [inStart - 0.02, inStart, outStart, outEnd],
+    [0, 1, 1, 0]
+  );
+
   const flyX = useTransform(
     progress,
     [inStart, inEnd, outStart, outEnd],
@@ -183,8 +190,9 @@ function DetachablePortrait({ founder, progress }) {
         y: flyY,
         scale,
         zIndex,
+        opacity: portraitOpacity,
       }}
-      className="absolute overflow-hidden rounded-xl will-change-transform"
+      className="absolute overflow-hidden rounded-xl will-change-transform pointer-events-none"
     >
       <motion.div
         style={{
@@ -241,26 +249,47 @@ export default function OurStory() {
     mass: 0.4,
   });
 
-  // Background photo dimming effect
+  // Background photo dimming effect: dims down to 0.04 when any founder is detached to hide the others
   const basePhotoDim = useTransform(
     progress,
-    [0.12, 0.18, 0.38, 0.44, 0.50, 0.65, 0.70, 0.76, 0.92, 0.98],
-    [1, 0.25, 0.25, 1, 0.25, 0.25, 1, 0.25, 0.25, 1]
+    [
+      0, 0.12, 0.15,
+      0.35, 0.40,
+      0.43, 0.46,
+      0.65, 0.70,
+      0.73, 0.76,
+      0.90, 0.95,
+      1,
+    ],
+    [
+      1, 1, 0.04,
+      0.04, 1,
+      1, 0.04,
+      0.04, 1,
+      1, 0.04,
+      0.04, 1,
+      1,
+    ]
   );
 
   const basePhotoBlur = useTransform(
     progress,
-    [0.12, 0.18, 0.38, 0.44, 0.50, 0.65, 0.70, 0.76, 0.92, 0.98],
     [
-      "blur(0px)",
-      "blur(6px)",
-      "blur(6px)",
-      "blur(0px)",
-      "blur(6px)",
-      "blur(6px)",
-      "blur(0px)",
-      "blur(6px)",
-      "blur(6px)",
+      0, 0.12, 0.15,
+      0.35, 0.40,
+      0.43, 0.46,
+      0.65, 0.70,
+      0.73, 0.76,
+      0.90, 0.95,
+      1,
+    ],
+    [
+      "blur(0px)", "blur(0px)", "blur(14px)",
+      "blur(14px)", "blur(0px)",
+      "blur(0px)", "blur(14px)",
+      "blur(14px)", "blur(0px)",
+      "blur(0px)", "blur(14px)",
+      "blur(14px)", "blur(0px)",
       "blur(0px)",
     ]
   );
