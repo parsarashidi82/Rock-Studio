@@ -11,7 +11,6 @@ import teamImg from "@/assets/team.jpg";
 const FOUNDERS = [
   {
     id: "nima",
-    step: "01",
     name: "Nima",
     role: "Director & Creative Lead",
     tagline: "The Vision & Cinematic Soul",
@@ -35,7 +34,6 @@ const FOUNDERS = [
   },
   {
     id: "parsa",
-    step: "02",
     name: "Parsa",
     role: "Developer & Code Architect",
     tagline: "The Logic & Digital Engine",
@@ -58,7 +56,6 @@ const FOUNDERS = [
   },
   {
     id: "saman",
-    step: "03",
     name: "Saman",
     role: "Editor & Motion Artist",
     tagline: "The Rhythm & Kinetic Flow",
@@ -103,7 +100,7 @@ function StoryBioCard({ founder, progress }) {
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#67E8F9] shadow-[0_0_10px_#67E8F9]" />
             <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-[#67E8F9]">
-              {founder.step} // {founder.role.split("&")[0].trim()}
+              {founder.role.split("&")[0].trim()}
             </span>
           </div>
           <span className="font-mono text-[11px] text-white/40">ROK TRIO</span>
@@ -218,8 +215,8 @@ function DetachablePortrait({ founder, progress }) {
           style={{ opacity: shadowOpacity }}
           className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#050508] via-[#050508]/80 to-transparent p-3 pt-6 text-center"
         >
-          <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#67E8F9]">
-            {founder.step} // {founder.name}
+          <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#67E8F9]">
+            {founder.name}
           </span>
           <p className="font-mono text-[9px] uppercase tracking-wider text-white/70">
             {founder.role.split("&")[0].trim()}
@@ -289,13 +286,9 @@ export default function OurStory() {
         {/* Section Title */}
         <motion.div
           style={{ opacity: introOpacity, y: introY }}
-          className="pointer-events-none absolute top-12 md:top-16 text-center select-none"
+          className="pointer-events-none absolute top-14 md:top-20 text-center select-none"
         >
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1 font-mono text-[11px] uppercase tracking-[0.3em] text-[#67E8F9] backdrop-blur-md">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#67E8F9]" />
-            OUR STORY · THE FOUNDING TRIO
-          </div>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-white md:text-5xl">
+          <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
             Three Minds. One Vision.
           </h2>
           <p className="mt-2 font-mono text-xs uppercase tracking-widest text-white/50">
