@@ -6,231 +6,143 @@ import {
   useTransform,
 } from "framer-motion";
 import teamImg from "@/assets/team.jpg";
+import nimaImg from "@/assets/nima.jpg";
+import parsaImg from "@/assets/parsa.jpg";
+import samanImg from "@/assets/saman.jpg";
 
-// Founders configuration
 const FOUNDERS = [
   {
     id: "nima",
     name: "Nima",
     role: "Director & Creative Lead",
     tagline: "The Vision & Cinematic Soul",
+    image: nimaImg,
+    align: "left", // Portrait on the left, bio on the right
     quote:
       "Every project starts as an emotion. My obsession is uncovering that emotion, crafting its narrative heartbeat, and directing every visual nuance so audiences don't just watch — they feel it.",
     skills: ["Film Directing", "Visual Storytelling", "Cinematography", "Creative Direction"],
-    // Position on the 1024x576 source frame
-    bounds: {
-      left: "2%",
-      top: "8%",
-      width: "40%",
-      height: "88%",
-    },
-    imgOffset: {
-      left: "-5%",
-      top: "-9%",
-      width: "250%",
-    },
-    range: [0.14, 0.20, 0.36, 0.41],
-    target: { x: "-24vw", y: "-4vh", scale: 1.18 },
+    range: [0.15, 0.21, 0.38, 0.43],
   },
   {
     id: "parsa",
     name: "Parsa",
     role: "Developer & Code Architect",
     tagline: "The Logic & Digital Engine",
+    image: parsaImg,
+    align: "left", // Portrait on the left, bio on the right
     quote:
       "Code is the canvas where design impossibilities become fluid, living interactions. Clean engineering, reactive physics, and ultra-smooth performance turn digital spaces into unforgettable experiences.",
     skills: ["Creative Engineering", "Full-Stack Dev", "UI Physics & Motion", "Performance Architecture"],
-    bounds: {
-      left: "38%",
-      top: "20%",
-      width: "26%",
-      height: "76%",
-    },
-    imgOffset: {
-      left: "-146%",
-      top: "-26%",
-      width: "385%",
-    },
-    range: [0.44, 0.50, 0.66, 0.71],
-    target: { x: "-22vw", y: "-4vh", scale: 1.25 },
+    range: [0.42, 0.48, 0.65, 0.70],
   },
   {
     id: "saman",
     name: "Saman",
     role: "Editor & Motion Artist",
     tagline: "The Rhythm & Kinetic Flow",
+    image: samanImg,
+    align: "right", // Portrait on the right, bio on the left
     quote:
       "Motion without rhythm is just visual noise. In the edit suite, I shape the tempo, sculpt the soundscapes, and calibrate every cut to release pure kinetic energy.",
     skills: ["Video Editing", "Motion Graphics", "Sound Architecture", "Pacing & Tempo"],
-    bounds: {
-      left: "58%",
-      top: "4%",
-      width: "40%",
-      height: "94%",
-    },
-    imgOffset: {
-      left: "-145%",
-      top: "-4%",
-      width: "250%",
-    },
-    range: [0.74, 0.80, 0.91, 0.96],
-    target: { x: "24vw", y: "-4vh", scale: 1.18 },
+    range: [0.69, 0.75, 0.90, 0.95],
   },
 ];
 
-// Story Bio Card for each founder
-function StoryBioCard({ founder, progress }) {
-  const [inStart, inEnd, outStart, outEnd] = founder.range;
-  const opacity = useTransform(progress, [inStart, inEnd, outStart, outEnd], [0, 1, 1, 0]);
-  const y = useTransform(progress, [inStart, inEnd, outStart, outEnd], [35, 0, 0, -35]);
-  const scale = useTransform(progress, [inStart, inEnd, outStart, outEnd], [0.93, 1, 1, 0.95]);
-
-  return (
-    <motion.div
-      style={{ opacity, y, scale }}
-      className={`pointer-events-none absolute z-30 w-full max-w-md px-4 sm:px-0 ${
-        founder.id === "saman"
-          ? "left-6 lg:left-14 top-1/2 -translate-y-1/2 text-left"
-          : "right-6 lg:right-14 top-1/2 -translate-y-1/2 text-left"
-      }`}
-    >
-      <div className="relative overflow-hidden rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_40px_rgba(103,232,249,0.18)] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#67E8F9]/80 before:to-transparent">
-        {/* HUD Indicator */}
-        <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#67E8F9] shadow-[0_0_10px_#67E8F9]" />
-            <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-[#67E8F9]">
-              {founder.role.split("&")[0].trim()}
-            </span>
-          </div>
-          <span className="font-mono text-[11px] text-white/40">ROK TRIO</span>
-        </div>
-
-        {/* Name and Role */}
-        <div className="mt-4">
-          <h3 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-            {founder.name}
-          </h3>
-          <p className="mt-1 font-mono text-xs uppercase tracking-wider text-[#67E8F9]">
-            {founder.role}
-          </p>
-        </div>
-
-        {/* Founder Story Quote */}
-        <blockquote className="mt-5 border-l-2 border-[#67E8F9]/50 pl-4 text-xs sm:text-sm leading-relaxed text-white/80 italic">
-          &ldquo;{founder.quote}&rdquo;
-        </blockquote>
-
-        {/* Skills Tag Cloud */}
-        <div className="mt-6 flex flex-wrap gap-2 pt-2">
-          {founder.skills.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white/70 backdrop-blur-sm"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Detachable Portrait component
-function DetachablePortrait({ founder, progress }) {
+// کامپوننت نمایش تکی هر فرد (فقط خود فرد با داستانش؛ بقیه کاملاً هاید هستند)
+function FounderStage({ founder, progress }) {
   const [inStart, inEnd, outStart, outEnd] = founder.range;
 
-  // پرتره جداشونده فقط و فقط در بازه زمانی اختصاصی همان فرد پدیدار می‌شود
-  const portraitOpacity = useTransform(
+  const opacity = useTransform(
     progress,
-    [inStart - 0.02, inStart, outStart, outEnd],
+    [inStart, inEnd, outStart, outEnd],
     [0, 1, 1, 0]
   );
-
-  const flyX = useTransform(
+  const y = useTransform(
     progress,
     [inStart, inEnd, outStart, outEnd],
-    ["0vw", founder.target.x, founder.target.x, "0vw"]
-  );
-  const flyY = useTransform(
-    progress,
-    [inStart, inEnd, outStart, outEnd],
-    ["0vh", founder.target.y, founder.target.y, "0vh"]
+    [40, 0, 0, -40]
   );
   const scale = useTransform(
     progress,
     [inStart, inEnd, outStart, outEnd],
-    [1, founder.target.scale, founder.target.scale, 1]
+    [0.94, 1, 1, 0.95]
   );
-  const zIndex = useTransform(
-    progress,
-    [inStart, inEnd, outStart, outEnd],
-    [10, 40, 40, 10]
-  );
-  const shadowOpacity = useTransform(
-    progress,
-    [inStart, inEnd, outStart, outEnd],
-    [0, 1, 1, 0]
-  );
-  const borderWidth = useTransform(
-    progress,
-    [inStart, inEnd, outStart, outEnd],
-    [0, 2, 2, 0]
-  );
+
+  const isRightAlign = founder.align === "right";
 
   return (
     <motion.div
-      style={{
-        left: founder.bounds.left,
-        top: founder.bounds.top,
-        width: founder.bounds.width,
-        height: founder.bounds.height,
-        x: flyX,
-        y: flyY,
-        scale,
-        zIndex,
-        opacity: portraitOpacity,
-      }}
-      className="absolute overflow-hidden rounded-xl will-change-transform pointer-events-none"
+      style={{ opacity, y, scale }}
+      className="pointer-events-none absolute inset-0 flex items-center justify-center px-4 md:px-8 z-20"
     >
-      <motion.div
-        style={{
-          boxShadow: useTransform(
-            shadowOpacity,
-            (v) => `0 25px 60px rgba(0,0,0,0.9), 0 0 40px rgba(103,232,249,${v * 0.6})`
-          ),
-          borderWidth,
-          borderColor: "rgba(103,232,249,0.8)",
-        }}
-        className="relative h-full w-full overflow-hidden rounded-xl bg-[#080812]"
+      <div
+        className={`pointer-events-auto flex w-full max-w-5xl flex-col items-center gap-8 md:gap-14 ${
+          isRightAlign ? "md:flex-row-reverse" : "md:flex-row"
+        }`}
       >
-        <img
-          src={teamImg}
-          alt={founder.name}
-          style={{
-            position: "absolute",
-            left: founder.imgOffset.left,
-            top: founder.imgOffset.top,
-            width: founder.imgOffset.width,
-            maxWidth: "none",
-          }}
-          className="pointer-events-none select-none transition-all duration-300"
-        />
+        {/* پرتره اختصاصی و تمیز شخص با هاله نئونی */}
+        <div className="relative w-full max-w-[280px] sm:max-w-[340px] md:max-w-[380px] shrink-0">
+          <div className="relative aspect-[3/4] w-full overflow-hidden rounded-2xl md:rounded-3xl border border-[#67E8F9]/40 bg-[#080812] p-1.5 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_50px_rgba(103,232,249,0.25)]">
+            <img
+              src={founder.image}
+              alt={founder.name}
+              className="h-full w-full rounded-xl md:rounded-2xl object-cover select-none"
+            />
+            {/* برچسب نام روی پرتره */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#050508] via-[#050508]/80 to-transparent p-4 pt-8 text-center">
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-[#67E8F9]">
+                {founder.name}
+              </span>
+              <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-white/70">
+                {founder.role}
+              </p>
+            </div>
+            {/* گوشه‌های HUD */}
+            <div className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-[#67E8F9]" />
+            <div className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-[#67E8F9]" />
+            <div className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-[#67E8F9]" />
+            <div className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-[#67E8F9]" />
+          </div>
+        </div>
 
-        {/* Hover / Active Badge */}
-        <motion.div
-          style={{ opacity: shadowOpacity }}
-          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#050508] via-[#050508]/80 to-transparent p-3 pt-6 text-center"
-        >
-          <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-[#67E8F9]">
-            {founder.name}
-          </span>
-          <p className="font-mono text-[9px] uppercase tracking-wider text-white/70">
-            {founder.role.split("&")[0].trim()}
-          </p>
-        </motion.div>
-      </motion.div>
+        {/* کارت بیوگرافی و داستان فرد */}
+        <div className="relative w-full flex-1 overflow-hidden rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.15)] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#67E8F9]/80 before:to-transparent">
+          <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 rounded-full bg-[#67E8F9] shadow-[0_0_10px_#67E8F9]" />
+              <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-[#67E8F9]">
+                {founder.role.split("&")[0].trim()}
+              </span>
+            </div>
+            <span className="font-mono text-[11px] text-white/40">ROK STUDIO</span>
+          </div>
+
+          <div className="mt-4">
+            <h3 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
+              {founder.name}
+            </h3>
+            <p className="mt-1 font-mono text-xs uppercase tracking-wider text-[#67E8F9]">
+              {founder.role}
+            </p>
+          </div>
+
+          <blockquote className="mt-5 border-l-2 border-[#67E8F9]/50 pl-4 text-xs sm:text-sm leading-relaxed text-white/80 italic">
+            &ldquo;{founder.quote}&rdquo;
+          </blockquote>
+
+          <div className="mt-6 flex flex-wrap gap-2 pt-2">
+            {founder.skills.map((skill) => (
+              <span
+                key={skill}
+                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white/70 backdrop-blur-sm"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }
@@ -249,58 +161,25 @@ export default function OurStory() {
     mass: 0.4,
   });
 
-  // Background photo dimming effect: dims down to 0.04 when any founder is detached to hide the others
-  const basePhotoDim = useTransform(
-    progress,
-    [
-      0, 0.12, 0.15,
-      0.35, 0.40,
-      0.43, 0.46,
-      0.65, 0.70,
-      0.73, 0.76,
-      0.90, 0.95,
-      1,
-    ],
-    [
-      1, 1, 0.04,
-      0.04, 1,
-      1, 0.04,
-      0.04, 1,
-      1, 0.04,
-      0.04, 1,
-      1,
-    ]
-  );
-
-  const basePhotoBlur = useTransform(
-    progress,
-    [
-      0, 0.12, 0.15,
-      0.35, 0.40,
-      0.43, 0.46,
-      0.65, 0.70,
-      0.73, 0.76,
-      0.90, 0.95,
-      1,
-    ],
-    [
-      "blur(0px)", "blur(0px)", "blur(14px)",
-      "blur(14px)", "blur(0px)",
-      "blur(0px)", "blur(14px)",
-      "blur(14px)", "blur(0px)",
-      "blur(0px)", "blur(14px)",
-      "blur(14px)", "blur(0px)",
-      "blur(0px)",
-    ]
-  );
-
-  // Intro header animation
+  // مرحله ۰: معرفی اولیه عکس گروهی
   const introOpacity = useTransform(progress, [0, 0.08, 0.14], [1, 1, 0]);
-  const introY = useTransform(progress, [0, 0.14], [0, -25]);
+  const introY = useTransform(progress, [0, 0.14], [0, -30]);
 
-  // Unified team conclusion at the end
-  const conclusionOpacity = useTransform(progress, [0.93, 0.97, 1], [0, 1, 1]);
-  const conclusionScale = useTransform(progress, [0.93, 0.98], [0.94, 1]);
+  // تصویر تیمی اولیه فقط در ابتدا ظاهر می‌شود و حین روایت افراد محو می‌شود
+  const teamPhotoOpacity = useTransform(
+    progress,
+    [0, 0.08, 0.13],
+    [1, 1, 0]
+  );
+  const teamPhotoScale = useTransform(
+    progress,
+    [0, 0.13],
+    [1, 0.95]
+  );
+
+  // مرحله پایانی: اتحاد دوباره کل تیم در انتهای اسکرول
+  const finaleOpacity = useTransform(progress, [0.93, 0.97, 1], [0, 1, 1]);
+  const finaleY = useTransform(progress, [0.93, 0.98], [40, 0]);
 
   return (
     <section
@@ -309,13 +188,13 @@ export default function OurStory() {
       className="relative z-20 h-[460vh] bg-transparent"
     >
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-4 md:px-8">
-        {/* Ambient Radial Glow */}
+        {/* هاله نور پس‌زمینه */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.08),transparent_60%)]" />
 
-        {/* Section Title */}
+        {/* تیتر بالای بخش در آغاز اسکرول */}
         <motion.div
           style={{ opacity: introOpacity, y: introY }}
-          className="pointer-events-none absolute top-14 md:top-20 text-center select-none"
+          className="pointer-events-none absolute top-14 md:top-20 text-center select-none z-10"
         >
           <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
             Three Minds. One Vision.
@@ -325,64 +204,60 @@ export default function OurStory() {
           </p>
         </motion.div>
 
-        {/* Main 16:9 Team Photo Frame */}
-        <div className="relative w-full max-w-4xl aspect-[16/9] rounded-2xl md:rounded-3xl p-1.5 md:p-2.5 border border-white/15 bg-[#050508]/80 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.95)]">
+        {/* عکس تیمی اولیه در آغاز اسکرول (با ورود به داستان محو می‌شود) */}
+        <motion.div
+          style={{ opacity: teamPhotoOpacity, scale: teamPhotoScale }}
+          className="pointer-events-none relative w-full max-w-4xl aspect-[16/9] rounded-2xl md:rounded-3xl p-1.5 md:p-2.5 border border-white/15 bg-[#050508]/80 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.95)] z-10"
+        >
           <div className="relative h-full w-full overflow-hidden rounded-xl md:rounded-2xl bg-[#080812]">
-            {/* Background Group Photo */}
-            <motion.img
+            <img
               src={teamImg}
-              alt="Rok Studio Founders - Nima, Parsa, Saman"
-              style={{
-                opacity: basePhotoDim,
-                filter: basePhotoBlur,
-              }}
-              className="h-full w-full object-cover transition-all duration-300 select-none"
+              alt="Rok Studio Founders"
+              className="h-full w-full object-cover select-none"
             />
-
-            {/* Cyber vignette */}
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(5,5,8,0.7)_100%)]" />
-
-            {/* Technical HUD corner brackets */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(5,5,8,0.6)_100%)]" />
             <div className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-[#67E8F9]/60" />
             <div className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-[#67E8F9]/60" />
             <div className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-[#67E8F9]/60" />
             <div className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-[#67E8F9]/60" />
-
-            {/* Three Detachable Founder Portraits */}
-            {FOUNDERS.map((founder) => (
-              <DetachablePortrait
-                key={founder.id}
-                founder={founder}
-                progress={progress}
-              />
-            ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Story Bio Cards that appear during scrolling */}
+        {/* بخش روایت مستقل هر فرد: فقط شخص فعال با عکس اختصاصی ظاهر می‌شود؛ بقیه کاملاً هاید هستند */}
         {FOUNDERS.map((founder) => (
-          <StoryBioCard
+          <FounderStage
             key={founder.id}
             founder={founder}
             progress={progress}
           />
         ))}
 
-        {/* Unified Studio Conclusion */}
+        {/* مرحله نهایی اتحاد ۳ نفره در انتهای اسکرول */}
         <motion.div
-          style={{ opacity: conclusionOpacity, scale: conclusionScale }}
-          className="pointer-events-none absolute bottom-8 md:bottom-12 max-w-2xl px-6 text-center select-none"
+          style={{ opacity: finaleOpacity, y: finaleY }}
+          className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-4 md:px-8 z-30 select-none"
         >
-          <div className="rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.2)]">
-            <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
-              THE COMPLETE CREATIVE ECOSYSTEM
-            </span>
-            <h3 className="mt-2 text-xl font-bold tracking-tight text-white md:text-3xl">
-              Director + Developer + Editor
-            </h3>
-            <p className="mt-3 text-xs md:text-sm leading-relaxed text-white/80">
-              A Director to sculpt the story. A Developer to engineer the world. An Editor to calibrate the rhythm. Together, we build immersive digital experiences that refuse to be ignored.
-            </p>
+          <div className="pointer-events-auto relative flex w-full max-w-4xl flex-col items-center gap-6 rounded-2xl md:rounded-3xl border border-[#67E8F9]/40 bg-[#050508]/95 p-6 md:p-10 backdrop-blur-2xl shadow-[0_25px_80px_rgba(0,0,0,0.95),0_0_50px_rgba(103,232,249,0.2)]">
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl md:rounded-2xl border border-white/10 bg-[#080812]">
+              <img
+                src={teamImg}
+                alt="Rok Studio - Complete Team"
+                className="h-full w-full object-cover select-none"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(5,5,8,0.5)_100%)]" />
+            </div>
+
+            <div className="text-center max-w-2xl">
+              <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
+                THE COMPLETE CREATIVE ECOSYSTEM
+              </span>
+              <h3 className="mt-2 text-2xl font-bold tracking-tight text-white md:text-4xl">
+                Director + Developer + Editor
+              </h3>
+              <p className="mt-3 text-xs md:text-sm leading-relaxed text-white/80">
+                A Director to sculpt the story. A Developer to engineer the world. An Editor to calibrate the rhythm. Together, we build immersive digital experiences that refuse to be ignored.
+              </p>
+            </div>
           </div>
         </motion.div>
       </div>
