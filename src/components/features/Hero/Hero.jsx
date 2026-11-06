@@ -149,10 +149,9 @@ export default function Hero() {
           {/* راهنمای اسکرول */}
           <motion.div
             style={{ opacity: hintOpacity }}
-            className="pointer-events-none absolute bottom-10 md:bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full border border-white/10 bg-[#050508]/70 px-4 py-1.5 backdrop-blur-md font-mono text-[11px] uppercase tracking-[0.25em] text-white/60 shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
+            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[16px] uppercase tracking-[0.3em] text-white/40"
           >
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#67E8F9]" />
-            <span>Scroll to explore</span>
+            Scroll
           </motion.div>
         </motion.div>
       </div>
