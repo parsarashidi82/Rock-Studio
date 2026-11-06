@@ -7,49 +7,41 @@ import {
 } from "framer-motion";
 import teamImg from "@/assets/team.jpg";
 
-// اطلاعات سه هم‌بنیان‌گذار استودیو
+// Founders configuration
 const FOUNDERS = [
   {
     id: "nima",
     step: "01",
     name: "Nima",
-    persianName: "نیما",
     role: "Director & Creative Lead",
-    persianRole: "کارگردان و مدیر خلاقیت",
     tagline: "The Vision & Cinematic Soul",
     quote:
-      "هر اثر قبل از هر چیز یک احساس است. وظیفه من کشف آن حس، خلق روایتی زنده و کارگردانی تمام جزئیات بصری است تا مخاطب فقط پروژه را نبیند، بلکه آن را زندگی کند.",
-    skills: ["Directing", "Visual Storytelling", "Cinematography", "Creative Vision"],
-    // موقعیت در تصویر مرجع ۱۰۲۴ در ۵۷۶
+      "Every project starts as an emotion. My obsession is uncovering that emotion, crafting its narrative heartbeat, and directing every visual nuance so audiences don't just watch — they feel it.",
+    skills: ["Film Directing", "Visual Storytelling", "Cinematography", "Creative Direction"],
+    // Position on the 1024x576 source frame
     bounds: {
       left: "2%",
       top: "8%",
       width: "40%",
       height: "88%",
     },
-    // مختصات قرارگیری عکس پس‌زمینه درون برش (Crop alignment)
     imgOffset: {
       left: "-5%",
       top: "-9%",
       width: "250%",
     },
-    // بازه زمانی اسکرول (شروع جدایی، ثبات، شروع بازگشت، پایان بازگشت)
     range: [0.15, 0.23, 0.35, 0.42],
-    // جهت خروج به گوشه صفحه
     target: { x: "-24vw", y: "-4vh", scale: 1.18 },
-    mobileTarget: { x: "0vw", y: "-18vh", scale: 0.95 },
   },
   {
     id: "parsa",
     step: "02",
     name: "Parsa",
-    persianName: "پارسا",
     role: "Developer & Code Architect",
-    persianRole: "برنامه‌نویس و معمار کد",
     tagline: "The Logic & Digital Engine",
     quote:
-      "کد همان بومی است که در آن غیرممکن‌های طراحی به تعاملات زنده، روان و بی‌نقص تبدیل می‌شوند. مهندسی تمیز و فیزیک واکنشی، قلب تپنده تجربه‌های دیجیتال ماست.",
-    skills: ["Creative Engineering", "Full-Stack Dev", "UI Physics & Motion", "WebGL & Performance"],
+      "Code is the canvas where design impossibilities become fluid, living interactions. Clean engineering, reactive physics, and ultra-smooth performance turn digital spaces into unforgettable experiences.",
+    skills: ["Creative Engineering", "Full-Stack Dev", "UI Physics & Motion", "Performance Architecture"],
     bounds: {
       left: "38%",
       top: "20%",
@@ -63,18 +55,15 @@ const FOUNDERS = [
     },
     range: [0.44, 0.51, 0.63, 0.70],
     target: { x: "-22vw", y: "-4vh", scale: 1.25 },
-    mobileTarget: { x: "0vw", y: "-18vh", scale: 0.95 },
   },
   {
     id: "saman",
     step: "03",
     name: "Saman",
-    persianName: "سامان",
     role: "Editor & Motion Artist",
-    persianRole: "ادیتور و تدوین‌گر خلاق",
     tagline: "The Rhythm & Kinetic Flow",
     quote:
-      "تصویر بدون ریتم، فقط یک برش ساده است. در میز تدوین، ضرب‌آهنگ، صداگذاری دقیق و تایمینگ بی‌رحمانه فریم‌ها را کنار هم می‌نشانم تا انرژی محض در ذهن مخاطب منفجر شود.",
+      "Motion without rhythm is just visual noise. In the edit suite, I shape the tempo, sculpt the soundscapes, and calibrate every cut to release pure kinetic energy.",
     skills: ["Video Editing", "Motion Graphics", "Sound Architecture", "Pacing & Tempo"],
     bounds: {
       left: "58%",
@@ -89,11 +78,10 @@ const FOUNDERS = [
     },
     range: [0.72, 0.79, 0.90, 0.96],
     target: { x: "24vw", y: "-4vh", scale: 1.18 },
-    mobileTarget: { x: "0vw", y: "-18vh", scale: 0.95 },
   },
 ];
 
-// کارت اطلاعات و داستان هر شخص
+// Story Bio Card for each founder
 function StoryBioCard({ founder, progress }) {
   const [inStart, inEnd, outStart, outEnd] = founder.range;
   const opacity = useTransform(progress, [inStart, inEnd, outStart, outEnd], [0, 1, 1, 0]);
@@ -110,7 +98,7 @@ function StoryBioCard({ founder, progress }) {
       }`}
     >
       <div className="relative overflow-hidden rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_40px_rgba(103,232,249,0.18)] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#67E8F9]/80 before:to-transparent">
-        {/* نشانگر ردیف و تگ سایبری */}
+        {/* HUD Indicator */}
         <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#67E8F9] shadow-[0_0_10px_#67E8F9]" />
@@ -121,27 +109,22 @@ function StoryBioCard({ founder, progress }) {
           <span className="font-mono text-[11px] text-white/40">ROK TRIO</span>
         </div>
 
-        {/* نام و عنوان */}
+        {/* Name and Role */}
         <div className="mt-4">
-          <div className="flex items-baseline gap-3">
-            <h3 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
-              {founder.name}
-            </h3>
-            <span className="text-lg font-semibold text-[#67E8F9]/80">
-              ({founder.persianName})
-            </span>
-          </div>
-          <p className="mt-1 font-mono text-xs uppercase tracking-wider text-white/70">
-            {founder.role} · <span className="text-[#67E8F9]">{founder.persianRole}</span>
+          <h3 className="text-3xl font-bold tracking-tight text-white md:text-4xl">
+            {founder.name}
+          </h3>
+          <p className="mt-1 font-mono text-xs uppercase tracking-wider text-[#67E8F9]">
+            {founder.role}
           </p>
         </div>
 
-        {/* متن داستان و فلسفه کار */}
-        <blockquote className="mt-5 border-l-2 border-[#67E8F9]/50 pl-4 text-xs sm:text-sm leading-relaxed text-white/80" dir="rtl">
+        {/* Founder Story Quote */}
+        <blockquote className="mt-5 border-l-2 border-[#67E8F9]/50 pl-4 text-xs sm:text-sm leading-relaxed text-white/80 italic">
           &ldquo;{founder.quote}&rdquo;
         </blockquote>
 
-        {/* برچسب‌های مهارت‌ها */}
+        {/* Skills Tag Cloud */}
         <div className="mt-6 flex flex-wrap gap-2 pt-2">
           {founder.skills.map((skill) => (
             <span
@@ -157,11 +140,10 @@ function StoryBioCard({ founder, progress }) {
   );
 }
 
-// لایه جداشونده پرتره هر شخص
+// Detachable Portrait component
 function DetachablePortrait({ founder, progress }) {
   const [inStart, inEnd, outStart, outEnd] = founder.range;
 
-  // محاسبه حرکت به سمت گوشه با پیشرفت اسکرول
   const flyX = useTransform(
     progress,
     [inStart, inEnd, outStart, outEnd],
@@ -205,9 +187,8 @@ function DetachablePortrait({ founder, progress }) {
         scale,
         zIndex,
       }}
-      className="absolute overflow-hidden rounded-xl cursor-pointer will-change-transform"
+      className="absolute overflow-hidden rounded-xl will-change-transform"
     >
-      {/* فریم پرتره با استایل نوری */}
       <motion.div
         style={{
           boxShadow: useTransform(
@@ -219,7 +200,6 @@ function DetachablePortrait({ founder, progress }) {
         }}
         className="relative h-full w-full overflow-hidden rounded-xl bg-[#080812]"
       >
-        {/* تصویر دقیق همپوشان که همگام با عکس زیرین است */}
         <img
           src={teamImg}
           alt={founder.name}
@@ -233,16 +213,16 @@ function DetachablePortrait({ founder, progress }) {
           className="pointer-events-none select-none transition-all duration-300"
         />
 
-        {/* لایه برچسب نام در حالت شناور */}
+        {/* Hover / Active Badge */}
         <motion.div
           style={{ opacity: shadowOpacity }}
-          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#050508] via-[#050508]/70 to-transparent p-3 pt-6 text-center"
+          className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#050508] via-[#050508]/80 to-transparent p-3 pt-6 text-center"
         >
           <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#67E8F9]">
             {founder.step} // {founder.name}
           </span>
           <p className="font-mono text-[9px] uppercase tracking-wider text-white/70">
-            {founder.persianRole}
+            {founder.role.split("&")[0].trim()}
           </p>
         </motion.div>
       </motion.div>
@@ -264,7 +244,7 @@ export default function OurStory() {
     mass: 0.4,
   });
 
-  // افکت‌های محو شدن تصویر اصلی حین نمایش تکی هر فرد
+  // Background photo dimming effect
   const basePhotoDim = useTransform(
     progress,
     [0.12, 0.18, 0.38, 0.44, 0.50, 0.65, 0.70, 0.76, 0.92, 0.98],
@@ -288,11 +268,11 @@ export default function OurStory() {
     ]
   );
 
-  // تیتر مقدمه (در آغاز اسکرول)
+  // Intro header animation
   const introOpacity = useTransform(progress, [0, 0.08, 0.14], [1, 1, 0]);
   const introY = useTransform(progress, [0, 0.14], [0, -25]);
 
-  // پیام پایانی اتحاد تیم (در انتهای اسکرول)
+  // Unified team conclusion at the end
   const conclusionOpacity = useTransform(progress, [0.93, 0.97, 1], [0, 1, 1]);
   const conclusionScale = useTransform(progress, [0.93, 0.98], [0.94, 1]);
 
@@ -303,10 +283,10 @@ export default function OurStory() {
       className="relative z-20 h-[460vh] bg-transparent"
     >
       <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-4 md:px-8">
-        {/* هاله نور پس‌زمینه */}
+        {/* Ambient Radial Glow */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.08),transparent_60%)]" />
 
-        {/* تیتر بالای بخش: معرفی داستان استودیو */}
+        {/* Section Title */}
         <motion.div
           style={{ opacity: introOpacity, y: introY }}
           className="pointer-events-none absolute top-12 md:top-16 text-center select-none"
@@ -319,15 +299,14 @@ export default function OurStory() {
             Three Minds. One Vision.
           </h2>
           <p className="mt-2 font-mono text-xs uppercase tracking-widest text-white/50">
-            Scroll to reveal each founder&apos;s story
+            Scroll to explore each founder&apos;s story
           </p>
         </motion.div>
 
-        {/* فریم اصلی عکس تیم با نسبت ابعاد ۱۶ به ۹ */}
+        {/* Main 16:9 Team Photo Frame */}
         <div className="relative w-full max-w-4xl aspect-[16/9] rounded-2xl md:rounded-3xl p-1.5 md:p-2.5 border border-white/15 bg-[#050508]/80 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.95)]">
-          {/* محفظه داخلی تصویر */}
           <div className="relative h-full w-full overflow-hidden rounded-xl md:rounded-2xl bg-[#080812]">
-            {/* تصویر زمینه گروهی */}
+            {/* Background Group Photo */}
             <motion.img
               src={teamImg}
               alt="Rok Studio Founders - Nima, Parsa, Saman"
@@ -338,16 +317,16 @@ export default function OurStory() {
               className="h-full w-full object-cover transition-all duration-300 select-none"
             />
 
-            {/* گرید سایبری روی تصویر */}
+            {/* Cyber vignette */}
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(5,5,8,0.7)_100%)]" />
 
-            {/* نشانگر گوشه‌های فنی HUD */}
+            {/* Technical HUD corner brackets */}
             <div className="pointer-events-none absolute left-3 top-3 h-3 w-3 border-l border-t border-[#67E8F9]/60" />
             <div className="pointer-events-none absolute right-3 top-3 h-3 w-3 border-r border-t border-[#67E8F9]/60" />
             <div className="pointer-events-none absolute bottom-3 left-3 h-3 w-3 border-b border-l border-[#67E8F9]/60" />
             <div className="pointer-events-none absolute bottom-3 right-3 h-3 w-3 border-b border-r border-[#67E8F9]/60" />
 
-            {/* سه لایه پرتره جداشونده برای هر شخص */}
+            {/* Three Detachable Founder Portraits */}
             {FOUNDERS.map((founder) => (
               <DetachablePortrait
                 key={founder.id}
@@ -358,7 +337,7 @@ export default function OurStory() {
           </div>
         </div>
 
-        {/* کارت‌های داستانی هر شخص که به تناسب اسکرول ظاهر می‌شوند */}
+        {/* Story Bio Cards that appear during scrolling */}
         {FOUNDERS.map((founder) => (
           <StoryBioCard
             key={founder.id}
@@ -367,20 +346,20 @@ export default function OurStory() {
           />
         ))}
 
-        {/* بیانیه پایانی اتحاد ۳ نفره در انتهای اسکرول */}
+        {/* Unified Studio Conclusion */}
         <motion.div
           style={{ opacity: conclusionOpacity, scale: conclusionScale }}
           className="pointer-events-none absolute bottom-8 md:bottom-12 max-w-2xl px-6 text-center select-none"
         >
           <div className="rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.2)]">
             <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
-              THE COMPLETE ECOSYSTEM
+              THE COMPLETE CREATIVE ECOSYSTEM
             </span>
             <h3 className="mt-2 text-xl font-bold tracking-tight text-white md:text-3xl">
               Director + Developer + Editor
             </h3>
-            <p className="mt-3 text-xs md:text-sm leading-relaxed text-white/80" dir="rtl">
-              یک کارگردان برای خلق روح و تصویر داستان، یک برنامه‌نویس برای مهندسی و جان‌بخشی به جهان دیجیتال، و یک ادیتور برای خلق ریتم و هیجان فریم‌ها. این ترکیب، راک استودیو است.
+            <p className="mt-3 text-xs md:text-sm leading-relaxed text-white/80">
+              A Director to sculpt the story. A Developer to engineer the world. An Editor to calibrate the rhythm. Together, we build immersive digital experiences that refuse to be ignored.
             </p>
           </div>
         </motion.div>
