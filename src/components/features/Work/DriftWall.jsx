@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion, useTransform, useMotionValue } from "framer-motion";
 
 const DEFAULT_ITEMS = Array.from({ length: 15 }, (_, i) => {
   const ids = [
@@ -123,9 +124,32 @@ function TileVideo({ src, poster, hoverClip, isActive, className }) {
   );
 }
 
+function DriftColumn({ c, scrollYProgress, children, className }) {
+  // Even columns (0, 2, 4) drift UP -> enter from bottom (+950px)
+  // Odd columns (1, 3) drift DOWN -> enter from top (-950px)
+  const startY = c % 2 === 0 ? 950 : -950;
+  const dummyValue = useMotionValue(0.5);
+  const targetProgress = scrollYProgress || dummyValue;
+  const y = useTransform(
+    targetProgress,
+    [0, 0.22, 0.82, 1],
+    [startY, 0, 0, 0]
+  );
+
+  return (
+    <motion.div
+      className={className}
+      style={scrollYProgress ? { y } : undefined}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 const DriftWall = ({
   items = DEFAULT_ITEMS,
   columns = 5,
+  scrollYProgress,
   tileWidth = 200,
   tileHeight = 132,
   gap = 18,
@@ -590,9 +614,11 @@ const DriftWall = ({
           const meta = columnMeta[c];
           const copies = Array.from({ length: meta.copies });
           return (
-            <div
-              className="relative w-[calc(var(--dw-tile-w)+var(--dw-gap))] [transform-style:preserve-3d]"
+            <DriftColumn
               key={`col-${c}`}
+              c={c}
+              scrollYProgress={scrollYProgress}
+              className="relative w-[calc(var(--dw-tile-w)+var(--dw-gap))] [transform-style:preserve-3d]"
             >
               <div
                 className="flex flex-col [transform-style:preserve-3d] will-change-transform"
@@ -604,7 +630,7 @@ const DriftWall = ({
                   ),
                 )}
               </div>
-            </div>
+            </DriftColumn>
           );
         })}
       </div>
