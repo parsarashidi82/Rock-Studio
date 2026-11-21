@@ -472,7 +472,7 @@ export default function Contact() {
         #contact {
           position: relative;
           height: 260vh;
-          background: #050508;
+          background: transparent;
           color: #fff;
           font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
         }
