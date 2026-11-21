@@ -135,7 +135,8 @@ export default function Navbar() {
       if (el) {
         const top = getElementGlobalTop(el);
         const scrollDistance = el.offsetHeight - window.innerHeight;
-        const target = top + Math.max(0, scrollDistance) * 0.35;
+        // اسکرول دقیق به نقطه‌ای که فرم، کیبورد ۳بعدی تعاملی، شبکه‌های اجتماعی و هاله نوری ۱۰۰٪ لود و مستقر شده‌اند
+        const target = top + Math.max(0, scrollDistance) * 0.66;
         window.scrollTo({ top: target, behavior: "smooth" });
       }
       return;
