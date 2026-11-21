@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 import { projects } from "@/data/projects";
@@ -20,6 +20,16 @@ export default function Work() {
   const containerRef = useRef(null);
   const [active, setActive] = useState(null);
   const [last, setLast] = useState(null); // برای fade-out بدون پریدن متن
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 768,
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -100,21 +110,21 @@ export default function Work() {
         >
           <DriftWall
             items={items}
-            columns={5}
-            tileWidth={200}
-            tileHeight={132}
-            gap={18}
-            tilt={16}
-            turn={-14}
-            perspective={1200}
-            depth={120}
-            speed={42}
+            columns={isMobile ? 3 : 5}
+            tileWidth={isMobile ? 130 : 200}
+            tileHeight={isMobile ? 86 : 132}
+            gap={isMobile ? 10 : 18}
+            tilt={isMobile ? 10 : 16}
+            turn={isMobile ? -8 : -14}
+            perspective={isMobile ? 900 : 1200}
+            depth={isMobile ? 60 : 120}
+            speed={isMobile ? 30 : 42}
             variance={0.45}
-            parallax={0.6}
-            lift={64}
+            parallax={isMobile ? 0.35 : 0.6}
+            lift={isMobile ? 32 : 64}
             fade={0}
             dim={1}
-            radius={14}
+            radius={isMobile ? 10 : 14}
             overlayColor="#050508"
             newTab={true}
             onActiveChange={handleActive}
@@ -124,12 +134,12 @@ export default function Work() {
           {/* عنوان سکشن */}
           <motion.div
             style={{ opacity: headerOpacity, y: headerY }}
-            className="pointer-events-none absolute left-6 top-24 z-20 md:left-10"
+            className="pointer-events-none absolute left-5 top-20 z-20 md:left-10 md:top-24"
           >
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#67E8F9]">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#67E8F9] md:text-[11px] md:tracking-[0.3em]">
               Selected Work
             </p>
-            <h2 className="mt-3 text-4xl font-semibold tracking-tight text-white md:text-6xl">
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl md:text-6xl">
               Things we&apos;ve made.
             </h2>
           </motion.div>
@@ -137,17 +147,17 @@ export default function Work() {
           {/* اسم پروژه‌ی زیر موس */}
           <motion.div
             style={{ opacity: bottomScrollOpacity }}
-            className="pointer-events-none absolute inset-x-0 bottom-12 z-20 text-center"
+            className="pointer-events-none absolute inset-x-0 bottom-8 z-20 text-center md:bottom-12"
           >
             <div
               className={`transition-all duration-500 ${
                 active ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
               }`}
             >
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#67E8F9]">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#67E8F9] md:text-[11px] md:tracking-[0.3em]">
                 {last?.category}
               </p>
-              <p className="mt-2 text-3xl font-semibold tracking-tight text-white md:text-5xl">
+              <p className="mt-1 text-2xl font-semibold tracking-tight text-white sm:text-3xl md:text-5xl">
                 {last?.title}
               </p>
             </div>

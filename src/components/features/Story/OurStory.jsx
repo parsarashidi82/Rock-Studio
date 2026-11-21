@@ -143,35 +143,35 @@ function FounderStoryCard({ founder, progress }) {
       style={{ opacity, y }}
       className="pointer-events-none absolute inset-0 flex flex-col justify-center"
     >
-      <div className="relative overflow-hidden rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.15)] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#67E8F9]/80 before:to-transparent">
-        <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-4">
+      <div className="relative overflow-hidden rounded-2xl border border-[#67E8F9]/30 bg-[#050508]/90 p-4 sm:p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.15)] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-[#67E8F9]/80 before:to-transparent">
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-3 sm:pb-4">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#67E8F9] shadow-[0_0_10px_#67E8F9]" />
-            <span className="font-mono text-xs font-semibold uppercase tracking-[0.25em] text-[#67E8F9]">
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-[#67E8F9] sm:text-xs sm:tracking-[0.25em]">
               {founder.role.split("&")[0].trim()}
             </span>
           </div>
-          <span className="font-mono text-[11px] text-white/40">ROK STUDIO</span>
+          <span className="font-mono text-[10px] text-white/40 sm:text-[11px]">ROK STUDIO</span>
         </div>
 
-        <div className="mt-4">
-          <h3 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
+        <div className="mt-3 sm:mt-4">
+          <h3 className="text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-5xl">
             {founder.name}
           </h3>
-          <p className="mt-1 font-mono text-xs uppercase tracking-wider text-[#67E8F9]">
+          <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wider text-[#67E8F9] sm:mt-1 sm:text-xs">
             {founder.role}
           </p>
         </div>
 
-        <blockquote className="mt-5 border-l-2 border-[#67E8F9]/50 pl-4 text-xs sm:text-sm leading-relaxed text-white/80 italic">
+        <blockquote className="mt-3 border-l-2 border-[#67E8F9]/50 pl-3 text-[11px] leading-relaxed text-white/80 italic sm:mt-5 sm:pl-4 sm:text-sm">
           &ldquo;{founder.quote}&rdquo;
         </blockquote>
 
-        <div className="mt-6 flex flex-wrap gap-2 pt-2">
+        <div className="mt-3 flex flex-wrap gap-1.5 pt-1 sm:mt-6 sm:gap-2 sm:pt-2">
           {founder.skills.map((skill) => (
             <span
               key={skill}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white/70 backdrop-blur-sm"
+              className="rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-white/70 backdrop-blur-sm sm:px-3 sm:py-1 sm:text-[10px]"
             >
               {skill}
             </span>
@@ -275,10 +275,10 @@ export default function OurStory() {
         />
 
         {/* ساختار گرید دو ستونه: سمت چپ عکس ۳ نفره با فوکوس پویا، سمت راست کارت داستان */}
-        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-12">
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-4 sm:gap-6 lg:flex-row lg:items-center lg:gap-12">
           {/* ستون عکس ۳ نفره با کادر فوکوس اختصاصی */}
-          <div className="relative w-full lg:w-[56%] shrink-0">
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/15 bg-[#050508]/80 p-1.5 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.95)]">
+          <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-none lg:w-[56%] shrink-0">
+            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl md:rounded-3xl border border-white/15 bg-[#050508]/80 p-1 sm:p-1.5 backdrop-blur-xl shadow-[0_25px_80px_rgba(0,0,0,0.95)]">
               <div className="relative h-full w-full overflow-hidden rounded-xl md:rounded-2xl bg-[#080812]">
                 {/* عکس اصلی ۳ نفره در ماشین */}
                 <motion.img
@@ -313,19 +313,19 @@ export default function OurStory() {
           </div>
 
           {/* ستون متنی و کارت داستان در سمت راست */}
-          <div className="relative min-h-[300px] sm:min-h-[320px] md:min-h-[360px] w-full flex-1">
+          <div className="relative min-h-[250px] sm:min-h-[300px] md:min-h-[360px] w-full flex-1">
             {/* وضعیت اولیه: معرفی تیم */}
             <motion.div
               style={{ opacity: introOpacity, y: introY }}
               className="pointer-events-none absolute inset-0 flex flex-col justify-center text-left select-none"
             >
-              <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
+              <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[#67E8F9]">
                 OUR STORY
               </span>
-              <h2 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-5xl">
+              <h2 className="mt-1 sm:mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl md:text-5xl">
                 Three Minds. One Vision.
               </h2>
-              <p className="mt-4 font-mono text-xs uppercase tracking-widest text-white/50">
+              <p className="mt-2 sm:mt-4 font-mono text-[10px] sm:text-xs uppercase tracking-widest text-white/50">
                 Scroll to explore each founder&apos;s story
               </p>
             </motion.div>
@@ -344,14 +344,14 @@ export default function OurStory() {
               style={{ opacity: finaleOpacity, y: finaleY }}
               className="pointer-events-none absolute inset-0 flex flex-col justify-center text-left select-none"
             >
-              <div className="relative overflow-hidden rounded-2xl border border-[#67E8F9]/40 bg-[#050508]/95 p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.2)]">
-                <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
+              <div className="relative overflow-hidden rounded-2xl border border-[#67E8F9]/40 bg-[#050508]/95 p-4 sm:p-6 md:p-8 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(103,232,249,0.2)]">
+                <span className="font-mono text-[10px] sm:text-xs uppercase tracking-[0.25em] sm:tracking-[0.3em] text-[#67E8F9]">
                   THE COMPLETE CREATIVE ECOSYSTEM
                 </span>
-                <h3 className="mt-2 text-2xl font-bold tracking-tight text-white md:text-3xl">
+                <h3 className="mt-1 sm:mt-2 text-xl font-bold tracking-tight text-white sm:text-2xl md:text-3xl">
                   Director + Developer + Editor
                 </h3>
-                <p className="mt-3 text-xs md:text-sm leading-relaxed text-white/80">
+                <p className="mt-2 sm:mt-3 text-[11px] sm:text-xs md:text-sm leading-relaxed text-white/80">
                   A Director to sculpt the story. A Developer to engineer the world. An Editor to calibrate the rhythm. Together, we build immersive digital experiences that refuse to be ignored.
                 </p>
               </div>

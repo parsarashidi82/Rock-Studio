@@ -505,9 +505,9 @@ export default function Contact() {
           width: 100%;
           max-width: 1280px;
           margin: 0 auto;
-          padding: 0 clamp(24px, 4vw, 40px);
+          padding: 0 clamp(16px, 4vw, 40px);
           display: grid;
-          gap: 40px;
+          gap: 28px;
           grid-template-columns: 1fr;
         }
         @media (min-width: 900px) {
@@ -527,16 +527,22 @@ export default function Contact() {
           color: #67E8F9;
         }
         #contact h2 {
-          margin: 12px 0 0;
-          font-size: clamp(2.25rem, 5vw, 3.75rem);
+          margin: 8px 0 0;
+          font-size: clamp(1.85rem, 5vw, 3.75rem);
           font-weight: 600;
           letter-spacing: -.03em;
           line-height: 1.05;
         }
         #contact form {
-          margin-top: 32px;
+          margin-top: 20px;
           display: grid;
-          gap: 28px;
+          gap: 20px;
+        }
+        @media (min-width: 600px) {
+          #contact form {
+            margin-top: 32px;
+            gap: 28px;
+          }
         }
         #contact .fld {
           display: block;
@@ -552,17 +558,24 @@ export default function Contact() {
         #contact .fld textarea {
           display: block;
           width: 100%;
-          margin-top: 8px;
+          margin-top: 6px;
           border: 0;
           border-bottom: 1px solid rgba(255, 255, 255, 0.15);
           background: transparent;
           color: #fff;
           font: inherit;
-          font-size: clamp(1.25rem, 2vw, 1.5rem);
-          padding: 0 0 12px;
+          font-size: clamp(1.1rem, 2vw, 1.5rem);
+          padding: 0 0 8px;
           outline: 0;
           resize: none;
           transition: border-color .2s;
+        }
+        @media (min-width: 600px) {
+          #contact .fld input,
+          #contact .fld textarea {
+            margin-top: 8px;
+            padding: 0 0 12px;
+          }
         }
         #contact .fld input:focus,
         #contact .fld textarea:focus {
@@ -572,7 +585,7 @@ export default function Contact() {
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          gap: 20px;
+          gap: 16px;
         }
         #contact .send {
           font: inherit;
@@ -581,9 +594,14 @@ export default function Contact() {
           background: transparent;
           border: 1px solid rgba(255, 255, 255, 0.2);
           border-radius: 999px;
-          padding: 12px 28px;
+          padding: 10px 24px;
           cursor: pointer;
           transition: all .3s;
+        }
+        @media (min-width: 600px) {
+          #contact .send {
+            padding: 12px 28px;
+          }
         }
         #contact .send:hover {
           background: #67E8F9;
@@ -602,9 +620,15 @@ export default function Contact() {
           color: rgba(252, 165, 165, 0.85);
         }
         #contact .soc {
-          margin-top: 40px;
+          margin-top: 24px;
           display: flex;
-          gap: 40px;
+          gap: 24px;
+        }
+        @media (min-width: 600px) {
+          #contact .soc {
+            margin-top: 40px;
+            gap: 40px;
+          }
         }
         #contact .soc a {
           color: #fff;
@@ -618,8 +642,13 @@ export default function Contact() {
           display: block;
           margin-top: 4px;
           font-weight: 400;
-          font-size: 18px;
+          font-size: 16px;
           transition: color .2s;
+        }
+        @media (min-width: 600px) {
+          #contact .soc b {
+            font-size: 18px;
+          }
         }
         #contact .soc a:hover b {
           color: #67E8F9;

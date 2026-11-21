@@ -149,7 +149,7 @@ export default function Hero() {
           {/* راهنمای اسکرول */}
           <motion.div
             style={{ opacity: hintOpacity }}
-            className="pointer-events-none absolute bottom-10 left-1/2 -translate-x-1/2 font-mono text-[16px] uppercase tracking-[0.3em] text-white/40"
+            className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-xs uppercase tracking-[0.25em] text-white/40 sm:bottom-10 sm:text-sm md:text-[16px] md:tracking-[0.3em]"
           >
             Scroll
           </motion.div>

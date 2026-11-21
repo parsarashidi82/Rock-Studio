@@ -235,8 +235,8 @@ export default function Navbar() {
             initial={{ clipPath: "inset(0 0 100% 0)" }}
             animate={{ clipPath: "inset(0 0 0% 0)" }}
             exit={{ clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="fixed inset-0 z-40 flex flex-col justify-center gap-3 bg-[#050508] px-6 md:hidden"
+            transition={{ duration: 0.6, ease: EASE }}
+            className="fixed inset-0 z-40 flex flex-col justify-center gap-5 bg-[#050508]/98 px-8 backdrop-blur-2xl md:hidden"
           >
             {LINKS.map((l, i) => (
               <div key={l.label} className="overflow-hidden">
@@ -247,16 +247,35 @@ export default function Navbar() {
                   animate={{ y: 0 }}
                   exit={{ y: "115%" }}
                   transition={{
-                    duration: 0.7,
+                    duration: 0.6,
                     ease: EASE,
-                    delay: 0.15 + i * 0.07,
+                    delay: 0.12 + i * 0.06,
                   }}
-                  className="block text-5xl font-semibold tracking-tight text-white"
+                  className="block text-4xl font-semibold tracking-tight text-white transition-colors duration-200 hover:text-[#67E8F9]"
                 >
                   {l.label}
                 </motion.a>
               </div>
             ))}
+
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.4, duration: 0.4 }}
+              className="mt-6 flex items-center justify-between border-t border-white/10 pt-6"
+            >
+              <span className="font-mono text-xs uppercase tracking-[0.25em] text-white/40">
+                ROK STUDIO
+              </span>
+              <a
+                href="#contact"
+                onClick={(e) => handleNavClick(e, "#contact")}
+                className="rounded-full border border-[#67E8F9]/50 bg-[#67E8F9]/10 px-5 py-2 font-mono text-xs uppercase tracking-wider text-[#67E8F9]"
+              >
+                Let&apos;s talk
+              </a>
+            </motion.div>
           </motion.nav>
         )}
       </AnimatePresence>

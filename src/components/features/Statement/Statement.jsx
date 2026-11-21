@@ -114,7 +114,7 @@ export default function Statement() {
         {/* تیتر */}
         <h2
           aria-label="We turn ideas into experiences."
-          className="relative text-center font-semibold uppercase leading-[1.08] tracking-tight text-white text-[clamp(2.5rem,9vw,8.5rem)]"
+          className="relative text-center font-semibold uppercase leading-[1.08] tracking-tight text-white text-[clamp(1.85rem,7.5vw,8.5rem)]"
         >
           <span aria-hidden className="block">
             {PARSED.map((words, li) => (
@@ -153,7 +153,7 @@ export default function Statement() {
         {/* زیرنویس یکپارچه بدون خط جداکننده */}
         <motion.p
           style={{ opacity: subOpacity, y: subY, letterSpacing: subSpacing }}
-          className="mt-10 flex flex-wrap items-center justify-center gap-x-3 font-mono text-[11px] uppercase text-white/60 md:mt-14 md:text-xs"
+          className="mt-6 flex flex-wrap items-center justify-center gap-x-2.5 px-4 font-mono text-[10px] uppercase text-white/60 sm:mt-10 sm:gap-x-3 sm:text-[11px] md:mt-14 md:text-xs"
         >
           {SERVICES.map((s, i) => (
             <span key={s} className="flex items-center gap-x-3">

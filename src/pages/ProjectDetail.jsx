@@ -99,10 +99,10 @@ function ProjectView({ project, nextProject, onNextClick }) {
 
       {/* نوار ناوبری اختصاصی پروژه */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#050508]/85 backdrop-blur-md">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 md:px-12">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:h-20 sm:px-6 md:px-12">
           <Link
             to="/#work"
-            className="group flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-white/70 transition-colors hover:text-[#67E8F9]"
+            className="group flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-white/70 transition-colors hover:text-[#67E8F9] sm:text-xs sm:tracking-[0.25em]"
           >
             <span className="transition-transform duration-300 group-hover:-translate-x-1">
               ←
@@ -112,7 +112,7 @@ function ProjectView({ project, nextProject, onNextClick }) {
 
           <Link
             to="/"
-            className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white"
+            className="flex items-center gap-2 text-base font-semibold tracking-tight text-white sm:text-lg"
           >
             ROK
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#67E8F9]" />
@@ -123,14 +123,14 @@ function ProjectView({ project, nextProject, onNextClick }) {
               href={project.externalUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="flex items-center gap-1.5 rounded-full border border-white/20 px-4 py-1.5 font-mono text-xs uppercase tracking-wider text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508]"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508] sm:px-4 sm:py-1.5 sm:text-xs"
             >
               <span>Visit Live</span>
             </a>
           ) : (
             <Link
               to="/#contact"
-              className="rounded-full border border-white/20 px-5 py-1.5 font-mono text-xs uppercase tracking-wider text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508]"
+              className="rounded-full border border-white/20 px-3.5 py-1 font-mono text-[10px] uppercase tracking-wider text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508] sm:px-5 sm:py-1.5 sm:text-xs"
             >
               Let&apos;s Talk
             </Link>
@@ -139,27 +139,27 @@ function ProjectView({ project, nextProject, onNextClick }) {
       </header>
 
       {/* بدنه اصلی */}
-      <main className="relative mx-auto max-w-7xl px-6 pb-28 pt-12 md:px-12 md:pt-16">
+      <main className="relative mx-auto max-w-7xl px-4 pb-20 pt-8 sm:px-6 sm:pb-28 sm:pt-12 md:px-12 md:pt-16">
         {/* عنوان و هدر پروژه */}
         <div className="max-w-4xl">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#67E8F9]" />
-            <span className="font-mono text-xs uppercase tracking-[0.3em] text-[#67E8F9]">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#67E8F9] sm:text-xs sm:tracking-[0.3em]">
               {project.category} · Case Study
             </span>
           </div>
 
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-white md:text-7xl">
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-white sm:mt-4 sm:text-4xl md:text-7xl">
             {project.title}
           </h1>
 
-          <p className="mt-6 text-lg leading-relaxed text-white/70 md:text-xl">
+          <p className="mt-4 text-base leading-relaxed text-white/70 sm:mt-6 sm:text-lg md:text-xl">
             {project.description}
           </p>
         </div>
 
         {/* شبکه اطلاعات بنتو (Bento Metadata) */}
-        <div className="mt-12 grid grid-cols-2 gap-4 border-y border-white/10 py-8 md:grid-cols-4 md:gap-8">
+        <div className="mt-8 grid grid-cols-2 gap-3 border-y border-white/10 py-6 sm:mt-12 sm:gap-4 sm:py-8 md:grid-cols-4 md:gap-8">
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
               Client
