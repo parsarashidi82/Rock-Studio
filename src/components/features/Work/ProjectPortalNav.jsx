@@ -8,178 +8,13 @@ function clamp(v, min, max) {
   return Math.min(Math.max(v, min), max);
 }
 
-const CIRCLE_RADIUS = 22;
-const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * CIRCLE_RADIUS; // ~138.23
-const HOLD_DURATION = 2000; // 2 seconds required hold
-
-function MobileHoldButton({ side, project, onTrigger }) {
-  const [progress, setProgress] = useState(0);
-  const [isHolding, setIsHolding] = useState(false);
-  const startRef = useRef(null);
-  const rafRef = useRef(null);
-  const touchStartPos = useRef({ x: 0, y: 0 });
-
-  const cancelHold = useCallback(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    startRef.current = null;
-    setIsHolding(false);
-    setProgress(0);
-  }, []);
-
-  const handleTouchStart = (e) => {
-    if (e.touches.length !== 1) return;
-    const touch = e.touches[0];
-    touchStartPos.current = { x: touch.clientX, y: touch.clientY };
-    setIsHolding(true);
-    startRef.current = performance.now();
-
-    const loop = (now) => {
-      if (!startRef.current) return;
-      const elapsed = now - startRef.current;
-      const p = Math.min(1, elapsed / HOLD_DURATION);
-      setProgress(p);
-
-      if (p >= 1) {
-        if (navigator.vibrate) {
-          try {
-            navigator.vibrate([40, 60, 40]);
-          } catch {
-            // ignore
-          }
-        }
-        cancelHold();
-        onTrigger(project, side);
-        return;
-      }
-      rafRef.current = requestAnimationFrame(loop);
-    };
-
-    rafRef.current = requestAnimationFrame(loop);
-  };
-
-  const handleTouchMove = (e) => {
-    if (!isHolding || !e.touches[0]) return;
-    const touch = e.touches[0];
-    const dist = Math.hypot(
-      touch.clientX - touchStartPos.current.x,
-      touch.clientY - touchStartPos.current.y
-    );
-    // اگر انگشت بیش از ۱۲ پیکسل حرکت کرد (قصد اسکرول داشت)، سریعاً لغو کن
-    if (dist > 12) {
-      cancelHold();
-    }
-  };
-
-  const handleTouchEnd = () => {
-    cancelHold();
-  };
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  if (!project) return null;
-
-  const isRight = side === "right";
-  const strokeOffset = CIRCLE_CIRCUMFERENCE * (1 - progress);
-
-  return (
-    <div
-      className={`fixed ${
-        isRight ? "right-2.5" : "left-2.5"
-      } top-1/2 -translate-y-1/2 z-[75] md:hidden select-none touch-none`}
-    >
-      {/* نمایش مشخصات پروژه با حلقه شمارش معکوس هنگام نگه‌داشتن انگشت */}
-      {isHolding && (
-        <div
-          className={`pointer-events-none absolute ${
-            isRight ? "right-16" : "left-16"
-          } top-1/2 -translate-y-1/2 flex items-center gap-2.5 rounded-xl border border-[#67E8F9]/40 bg-[#050508]/95 px-3 py-2 shadow-[0_10px_30px_rgba(0,0,0,0.9),0_0_20px_rgba(103,232,249,0.25)] backdrop-blur-xl animate-fade-in`}
-        >
-          <div className="flex flex-col text-left">
-            <span className="font-mono text-[9px] uppercase tracking-wider text-[#67E8F9]">
-              {isRight ? "Hold 2s for Next" : "Hold 2s for Prev"}
-            </span>
-            <span className="truncate max-w-[130px] text-xs font-semibold text-white">
-              {project.title}
-            </span>
-          </div>
-          <span className="font-mono text-xs font-bold text-[#67E8F9]">
-            {Math.ceil(2 - progress * 2)}s
-          </span>
-        </div>
-      )}
-
-      {/* دکمه با حلقه نئونی متحرک ۲ ثانیه‌ای */}
-      <div
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
-        className={`relative flex h-14 w-14 cursor-pointer items-center justify-center rounded-full transition-all ${
-          isHolding ? "scale-105" : "opacity-75"
-        }`}
-        role="button"
-        tabIndex={0}
-        aria-label={`${isRight ? "Next" : "Previous"} Project (Hold 2 seconds)`}
-      >
-        {/* رینگ SVG با انیمیشن پر شدن در ۲ ثانیه */}
-        <svg
-          className="pointer-events-none absolute inset-0 h-full w-full -rotate-90"
-          viewBox="0 0 56 56"
-        >
-          <circle
-            cx="28"
-            cy="28"
-            r={CIRCLE_RADIUS}
-            fill="transparent"
-            stroke="rgba(255, 255, 255, 0.12)"
-            strokeWidth="3"
-          />
-          <circle
-            cx="28"
-            cy="28"
-            r={CIRCLE_RADIUS}
-            fill="transparent"
-            stroke="#67E8F9"
-            strokeWidth="3.5"
-            strokeDasharray={CIRCLE_CIRCUMFERENCE}
-            strokeDashoffset={strokeOffset}
-            strokeLinecap="round"
-            style={{
-              transition: isHolding ? "none" : "stroke-dashoffset 0.2s ease-out",
-            }}
-          />
-        </svg>
-
-        {/* نماد و برچسب داخل دکمه */}
-        <div
-          className={`flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-[#050508]/90 text-sm font-bold backdrop-blur-md transition-colors ${
-            isHolding
-              ? "border-[#67E8F9] text-[#67E8F9] shadow-[0_0_20px_rgba(103,232,249,0.5)]"
-              : "text-white/80"
-          }`}
-        >
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-base">{isRight ? "›" : "‹"}</span>
-            <span className="font-mono text-[8px] uppercase tracking-tighter text-white/50">
-              {isRight ? "Next" : "Prev"}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function ProjectPortalNav({
   nextProject,
   prevProject,
   onNavigate,
 }) {
   const [activeSide, setActiveSide] = useState(null); // 'left' | 'right' | null
+  const [holdingSide, setHoldingSide] = useState(null); // 'left' | 'right' | null برای لمس موبایل
 
   const followerRef = useRef(null);
   const posRef = useRef({ x: 0, y: 0 });
@@ -187,7 +22,11 @@ export default function ProjectPortalNav({
   const mouseRef = useRef({ x: 0, y: 0, active: false, side: null });
   const rafRef = useRef(null);
 
-  // ناوبری به پروژه مقصد
+  // نگهدارنده تایمر لمس ۲ ثانیه‌ای موبایل
+  const holdTimerRef = useRef(null);
+  const touchStartPos = useRef({ x: 0, y: 0 });
+
+  // کلیک یا هدایت به پروژه بعدی یا قبلی
   const triggerNavigation = useCallback(
     (targetProject, side) => {
       if (!targetProject) return;
@@ -216,8 +55,9 @@ export default function ProjectPortalNav({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextProject, prevProject, triggerNavigation]);
 
-  // رویدادهای ماوس دسکتاپ
+  // رویدادهای حرکت ماوس دسکتاپ سمت راست (تنها در صورتی که ماوس باشد فعال می‌شود، نه تاچ)
   const handleRightMove = (e) => {
+    if (e.pointerType === "touch") return; // در حالت تاچ و اسکرول فعال نشود
     const x = e.clientX;
     const y = e.clientY;
     const w = window.innerWidth;
@@ -235,7 +75,9 @@ export default function ProjectPortalNav({
     }
   };
 
+  // رویدادهای حرکت ماوس دسکتاپ سمت چپ
   const handleLeftMove = (e) => {
+    if (e.pointerType === "touch") return;
     const x = e.clientX;
     const y = e.clientY;
     const w = window.innerWidth;
@@ -253,13 +95,58 @@ export default function ProjectPortalNav({
     }
   };
 
-  const handleLeave = () => {
+  const handleLeave = (e) => {
+    if (e && e.pointerType === "touch") return;
     mouseRef.current.active = false;
     mouseRef.current.side = null;
     setActiveSide(null);
   };
 
-  // تعقیب ماوس در دسکتاپ
+  // ─── مدیریت لمس و نگه‌داشتن ۲ ثانیه‌ای در موبایل ───
+  const startTouchHold = (side, targetProject, e) => {
+    if (e.pointerType && e.pointerType !== "touch") return;
+    touchStartPos.current = { x: e.clientX, y: e.clientY };
+    setHoldingSide(side);
+
+    if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+    holdTimerRef.current = setTimeout(() => {
+      // بعد از گذشت ۲ ثانیه مداوم بدون اسکرول، پروژه فعال می‌شود
+      setHoldingSide(null);
+      triggerNavigation(targetProject, side);
+    }, 2000);
+  };
+
+  const checkTouchMove = (e) => {
+    if (e.pointerType && e.pointerType !== "touch") return;
+    const dist = Math.hypot(
+      e.clientX - touchStartPos.current.x,
+      e.clientY - touchStartPos.current.y
+    );
+    // اگر کاربر در حال اسکرول کردن صفحه بود (بیش از ۱۰ پیکسل تکان خورد)، تایمر لغو می‌شود
+    if (dist > 10) {
+      if (holdTimerRef.current) {
+        clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = null;
+      }
+      setHoldingSide(null);
+    }
+  };
+
+  const cancelTouchHold = () => {
+    if (holdTimerRef.current) {
+      clearTimeout(holdTimerRef.current);
+      holdTimerRef.current = null;
+    }
+    setHoldingSide(null);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (holdTimerRef.current) clearTimeout(holdTimerRef.current);
+    };
+  }, []);
+
+  // انیمیشن فریم به فریم برای تعقیب روان ماوس (Lerp)
   useEffect(() => {
     const tick = () => {
       const follower = followerRef.current;
@@ -287,27 +174,30 @@ export default function ProjectPortalNav({
 
   return createPortal(
     <>
-      {/* ─── نسخه موبایل: دکمه‌های نگه‌داشتن ۲ ثانیه‌ای برای جلوگیری از لمس تصادفی ─── */}
-      <MobileHoldButton
-        side="left"
-        project={prevProject}
-        onTrigger={triggerNavigation}
-      />
-      <MobileHoldButton
-        side="right"
-        project={nextProject}
-        onTrigger={triggerNavigation}
-      />
-
-      {/* ─── نسخه دسکتاپ: نوارهای حساس به ماوس با پیش‌نمایش شناور ─── */}
+      {/* محدوده فعال لبه سمت چپ (پروژه قبلی) */}
       {prevProject && (
         <div
           onPointerEnter={handleLeftMove}
-          onPointerMove={handleLeftMove}
+          onPointerMove={(e) => {
+            if (e.pointerType === "touch") {
+              checkTouchMove(e);
+            } else {
+              handleLeftMove(e);
+            }
+          }}
           onPointerLeave={handleLeave}
-          onClick={() => triggerNavigation(prevProject, "left")}
-          className={`hidden md:block fixed left-0 top-0 bottom-0 z-[70] w-36 cursor-pointer select-none transition-colors duration-300 ${
-            activeSide === "left"
+          onPointerDown={(e) => startTouchHold("left", prevProject, e)}
+          onPointerUp={cancelTouchHold}
+          onPointerCancel={cancelTouchHold}
+          onClick={(e) => {
+            // در لمس موبایل با کلیک آنی عمل نکند، بلکه باید ۲ ثانیه نگه دارد
+            if (e.pointerType === "touch" || window.matchMedia("(max-width: 768px)").matches) {
+              return;
+            }
+            triggerNavigation(prevProject, "left");
+          }}
+          className={`fixed left-0 top-0 bottom-0 z-[70] w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
+            activeSide === "left" || holdingSide === "left"
               ? "bg-gradient-to-r from-[#67E8F9]/15 via-[#67E8F9]/5 to-transparent"
               : "bg-transparent hover:bg-gradient-to-r hover:from-white/[0.03] hover:to-transparent"
           }`}
@@ -317,12 +207,18 @@ export default function ProjectPortalNav({
         >
           <div
             className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 transition-all duration-300 ${
-              activeSide === "left"
+              activeSide === "left" || holdingSide === "left"
                 ? "opacity-100 translate-x-0 scale-110"
                 : "opacity-25 -translate-x-1 hover:opacity-75"
             }`}
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#67E8F9]/50 bg-[#050508]/90 text-[#67E8F9] text-lg backdrop-blur-md shadow-[0_0_25px_rgba(103,232,249,0.35)]">
+            <div
+              className={`flex h-11 w-11 items-center justify-center rounded-full border border-[#67E8F9]/50 bg-[#050508]/90 text-[#67E8F9] text-lg backdrop-blur-md shadow-[0_0_25px_rgba(103,232,249,0.35)] transition-all ${
+                holdingSide === "left"
+                  ? "border-[#67E8F9] shadow-[0_0_35px_#67E8F9] scale-110 ring-2 ring-[#67E8F9]/60"
+                  : ""
+              }`}
+            >
               ‹
             </div>
             <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#67E8F9] [writing-mode:vertical-rl] rotate-180">
@@ -332,14 +228,30 @@ export default function ProjectPortalNav({
         </div>
       )}
 
+      {/* محدوده فعال لبه سمت راست (پروژه بعدی) */}
       {nextProject && (
         <div
           onPointerEnter={handleRightMove}
-          onPointerMove={handleRightMove}
+          onPointerMove={(e) => {
+            if (e.pointerType === "touch") {
+              checkTouchMove(e);
+            } else {
+              handleRightMove(e);
+            }
+          }}
           onPointerLeave={handleLeave}
-          onClick={() => triggerNavigation(nextProject, "right")}
-          className={`hidden md:block fixed right-0 top-0 bottom-0 z-[70] w-36 cursor-pointer select-none transition-colors duration-300 ${
-            activeSide === "right"
+          onPointerDown={(e) => startTouchHold("right", nextProject, e)}
+          onPointerUp={cancelTouchHold}
+          onPointerCancel={cancelTouchHold}
+          onClick={(e) => {
+            // در لمس موبایل با کلیک آنی عمل نکند، بلکه باید ۲ ثانیه نگه دارد
+            if (e.pointerType === "touch" || window.matchMedia("(max-width: 768px)").matches) {
+              return;
+            }
+            triggerNavigation(nextProject, "right");
+          }}
+          className={`fixed right-0 top-0 bottom-0 z-[70] w-24 md:w-36 cursor-pointer select-none transition-colors duration-300 ${
+            activeSide === "right" || holdingSide === "right"
               ? "bg-gradient-to-l from-[#67E8F9]/15 via-[#67E8F9]/5 to-transparent"
               : "bg-transparent hover:bg-gradient-to-l hover:from-white/[0.03] hover:to-transparent"
           }`}
@@ -349,12 +261,18 @@ export default function ProjectPortalNav({
         >
           <div
             className={`pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 transition-all duration-300 ${
-              activeSide === "right"
+              activeSide === "right" || holdingSide === "right"
                 ? "opacity-100 translate-x-0 scale-110"
                 : "opacity-25 translate-x-1 hover:opacity-75"
             }`}
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#67E8F9]/50 bg-[#050508]/90 text-[#67E8F9] text-lg backdrop-blur-md shadow-[0_0_25px_rgba(103,232,249,0.35)]">
+            <div
+              className={`flex h-11 w-11 items-center justify-center rounded-full border border-[#67E8F9]/50 bg-[#050508]/90 text-[#67E8F9] text-lg backdrop-blur-md shadow-[0_0_25px_rgba(103,232,249,0.35)] transition-all ${
+                holdingSide === "right"
+                  ? "border-[#67E8F9] shadow-[0_0_35px_#67E8F9] scale-110 ring-2 ring-[#67E8F9]/60"
+                  : ""
+              }`}
+            >
               ›
             </div>
             <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[#67E8F9] [writing-mode:vertical-rl]">
@@ -364,7 +282,7 @@ export default function ProjectPortalNav({
         </div>
       )}
 
-      {/* کارت شناور پیش‌نمایش ماوس (مخصوص دسکتاپ) */}
+      {/* کارت شناور پیش‌نمایش ماوس (فقط روی دسکتاپ هنگام حرکت ماوس ظاهر می‌شود) */}
       {activeProject && (
         <div
           ref={followerRef}
