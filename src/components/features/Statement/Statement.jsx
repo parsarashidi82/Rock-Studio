@@ -15,8 +15,7 @@ const SERVICES = ["Web", "Motion", "Visual", "Digital"];
 
 // زمان‌بندی (۰ تا ۱ پیشرفت اسکرول سکشن)
 const LETTERS_END = 0.6; // تمام شدن حروف تیتر
-const LINE_RANGE = [0.55, 0.72]; // کشیده شدن خط وسط
-const SUB_RANGE = [0.64, 0.86]; // ظاهر شدن زیرنویس
+const SUB_RANGE = [0.60, 0.82]; // ظاهر شدن زیرنویس
 
 const ease = cubicBezier(0.22, 1, 0.36, 1);
 
@@ -81,7 +80,6 @@ export default function Statement() {
     mass: 0.4,
   });
 
-  const lineScale = useTransform(progress, LINE_RANGE, [0, 1], { ease });
   const subOpacity = useTransform(progress, SUB_RANGE, [0, 1]);
   const subY = useTransform(progress, SUB_RANGE, [16, 0], { ease });
   const subSpacing = useTransform(
@@ -92,13 +90,20 @@ export default function Statement() {
   );
   const glow = useTransform(progress, [0.3, 0.8], [0, 1]);
 
+  // محو شدن نرم و سینمایی هنگام انتقال به سکشن بعدی
+  const exitOpacity = useTransform(progress, [0.86, 0.98], [1, 0]);
+  const exitScale = useTransform(progress, [0.86, 0.98], [1, 0.96]);
+
   return (
     <section
       ref={sectionRef}
       id="statement"
       className="relative z-10 h-[250vh] bg-transparent"
     >
-      <div className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-6">
+      <motion.div
+        style={{ opacity: exitOpacity, scale: exitScale }}
+        className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-6"
+      >
         {/* Glow که با اسکرول قوی‌تر می‌شود */}
         <motion.div
           style={{ opacity: glow }}
@@ -144,16 +149,10 @@ export default function Statement() {
           </span>
         </h2>
 
-        {/* خط وسط */}
-        <motion.div
-          style={{ scaleX: lineScale }}
-          className="mt-10 h-px w-full max-w-md origin-center bg-gradient-to-r from-transparent via-[#67E8F9]/70 to-transparent md:mt-14"
-        />
-
-        {/* زیرنویس */}
+        {/* زیرنویس یکپارچه بدون خط جداکننده */}
         <motion.p
           style={{ opacity: subOpacity, y: subY, letterSpacing: subSpacing }}
-          className="mt-8 flex flex-wrap items-center justify-center gap-x-3 font-mono text-[11px] uppercase text-white/60 md:text-xs"
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-3 font-mono text-[11px] uppercase text-white/60 md:mt-14 md:text-xs"
         >
           {SERVICES.map((s, i) => (
             <span key={s} className="flex items-center gap-x-3">
@@ -164,7 +163,7 @@ export default function Statement() {
             </span>
           ))}
         </motion.p>
-      </div>
+      </motion.div>
     </section>
   );
 }

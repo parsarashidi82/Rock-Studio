@@ -235,8 +235,20 @@ export default function OurStory() {
   const introY = useTransform(progress, [0, 0.13], [0, -25]);
 
   // پیام پایانی اتحاد تیم (در انتهای اسکرول)
-  const finaleOpacity = useTransform(progress, [0.94, 0.98, 1], [0, 1, 1]);
-  const finaleY = useTransform(progress, [0.94, 0.98], [25, 0]);
+  const finaleOpacity = useTransform(
+    progress,
+    [0.93, 0.96, 0.985, 0.998],
+    [0, 1, 1, 0]
+  );
+  const finaleY = useTransform(
+    progress,
+    [0.93, 0.96, 0.985, 0.998],
+    [20, 0, 0, -10]
+  );
+
+  // حل شدن نرم و سینمایی کل سکشن برای پیوستگی بدون مرز با Selected Work
+  const exitOpacity = useTransform(progress, [0.965, 0.998], [1, 0]);
+  const exitScale = useTransform(progress, [0.965, 0.998], [1, 0.96]);
 
   return (
     <section
@@ -244,7 +256,10 @@ export default function OurStory() {
       ref={containerRef}
       className="relative z-20 h-[440vh] bg-transparent"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-4 md:px-8">
+      <motion.div
+        style={{ opacity: exitOpacity, scale: exitScale }}
+        className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-4 md:px-8"
+      >
         {/* هاله نور پس‌زمینه */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.08),transparent_60%)]" />
 
@@ -332,7 +347,7 @@ export default function OurStory() {
             </motion.div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

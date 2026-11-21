@@ -37,11 +37,6 @@ const rise = {
   show: { y: 0, transition: { duration: 0.7, ease: EASE } },
 };
 
-const line = {
-  hide: { scaleX: 0 },
-  show: { scaleX: 1, transition: { duration: 1.1, ease: EASE } },
-};
-
 // متن با افکت رول موقع هاور
 function RollLink({ href, label, onClick }) {
   return (
@@ -146,13 +141,6 @@ export default function Navbar() {
             </motion.button>
           </div>
         </div>
-
-        {/* خط پایین هدر که کشیده می‌شود */}
-        <motion.div
-          variants={line}
-          style={{ originX: 0 }}
-          className="h-px w-full bg-gradient-to-r from-[#67E8F9]/60 via-white/15 to-transparent"
-        />
       </motion.header>
 
       {/* منوی تمام‌صفحه‌ی موبایل */}
