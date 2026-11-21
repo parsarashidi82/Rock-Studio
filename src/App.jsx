@@ -1,10 +1,16 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProjectDetail from "./pages/ProjectDetail";
 import ScrollToTop from "./components/common/ScrollToTop";
 import DataRain from "./components/ui/data-rain";
+import { initImagePreloader } from "./lib/preloadImages";
 
 function App() {
+  useEffect(() => {
+    initImagePreloader();
+  }, []);
+
   return (
     <BrowserRouter>
       <ScrollToTop />

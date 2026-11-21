@@ -534,7 +534,7 @@ const DriftWall = ({
           <img
             src={item.fullImage}
             alt={item.title ?? ""}
-            loading="lazy"
+            loading="eager"
             decoding="async"
             draggable={false}
             className={scrollImgClass}
@@ -543,7 +543,7 @@ const DriftWall = ({
           <img
             src={item.image}
             alt={item.title ?? ""}
-            loading="lazy"
+            loading="eager"
             decoding="async"
             draggable={false}
             className={imgClass}

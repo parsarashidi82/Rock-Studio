@@ -1,13 +1,18 @@
 import upperCapeDentistry from "@/assets/projects/uppercapedentistry.webp";
 import upperCapeDentistryFull from "@/assets/projects/uppercapedentistry-full.webp";
+import upperCapeDentistryScroll from "@/assets/projects/uppercapedentistry-scroll.webp";
 import artamed from "@/assets/projects/artamed.webp";
 import artamedFull from "@/assets/projects/artamed-full.webp";
+import artamedScroll from "@/assets/projects/artamed-scroll.webp";
 import carCareEvolution from "@/assets/projects/carcareevolution.webp";
 import carCareEvolutionFull from "@/assets/projects/carcareevolution-full.webp";
+import carCareEvolutionScroll from "@/assets/projects/carcareevolution-scroll.webp";
 import devConnect from "@/assets/projects/DevConnect.webp";
 import devConnectFull from "@/assets/projects/DevConnect-full.webp";
+import devConnectScroll from "@/assets/projects/DevConnect-scroll.webp";
 import nikMarketing from "@/assets/projects/nik-marketing-thumb.webp";
 import nikMarketingFull from "@/assets/projects/nik-marketing-full.webp";
+import nikMarketingScroll from "@/assets/projects/nik-marketing-scroll.webp";
 
 // موشن‌ها و ویدیوها
 import babamFitVideo from "@/assets/projects/Babam-Fit.mp4";
@@ -56,6 +61,7 @@ export const projects = [
     category: "Web",
     image: upperCapeDentistry,
     fullImage: upperCapeDentistryFull,
+    scrollImage: upperCapeDentistryScroll,
     externalUrl: "https://uppercapedentistry.com/",
     client: "Upper Cape Dental Group",
     year: "2024",
@@ -103,6 +109,7 @@ export const projects = [
     category: "Web",
     image: nikMarketing,
     fullImage: nikMarketingFull,
+    scrollImage: nikMarketingScroll,
     externalUrl: "https://nik.marketing/",
     client: "Nik Marketing Agency",
     year: "2024",
@@ -122,6 +129,7 @@ export const projects = [
     category: "Web",
     image: artamed,
     fullImage: artamedFull,
+    scrollImage: artamedScroll,
     externalUrl: "https://artamed.at/",
     client: "Artamed Aesthetic & Clinic",
     year: "2024",
@@ -164,6 +172,7 @@ export const projects = [
     category: "Web",
     image: carCareEvolution,
     fullImage: carCareEvolutionFull,
+    scrollImage: carCareEvolutionScroll,
     externalUrl: "https://carcareevolution.com.au/",
     client: "Car Care Evolution Australia",
     year: "2023",
@@ -205,6 +214,7 @@ export const projects = [
     category: "Web",
     image: devConnect,
     fullImage: devConnectFull,
+    scrollImage: devConnectScroll,
     client: "DevConnect Platform",
     year: "2023",
     services: ["Full-Stack App", "Product Design", "Interactive UI"],

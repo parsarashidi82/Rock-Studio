@@ -6,7 +6,7 @@ import DriftWall from "./DriftWall";
 
 const items = projects.map((p) => ({
   image: p.image,
-  fullImage: p.fullImage,
+  fullImage: p.scrollImage || p.fullImage,
   video: p.video,
   hoverClip: p.hoverClip,
   slug: p.slug,
