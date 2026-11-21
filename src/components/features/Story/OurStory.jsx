@@ -5,10 +5,10 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import teamImg from "@/assets/team.jpg";
-import nimaImg from "@/assets/nima.jpg";
-import parsaImg from "@/assets/parsa.jpg";
-import samanImg from "@/assets/saman.jpg";
+import teamImg from "@/assets/team.webp";
+import nimaImg from "@/assets/nima.webp";
+import parsaImg from "@/assets/parsa.webp";
+import samanImg from "@/assets/saman.webp";
 
 // اطلاعات سه هم‌بنیان‌گذار با موقعیت دقیق روی عکس اصلی
 const FOUNDERS = [

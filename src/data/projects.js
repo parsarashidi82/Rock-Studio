@@ -1,25 +1,25 @@
 import upperCapeDentistry from "@/assets/projects/uppercapedentistry.webp";
-import upperCapeDentistryFull from "@/assets/projects/uppercapedentistry-full.png";
+import upperCapeDentistryFull from "@/assets/projects/uppercapedentistry-full.webp";
 import artamed from "@/assets/projects/artamed.webp";
-import artamedFull from "@/assets/projects/artamed-full.png";
+import artamedFull from "@/assets/projects/artamed-full.webp";
 import carCareEvolution from "@/assets/projects/carcareevolution.webp";
-import carCareEvolutionFull from "@/assets/projects/carcareevolution-full.png";
+import carCareEvolutionFull from "@/assets/projects/carcareevolution-full.webp";
 import devConnect from "@/assets/projects/DevConnect.webp";
-import devConnectFull from "@/assets/projects/DevConnect-full.png";
-import nikMarketing from "@/assets/projects/nik-marketing-thumb.png";
-import nikMarketingFull from "@/assets/projects/nik.marketing.png";
+import devConnectFull from "@/assets/projects/DevConnect-full.webp";
+import nikMarketing from "@/assets/projects/nik-marketing-thumb.webp";
+import nikMarketingFull from "@/assets/projects/nik-marketing-full.webp";
 
 // موشن‌ها و ویدیوها
 import babamFitVideo from "@/assets/projects/Babam-Fit.mp4";
-import babamFitCover from "@/assets/projects/babam-fit-cover.png";
+import babamFitCover from "@/assets/projects/babam-fit-cover.webp";
 import nationalCampVideo from "@/assets/projects/national-camp-australia.mp4";
-import nationalCampThumb from "@/assets/projects/national-camp-australia-thumb.png";
+import nationalCampThumb from "@/assets/projects/national-camp-australia-thumb.webp";
 import festivalStartVideo from "@/assets/projects/festival-start-logomotion.mp4";
-import festivalStartThumb from "@/assets/projects/festival-start-thumb.png";
+import festivalStartThumb from "@/assets/projects/festival-start-thumb.webp";
 import motoralityVideo from "@/assets/projects/motorality-logomotion.mp4";
-import motoralityThumb from "@/assets/projects/motorality-thumb.png";
+import motoralityThumb from "@/assets/projects/motorality-thumb.webp";
 import jam42Video from "@/assets/projects/kinetic-motion-2025.mp4";
-import jam42Thumb from "@/assets/projects/jam-42-thumb.png";
+import jam42Thumb from "@/assets/projects/jam-42-thumb.webp";
 
 export const projects = [
   {
