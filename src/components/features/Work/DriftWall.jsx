@@ -125,15 +125,18 @@ function TileVideo({ src, poster, hoverClip, isActive, className }) {
 }
 
 function DriftColumn({ c, scrollYProgress, children, className }) {
-  // Even columns (0, 2, 4) drift UP -> enter from bottom (+950px)
-  // Odd columns (1, 3) drift DOWN -> enter from top (-950px)
-  const startY = c % 2 === 0 ? 950 : -950;
+  // Even columns (0, 2, 4) drift UP: enter from bottom (+320px), settle at 0, exit upward (-160px)
+  // Odd columns (1, 3) drift DOWN: enter from top (-320px), settle at 0, exit downward (+160px)
+  const isUp = c % 2 === 0;
+  const enterY = isUp ? 320 : -320;
+  const exitY = isUp ? -160 : 160;
+
   const dummyValue = useMotionValue(0.5);
   const targetProgress = scrollYProgress || dummyValue;
   const y = useTransform(
     targetProgress,
-    [0, 0.22, 0.82, 1],
-    [startY, 0, 0, 0]
+    [0, 0.22, 0.78, 1],
+    [enterY, 0, 0, exitY]
   );
 
   return (

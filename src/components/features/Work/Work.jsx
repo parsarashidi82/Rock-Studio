@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 import { projects } from "@/data/projects";
 import DriftWall from "./DriftWall";
@@ -26,16 +26,56 @@ export default function Work() {
     offset: ["start start", "end end"],
   });
 
-  // افکت فید و اسکیل کلی وال
-  const wallOpacity = useTransform(scrollYProgress, [0, 0.16, 0.82, 0.98], [0, 1, 1, 0]);
-  const wallScale = useTransform(scrollYProgress, [0, 0.22, 0.82, 0.98], [0.94, 1, 1, 0.96]);
+  // فیزیک اسپرینگ بسیار روان برای خنثی کردن پرش اسکرول ماوس
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 70,
+    damping: 24,
+    mass: 0.5,
+    restDelta: 0.0001,
+  });
 
-  // انیمیشن ورود و خروج عنوان بالا
-  const headerOpacity = useTransform(scrollYProgress, [0.08, 0.22, 0.82, 0.94], [0, 1, 1, 0]);
-  const headerY = useTransform(scrollYProgress, [0.08, 0.22, 0.82, 0.94], [-30, 0, 0, -25]);
+  // افکت فید ملایم و پیوسته
+  const wallOpacity = useTransform(
+    smoothProgress,
+    [0, 0.18, 0.78, 0.98],
+    [0, 1, 1, 0],
+  );
+
+  // تغییر اسکیل بسیار ظریف و طبیعی
+  const wallScale = useTransform(
+    smoothProgress,
+    [0, 0.22, 0.78, 0.98],
+    [0.96, 1, 1, 0.97],
+  );
+
+  // بلور نرم برای فوکوس سینمایی هنگام ورود و خروج
+  const wallBlur = useTransform(
+    smoothProgress,
+    [0, 0.16, 0.8, 0.98],
+    [8, 0, 0, 8],
+  );
+  const wallFilter = useTransform(wallBlur, (b) =>
+    b <= 0.1 ? "none" : `blur(${b}px)`,
+  );
+
+  // انیمیشن نرم عنوان بالا
+  const headerOpacity = useTransform(
+    smoothProgress,
+    [0.06, 0.22, 0.76, 0.94],
+    [0, 1, 1, 0],
+  );
+  const headerY = useTransform(
+    smoothProgress,
+    [0.06, 0.22, 0.76, 0.94],
+    [-20, 0, 0, -15],
+  );
 
   // انیمیشن نمایش نام پروژه فعال در پایین
-  const bottomScrollOpacity = useTransform(scrollYProgress, [0.18, 0.24, 0.82, 0.94], [0, 1, 1, 0]);
+  const bottomScrollOpacity = useTransform(
+    smoothProgress,
+    [0.16, 0.24, 0.76, 0.94],
+    [0, 1, 1, 0],
+  );
 
   const handleActive = (item) => {
     setActive(item);
@@ -46,13 +86,17 @@ export default function Work() {
     <section
       ref={containerRef}
       id="work"
-      className="relative z-20 h-[300vh] w-full isolate bg-transparent"
+      className="relative z-20 h-[280vh] w-full isolate bg-transparent"
     >
       {/* کانتینر استیکی که هنگام اسکرول در صفحه قفل می‌ماند */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <motion.div
           className="relative h-full w-full"
-          style={{ opacity: wallOpacity, scale: wallScale }}
+          style={{
+            opacity: wallOpacity,
+            scale: wallScale,
+            filter: wallFilter,
+          }}
         >
           <DriftWall
             items={items}
@@ -74,7 +118,7 @@ export default function Work() {
             overlayColor="#050508"
             newTab={true}
             onActiveChange={handleActive}
-            scrollYProgress={scrollYProgress}
+            scrollYProgress={smoothProgress}
           />
 
           {/* عنوان سکشن */}
