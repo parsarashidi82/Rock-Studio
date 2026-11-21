@@ -234,6 +234,14 @@ export default function OurStory() {
   const introOpacity = useTransform(progress, [0, 0.08, 0.13], [1, 1, 0]);
   const introY = useTransform(progress, [0, 0.13], [0, -25]);
 
+  // هاله نور پس‌زمینه (دایره آبی/سایان): از اول نیست و با کمی اسکرول نرم وارد می‌شود
+  const bgGlowOpacity = useTransform(
+    progress,
+    [0.04, 0.18, 0.94, 0.99],
+    [0, 1, 1, 0]
+  );
+  const bgGlowScale = useTransform(progress, [0.04, 0.22], [0.85, 1]);
+
   // پیام پایانی اتحاد تیم (در انتهای اسکرول)
   const finaleOpacity = useTransform(
     progress,
@@ -260,8 +268,11 @@ export default function OurStory() {
         style={{ opacity: exitOpacity, scale: exitScale }}
         className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden px-4 md:px-8"
       >
-        {/* هاله نور پس‌زمینه */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.08),transparent_60%)]" />
+        {/* هاله نور پس‌زمینه (دایره سایان که با اسکرول نرم پدیدار می‌شود) */}
+        <motion.div
+          style={{ opacity: bgGlowOpacity, scale: bgGlowScale }}
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.10),transparent_60%)] will-change-transform"
+        />
 
         {/* ساختار گرید دو ستونه: سمت چپ عکس ۳ نفره با فوکوس پویا، سمت راست کارت داستان */}
         <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-center gap-6 lg:flex-row lg:items-center lg:gap-12">
