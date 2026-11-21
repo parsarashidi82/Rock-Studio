@@ -97,7 +97,8 @@ export default function Statement() {
   return (
     <section
       ref={sectionRef}
-      id="statement"
+      id="services"
+      data-section="statement"
       className="relative z-10 h-[250vh] bg-transparent"
     >
       <motion.div

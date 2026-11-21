@@ -81,6 +81,72 @@ export default function Navbar() {
     }
   }, []);
 
+  // هدایت هوشمند به بهترین وضعیت اسکرول هر سکشن (به‌ویژه Selected Work که بعد از اتمام انیمیشن ورود و لود کامل قفل می‌شود)
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    setOpen(false);
+
+    if (href === "#top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    const getElementGlobalTop = (el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.top + window.scrollY;
+    };
+
+    if (href === "#work") {
+      const el = document.getElementById("work");
+      if (el) {
+        const top = getElementGlobalTop(el);
+        const scrollDistance = el.offsetHeight - window.innerHeight;
+        // اسکرول دقیق به نقطه‌ای که کامپوننت Work کاملاً لود شده، ستون‌ها قفل شده و با شفافیت 100% و بدون بلور آماده تعامل است
+        const target = top + Math.max(0, scrollDistance) * 0.26;
+        window.scrollTo({ top: target, behavior: "smooth" });
+      }
+      return;
+    }
+
+    if (href === "#about") {
+      const el = document.getElementById("about");
+      if (el) {
+        const top = getElementGlobalTop(el);
+        window.scrollTo({ top, behavior: "smooth" });
+      }
+      return;
+    }
+
+    if (href === "#services" || href === "#statement") {
+      const el =
+        document.getElementById("statement") ||
+        document.getElementById("services");
+      if (el) {
+        const top = getElementGlobalTop(el);
+        const scrollDistance = el.offsetHeight - window.innerHeight;
+        const target = top + Math.max(0, scrollDistance) * 0.72;
+        window.scrollTo({ top: target, behavior: "smooth" });
+      }
+      return;
+    }
+
+    if (href === "#contact") {
+      const el = document.getElementById("contact");
+      if (el) {
+        const top = getElementGlobalTop(el);
+        const scrollDistance = el.offsetHeight - window.innerHeight;
+        const target = top + Math.max(0, scrollDistance) * 0.35;
+        window.scrollTo({ top: target, behavior: "smooth" });
+      }
+      return;
+    }
+
+    const targetEl = document.querySelector(href);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   useMotionValueEvent(scrollY, "change", check);
 
   // اگر صفحه وسط اسکرول رفرش شد، وضعیت درست پس از رندر اولیه تنظیم شود
@@ -106,6 +172,7 @@ export default function Navbar() {
             <motion.a
               variants={rise}
               href="#top"
+              onClick={(e) => handleNavClick(e, "#top")}
               className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white"
             >
               ROK
@@ -118,7 +185,11 @@ export default function Navbar() {
             {LINKS.map((l) => (
               <div key={l.label} className="overflow-hidden">
                 <motion.div variants={rise}>
-                  <RollLink href={l.href} label={l.label} />
+                  <RollLink
+                    href={l.href}
+                    label={l.label}
+                    onClick={(e) => handleNavClick(e, l.href)}
+                  />
                 </motion.div>
               </div>
             ))}
@@ -129,6 +200,7 @@ export default function Navbar() {
             <motion.a
               variants={rise}
               href="#contact"
+              onClick={(e) => handleNavClick(e, "#contact")}
               className="block rounded-full border border-white/20 px-5 py-2 text-sm text-white transition-colors duration-300 hover:border-[#67E8F9] hover:bg-[#67E8F9] hover:text-[#050508]"
             >
               Let&apos;s talk
@@ -169,7 +241,7 @@ export default function Navbar() {
               <div key={l.label} className="overflow-hidden">
                 <motion.a
                   href={l.href}
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => handleNavClick(e, l.href)}
                   initial={{ y: "115%" }}
                   animate={{ y: 0 }}
                   exit={{ y: "115%" }}
