@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import MacKeyboard from "@/components/ui/mac-keyboard";
+import { GlowCard } from "@/components/ui/spotlight-card";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -125,8 +126,15 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Compact Cyber Console Container (Form + Keyboard Together) */}
-        <div className="flex flex-col gap-5 rounded-3xl border border-cyan-500/20 bg-[#080911]/90 p-5 sm:p-7 md:p-8 shadow-[0_0_60px_rgba(6,182,212,0.08)] backdrop-blur-2xl">
+        {/* Compact Cyber Console Container (Form + Keyboard Together) with Spotlight Glow */}
+        <GlowCard
+          customSize
+          glowColor="cyan"
+          radius={24}
+          border={1.5}
+          spotlightSize={450}
+          className="flex flex-col gap-5 p-5 sm:p-7 md:p-8"
+        >
           {/* Form Section */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:gap-4">
             {/* Row 1: Name and Contact Info */}
@@ -306,14 +314,21 @@ export default function Contact() {
               onKeyPress={handleVirtualKeyPress}
             />
           </div>
-        </div>
+        </GlowCard>
       </div>
 
       {/* ======================================================== */}
       {/* SCREEN 2 / SECTION: CONNECT ON SOCIALS (TELEGRAM & INSTA) */}
       {/* ======================================================== */}
       <div className="relative mx-auto max-w-4xl px-4 pb-28 pt-8 sm:px-6 md:px-8">
-        <div className="rounded-3xl border border-cyan-500/20 bg-[#080911]/80 p-8 shadow-[0_0_50px_rgba(6,182,212,0.06)] backdrop-blur-xl sm:p-10">
+        <GlowCard
+          customSize
+          glowColor="cyan"
+          radius={24}
+          border={1.5}
+          spotlightSize={420}
+          className="p-8 sm:p-10"
+        >
           <div className="flex flex-col items-center text-center">
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-[#67E8F9]">
               DIRECT CHANNELS // FAST RESPONSE
@@ -385,7 +400,7 @@ export default function Contact() {
               </div>
             </a>
           </div>
-        </div>
+        </GlowCard>
       </div>
     </section>
   );
