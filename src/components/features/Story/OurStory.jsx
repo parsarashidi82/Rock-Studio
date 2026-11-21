@@ -21,12 +21,12 @@ const FOUNDERS = [
     quote:
       "Every project starts as an emotion. My obsession is uncovering that emotion, crafting its narrative heartbeat, and directing every visual nuance so audiences don't just watch — they feel it.",
     skills: ["Film Directing", "Visual Storytelling", "Cinematography", "Creative Direction"],
-    // موقعیت دقیق نیما روی عکس ۱۶:۹
+    // موقعیت دقیق نیما (سمت راست عکس در کلاه بافتنی)
     box: {
-      left: "1%",
-      top: "4%",
-      width: "38%",
-      height: "92%",
+      left: "60%",
+      top: "2%",
+      width: "39%",
+      height: "94%",
     },
     range: [0.14, 0.20, 0.36, 0.41],
   },
@@ -57,12 +57,12 @@ const FOUNDERS = [
     quote:
       "Motion without rhythm is just visual noise. In the edit suite, I shape the tempo, sculpt the soundscapes, and calibrate every cut to release pure kinetic energy.",
     skills: ["Video Editing", "Motion Graphics", "Sound Architecture", "Pacing & Tempo"],
-    // موقعیت دقیق سامان در سمت راست
+    // موقعیت دقیق سامان (سمت چپ عکس با کلاه لبه‌دار)
     box: {
-      left: "60%",
-      top: "2%",
-      width: "39%",
-      height: "94%",
+      left: "1%",
+      top: "4%",
+      width: "38%",
+      height: "92%",
     },
     range: [0.74, 0.80, 0.91, 0.96],
   },
