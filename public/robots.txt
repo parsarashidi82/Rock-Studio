@@ -1,0 +1,8 @@
+# Robots.txt for Rok Studio
+# https://rock-studio-mu.vercel.app/
+
+User-agent: *
+Allow: /
+
+# نقشه سایت برای ربات‌های موتورهای جستجو (گوگل، بینگ و...)
+Sitemap: https://rock-studio-mu.vercel.app/sitemap.xml
