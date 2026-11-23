@@ -21,6 +21,10 @@ const FONT_SIZE = 150;
 const LETTER_SPACING = -0.05;
 const ANIMATION_END = 0.5;
 
+/**
+ * سکشن اصلی هیرو (Hero).
+ * مدیریت انیمیشن واگرایی و اجتماع حروف نام استودیو، افکت تعاملی TechText و پیام‌های داستانی اسکرول.
+ */
 export default function Hero() {
   const sectionRef = useRef(null);
   const stageRef = useRef(null);
