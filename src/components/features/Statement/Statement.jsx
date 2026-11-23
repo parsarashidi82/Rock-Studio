@@ -7,22 +7,19 @@ import {
   cubicBezier,
 } from "framer-motion";
 
-/**
- * خطوط بیانیه مانیفست استودیو راک
- */
 const LINES = [
   ["WE", "TURN", "IDEAS"],
   ["INTO", "EXPERIENCES."],
 ];
 const SERVICES = ["Web", "Motion", "Visual", "Digital"];
 
-// نقاط عطف پیشرفت انیمیشن بر مبنای اسکرول (بازه ۰ تا ۱)
-const LETTERS_END = 0.6; // تا ۶۰٪ اسکرول تمام حروف حل و ظاهر شده‌اند
-const SUB_RANGE = [0.6, 0.82]; // در بازه ۶۰٪ تا ۸۲٪ زیرنویس خدمات ظاهر می‌شود
+// زمان‌بندی (۰ تا ۱ پیشرفت اسکرول سکشن)
+const LETTERS_END = 0.6; // تمام شدن حروف تیتر
+const SUB_RANGE = [0.60, 0.82]; // ظاهر شدن زیرنویس
 
 const ease = cubicBezier(0.22, 1, 0.36, 1);
 
-// ایندکس‌گذاری قطعی و پایدار تمام حروف برای ایجاد تاخیر متوالی (Stagger)
+// حروف را یک‌بار و ثابت ایندکس‌گذاری می‌کنیم
 let counter = 0;
 const PARSED = LINES.map((words) =>
   words.map((word) =>
@@ -31,11 +28,7 @@ const PARSED = LINES.map((words) =>
 );
 const TOTAL = counter;
 
-/**
- * درون‌یابی خطی رنگ بین سفید (#FFFFFF) و فیروزه‌ای (#67E8F9)
- * @param {number} t - پیشرفت درون‌یابی بین ۰ تا ۱
- * @returns {string} فرمت rgb
- */
+// t بین ۰ و ۱: از سفید تا cyan (#67E8F9)
 const mix = (t) => {
   const from = [255, 255, 255];
   const to = [103, 232, 249];
@@ -43,19 +36,14 @@ const mix = (t) => {
   return `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
 };
 
-/**
- * کامپوننت رندر هر کاراکتر بیانیه به همراه افکت‌های ورود و خروج ذره‌ای
- */
 function Letter({ char, i, progress, tint = null }) {
-  const span = 0.22; // پهنای پنجره زمانی انیمیشن ورود هر حرف
+  const span = 0.22; // پنجره‌ی انیمیشن هر حرف
   const start = (i / (TOTAL - 1)) * (LETTERS_END - span);
   const end = start + span;
 
-  // ورود به سمت بالا و استقرار در جایگاه
   const y = useTransform(progress, [start, end], ["36px", "0px"], { ease });
   const scale = useTransform(progress, [start, end], [0.92, 1], { ease });
   const opacity = useTransform(progress, [start, start + span * 0.75], [0, 1]);
-  // خروج از حالت تار بودن به وضوح کامل
   const filter = useTransform(
     progress,
     [start, end],
@@ -70,7 +58,7 @@ function Letter({ char, i, progress, tint = null }) {
         scale,
         opacity,
         filter,
-        color: tint ?? undefined,
+        color: tint === null ? undefined : mix(tint),
       }}
     >
       {char}
@@ -78,69 +66,80 @@ function Letter({ char, i, progress, tint = null }) {
   );
 }
 
-/**
- * سکشن مانیفست استودیو راک (Statement).
- * این بخش با تایپوگرافی غول‌آسا پیام برند را با اسکرول کاربر آشکار کرده
- * و خدمات اصلی استودیو را در زیرنویس به نمایش می‌گذارد.
- */
 export default function Statement() {
-  const containerRef = useRef(null);
+  const sectionRef = useRef(null);
 
-  // رصد اسکرول سکشن
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
+    target: sectionRef,
+    // شروع وقتی بالای سکشن به ۶۰٪ ارتفاع صفحه رسید
+    offset: ["start 0.6", "end end"],
   });
-
-  // اسپرینگ روان برای حذف شوک اسکرول ماوس
   const progress = useSpring(scrollYProgress, {
-    stiffness: 90,
-    damping: 26,
-    mass: 0.5,
+    stiffness: 120,
+    damping: 30,
+    mass: 0.4,
   });
 
-  // تغییر تدریجی رنگ کلمه EXPERIENCES به فیروزه‌ای شاخص راک
-  const tint = useTransform(progress, [0.42, 0.65], [0, 1]);
-  const expColor = useTransform(tint, mix);
-
-  // انیمیشن ورود زیرنویس خدمات
   const subOpacity = useTransform(progress, SUB_RANGE, [0, 1]);
-  const subY = useTransform(progress, SUB_RANGE, ["20px", "0px"], { ease });
-  const subBlur = useTransform(progress, SUB_RANGE, ["6px", "0px"]);
+  const subY = useTransform(progress, SUB_RANGE, [16, 0], { ease });
+  const subSpacing = useTransform(
+    progress,
+    [SUB_RANGE[0], 0.95],
+    ["0.7em", "0.3em"],
+    { ease },
+  );
+  const glow = useTransform(progress, [0.3, 0.8], [0, 1]);
 
-  // محو شدن کل سکشن در انتها برای ورود نرم به بخش بعدی
-  const exitOpacity = useTransform(progress, [0.88, 0.98], [1, 0]);
+  // محو شدن نرم و سینمایی هنگام انتقال به سکشن بعدی
+  const exitOpacity = useTransform(progress, [0.86, 0.98], [1, 0]);
+  const exitScale = useTransform(progress, [0.86, 0.98], [1, 0.96]);
 
   return (
     <section
-      id="about"
-      ref={containerRef}
-      className="relative z-20 h-[220vh] bg-transparent text-white"
+      ref={sectionRef}
+      id="services"
+      data-section="statement"
+      className="relative z-10 h-[250vh] bg-transparent"
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
-        {/* لایه اصلی با افکت محو شدن پایانی */}
+      <motion.div
+        style={{ opacity: exitOpacity, scale: exitScale }}
+        className="sticky top-0 flex h-screen w-full flex-col items-center justify-center overflow-hidden px-6"
+      >
+        {/* Glow که با اسکرول قوی‌تر می‌شود */}
         <motion.div
-          style={{ opacity: exitOpacity }}
-          className="relative flex w-full max-w-7xl flex-col items-center px-6 text-center"
+          style={{ opacity: glow }}
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(103,232,249,0.10),transparent_45%)]"
+        />
+
+        {/* تیتر */}
+        <h2
+          aria-label="We turn ideas into experiences."
+          className="relative text-center font-semibold uppercase leading-[1.08] tracking-tight text-white text-[clamp(2.5rem,9vw,8.5rem)]"
         >
-          {/* تیتر عظیم مانیفست */}
-          <h2 className="flex flex-col items-center font-sans text-[11vw] font-bold leading-[0.9] tracking-[-0.04em] sm:text-[9vw] md:text-[8vw] lg:text-[7.5vw]">
-            {PARSED.map((lineWords, lineIndex) => (
+          <span aria-hidden className="block">
+            {PARSED.map((words, li) => (
               <span
-                key={lineIndex}
-                className="flex flex-wrap justify-center gap-x-[0.25em]"
+                key={li}
+                className="flex flex-wrap justify-center gap-x-[0.28em] py-1"
               >
-                {lineWords.map((wordChars, wordIndex) => {
-                  const isExp = lineIndex === 1 && wordIndex === 1;
+                {words.map((letters, wi) => {
+                  const isAccent = li === 1 && wi === 1;
                   return (
-                    <span key={wordIndex} className="inline-block whitespace-nowrap">
-                      {wordChars.map(({ char, i }) => (
+                    <span
+                      key={wi}
+                      className="inline-flex"
+                    >
+                      {letters.map((l, k) => (
                         <Letter
-                          key={i}
-                          char={char}
-                          i={i}
+                          key={l.i}
+                          char={l.char}
+                          i={l.i}
                           progress={progress}
-                          tint={isExp ? expColor : null}
+                          tint={
+                            isAccent
+                              ? 0.25 + 0.75 * (k / (letters.length - 1))
+                              : null
+                          }
                         />
                       ))}
                     </span>
@@ -148,28 +147,24 @@ export default function Statement() {
                 })}
               </span>
             ))}
-          </h2>
+          </span>
+        </h2>
 
-          {/* زیرنویس خدمات استودیو با تگ‌های فیروزه‌ای */}
-          <motion.div
-            style={{
-              opacity: subOpacity,
-              y: subY,
-              filter: useTransform(subBlur, (b) => `blur(${b})`),
-            }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs uppercase tracking-[0.25em] text-white/50 sm:text-sm md:text-base"
-          >
-            {SERVICES.map((s, idx) => (
-              <span key={s} className="flex items-center gap-2">
-                {idx > 0 && (
-                  <span className="inline-block h-1 w-1 rounded-full bg-[#67E8F9]" />
-                )}
-                <span className="text-white/80">{s}</span>
-              </span>
-            ))}
-          </motion.div>
-        </motion.div>
-      </div>
+        {/* زیرنویس یکپارچه بدون خط جداکننده */}
+        <motion.p
+          style={{ opacity: subOpacity, y: subY, letterSpacing: subSpacing }}
+          className="mt-10 flex flex-wrap items-center justify-center gap-x-3 font-mono text-[11px] uppercase text-white/60 md:mt-14 md:text-xs"
+        >
+          {SERVICES.map((s, i) => (
+            <span key={s} className="flex items-center gap-x-3">
+              {s}
+              {i < SERVICES.length - 1 && (
+                <span className="text-[#67E8F9]">·</span>
+              )}
+            </span>
+          ))}
+        </motion.p>
+      </motion.div>
     </section>
   );
 }

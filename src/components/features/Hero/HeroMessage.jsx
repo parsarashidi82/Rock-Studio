@@ -33,7 +33,7 @@ function Message({ text, range, progress }) {
   return (
     <motion.div
       style={{ opacity, y }}
-      className="absolute bottom-8 sm:bottom-10 left-1/2 flex -translate-x-1/2 items-center justify-center text-center px-4 font-mono text-xs sm:text-sm md:text-[16px] uppercase tracking-[0.2em] sm:tracking-[0.25em] md:tracking-[0.3em] text-white/50 w-full max-w-sm sm:max-w-none"
+      className="absolute bottom-10 left-1/2 flex -translate-x-1/2 items-center whitespace-nowrap font-mono text-[16px] uppercase tracking-[0.3em] text-white/40"
     >
       {text}
     </motion.div>
