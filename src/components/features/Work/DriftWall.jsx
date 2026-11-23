@@ -111,7 +111,7 @@ function TileVideo({ src, poster, hoverClip, isActive, className }) {
         src={src}
         muted
         playsInline
-        preload="metadata"
+        preload="none"
         onPlay={() => setShowPoster(false)}
         onPause={() => setShowPoster(true)}
         onEnded={handleEnded}
