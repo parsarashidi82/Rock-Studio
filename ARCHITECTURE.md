@@ -1,168 +1,196 @@
-# 🏛️ Rock Studio — Software Architecture & Developer Guide
+# 🏛️ راهنمای جامع معماری نرم‌افزار و توسعه استودیو راک (Rock Studio Architecture Guide)
 
-> **Version:** `0.16.0`  
-> **Stack:** React 19, Vite, Tailwind CSS, Framer Motion, Web Audio API  
-> **Brand Palette:** Obsidian Cyber (`#050508`) & Cyan Electric (`#67E8F9`)
+> **نسخه معماری:** `0.16.0`  
+> **استک فنی:** React 19, Vite, Tailwind CSS, Framer Motion, Web Audio API  
+> **پالت اختصاصی:** مشکی سایبری عمیق (`#050508`) و فیروزه‌ای الکتریک نئونی (`#67E8F9`)
 
 ---
 
-## 1. 📁 Directory Structure & Architecture
+## ۱. 📁 ساختار پوشه‌بندی و معماری پروژه
 
-The codebase follows **Feature-Driven & Clean Component Architecture**. Every domain feature is encapsulated with its own subcomponents, custom hooks, and layout constants.
+پروژه استودیو راک بر مبنای **معماری ماژولار و مبتنی بر ویژگی (Feature-Driven & Clean Component Architecture)** سازمان‌دهی شده است. به جای قرار دادن تمام کامپوننت‌ها در یک پوشه شلوغ، هر بخش بزرگ (Feature) دارای زیرپوشه اختصاصی، کامپوننت‌های فرعی، هوک‌ها و داده‌های مربوط به خود است تا خوانایی و قابلیت توسعه به حداکثر برسد.
 
 ```
 Rock-Studio/
 ├── src/
-│   ├── assets/                 # Next-gen WebP images, MP4 preview clips, and posters
-│   │   └── projects/           # High-resolution case study assets and scroll previews
+│   ├── assets/                 # است‌های بهینه، تصاویر مدرن WebP و کلیپ‌های MP4
+│   │   └── projects/           # تصاویر باکیفیت پروژه‌ها و کاشی‌های سبک ۷۰۰ پیکسلی اسکرول
 │   │
 │   ├── components/
-│   │   ├── common/             # Universal utilities across routes (ScrollToTop, etc.)
-│   │   ├── layouts/            # Global structural shells (Navbar, Footer)
-│   │   ├── ui/                 # Foundational canvas & shader effects (DataRain)
-│   │   └── features/           # Domain-driven modular feature components
-│   │       ├── Hero/           # Hero section, ScatterLetter & TechText shaders
-│   │       ├── Statement/      # Letter-by-letter manifesto dissolve effect
-│   │       ├── Story/          # Founders spotlight & cinematic narrative timeline
-│   │       ├── Work/           # 3D DriftWall showcase & ProjectPortalNav
-│   │       ├── Contact/        # 3D Mechanical keyboard, audio synthesis & lead form
-│   │       └── ProjectDetail/  # Case study layout (Header, Hero, Media, Services, View)
+│   │   ├── common/             # ابزارهای عمومی مشترک میان روت‌ها (مانند ScrollToTop)
+│   │   ├── layouts/            # پوسته‌های سراسری سایت (مانند Navbar چسبان و دراور موبایل)
+│   │   ├── ui/                 # افکت‌های پایه‌ای کانواس و شیدرها (باران داده دیجیتال DataRain)
+│   │   └── features/           # ماژول‌های تفکیک‌شده بخش‌های اصلی سایت
+│   │       ├── Hero/           # سکشن ورودی، واگرایی حروف ScatterLetter و متن سایبری TechText
+│   │       ├── Statement/      # بیانیه مانیفست با افکت محو و آشکار شدن کاراکتر به کاراکتر
+│   │       ├── Story/          # عکاسی آنالوگ و اسپات‌لایت تعاملی ۳ هم‌بنیان‌گذار
+│   │       ├── Work/           # دیواره سه‌بعدی DriftWall و ناوبری شناور پرتال ProjectPortalNav
+│   │       ├── Contact/        # کیبورد مکانیکی سه‌بعدی، سنتز صدا با Web Audio و فرم پیام
+│   │       └── ProjectDetail/  # اجزای کیس‌استادی (Header, Hero, Media, Services, View)
 │   │
-│   ├── data/                   # Centralized application state and content schemas
-│   │   ├── projects.js         # Complete portfolio projects roster and metadata
-│   │   └── founders.js         # Co-founders profile definitions and spotlight ranges
+│   ├── data/                   # منابع متمرکز داده و اطلاعات متنی سایت
+│   │   ├── projects.js         # لیست تمام پروژه‌های پورتفولیو و متادیتای بنتو گرید
+│   │   └── founders.js         # اطلاعات ۳ هم‌بنیان‌گذار، نقل‌قول‌ها و مختصات اسپات‌لایت
 │   │
-│   ├── hooks/                  # Reusable custom React hooks
-│   │   └── useMobile.js        # SSR-safe responsive viewport breakpoint detector
+│   ├── hooks/                  # هوک‌های سفارشی ری‌اکت
+│   │   └── useMobile.js        # هوک سراسری و ایمن برای تشخیص سایز موبایل (SSR-Safe)
 │   │
-│   ├── lib/                    # Core libraries, design tokens, and preloaders
-│   │   ├── constants.js        # Design tokens, color palette, easings, social links
-│   │   ├── preloadImages.js    # Browser preloader for zero-latency image transitions
-│   │   └── utils.js            # Tailwind merge and utility helpers (cn)
+│   ├── lib/                    # کتابخانه‌ها، توکن‌های سراسری و پیش‌بارگذارها
+│   │   ├── constants.js        # توکن‌های دیزاین، پالت رنگ، منحنی‌های Easing، لینک‌های سوشال
+│   │   ├── preloadImages.js    # سیستم پیش‌بارگذاری هوشمند تصاویر در بک‌گراند
+│   │   └── utils.js            # ابزارهای کمکی ادغام کلاس‌های تیل‌ویند (cn)
 │   │
-│   ├── pages/                  # Page route containers
-│   │   ├── Home.jsx            # Single-page portfolio orchestrator
-│   │   └── ProjectDetail.jsx   # Case study page with full-page zoom transitions
+│   ├── pages/                  # صفحات اصلی روتینگ برنامه
+│   │   ├── Home.jsx            # ارکستراتور صفحه اصلی پورتفولیو
+│   │   └── ProjectDetail.jsx   # کانتینر صفحه پروژه با انیمیشن زوم تمام‌صفحه
 │   │
-│   ├── App.jsx                 # Application entry, router, and background layers
-│   ├── main.jsx                # React root mount
-│   └── index.css               # Global typography, Tailwind directives & CSS resets
+│   ├── App.jsx                 # ریشه برنامه، پیکربندی مسیرها و لایه‌های پس‌زمینه
+│   ├── main.jsx                # نقطه ورود React و اتصال به DOM
+│   └── index.css               # استایل‌های سراسری، دستورات Tailwind و فونت‌ها
 │
-├── ARCHITECTURE.md             # This document
-├── vercel.json                 # CDN caching rules, SPA routing rewrites
-└── package.json                # Project dependencies and script runner
+├── ARCHITECTURE.md             # همین مستند (راهنمای فنی مهندسی نرم‌افزار)
+├── DESIGN_SYSTEM.md            # مستند جامع دیزاین سیستم و هویت بصری
+├── vercel.json                 # تنظیمات کش CDN دائم و ریرایت SPA
+└── package.json                # اسکریپت‌ها و وابستگی‌های پروژه
 ```
 
 ---
 
-## 2. 🎨 Design System & Constants (`src/lib/constants.js`)
+## ۲. 🎨 توکن‌ها و متغیرهای متمرکز (`src/lib/constants.js`)
 
-All brand colors, animation easings, responsive breakpoints, and external links are strictly centralized in `src/lib/constants.js`:
+برای جلوگیری از تکرار کدهای رنگ هاردکدشده (Hardcoded) و تسهیل تغییرات سراسری در آینده، تمامی مقادیر ثابت در `src/lib/constants.js` متمرکز شده‌اند:
 
 ```javascript
 import { THEME, EASINGS, SOCIAL_LINKS, BREAKPOINTS } from "@/lib/constants";
 ```
 
-- **`THEME.colors.primary`**: `#67E8F9` (Cyan Electric)
-- **`THEME.colors.background`**: `#050508` (Obsidian Cyber)
-- **`EASINGS.expoOut`**: `[0.16, 1, 0.3, 1]`
-- **`EASINGS.cinematic`**: `[0.22, 1, 0.36, 1]`
-- **`BREAKPOINTS.mobile`**: `768px`
+- **رنگ اصلی (Primary Cyan):** `#67E8F9` (آبی فیروزه‌ای نئونی راک)
+- **رنگ پس‌زمینه (Deep Obsidian):** `#050508` (مشکی سایبری مات)
+- **منحنی اکسپوننشیال (`EASINGS.expoOut`):** `[0.16, 1, 0.3, 1]` برای ورودهای فوق‌سریع و توقف‌های نرم
+- **منحنی سینماتیک (`EASINGS.cinematic`):** `[0.22, 1, 0.36, 1]` برای ترنزیشن‌های عمیق اسکرول
+- **لینک‌های شبکه‌های اجتماعی:** مقادیر کانال تلگرام و صفحه اینستاگرام استودیو
+- **بریک‌پوینت‌های ریسپانسیو:** نقطه عطف موبایل روی `768px`
 
 ---
 
-## 3. 🧩 Key Modules & Architectural Subsystems
+## ۳. 🧩 کالبدشکافی ماژول‌های فنی و زیرسیستم‌ها
 
-### 3.1. Work & 3D DriftWall (`src/components/features/Work/`)
-- **`Work.jsx`**: Coordinates scroll-driven spring physics using `framer-motion` (`useScroll`, `useSpring`).
-- **`DriftWall.jsx`**: Renders 3D perspective grid of portfolio tiles.
-  - **Adaptive Columns**: 3 columns on mobile (`width < 768px`), 5 columns on desktop.
-  - **Video Previews**: Plays lightweight MP4 hover clips on desktop hover or mobile tap.
-- **`ProjectPortalNav.jsx`**: Floating corner navigation bar for project case studies.
-  - **Desktop**: Hovering over Next/Previous reveals animated project card; click navigates.
-  - **Mobile Touch Handling**: Immediate tap (< 600ms without dragging) navigates directly; continuous 2-second hold reveals project preview without accidental scroll interruptions.
+```mermaid
+flowchart TD
+    App["App.jsx (مدیریت روتینگ و DataRain)"]
+    App --> Home["Home.jsx (صفحه اصلی)"]
+    App --> PD["ProjectDetail.jsx (صفحه جزئیات)"]
+    
+    Home --> Nav["Navbar.jsx"]
+    Home --> Hero["Hero.jsx (حروف واگرا + TechText)"]
+    Home --> Stmt["Statement.jsx (مانیفست حل‌شونده)"]
+    Home --> Story["OurStory.jsx (اسپات‌لایت بنیان‌گذاران)"]
+    Home --> Work["Work.jsx (3D DriftWall)"]
+    Home --> Contact["Contact.jsx (کیبورد مکانیکی و فرم)"]
+    
+    PD --> PV["ProjectView.jsx"]
+    PV --> PH["ProjectHeader.jsx"]
+    PV --> PHero["ProjectHero.jsx"]
+    PV --> PM["ProjectMedia.jsx (پلیر 4K)"]
+    PV --> PS["ProjectServices.jsx"]
+    PD --> PNav["ProjectPortalNav.jsx (ناوبری پرتال)"]
+```
 
-### 3.2. Contact & 3D Mechanical Keyboard (`src/components/features/Contact/`)
-- **`Contact.jsx`**: Section orchestrator binding 3D perspective scroll fold animation.
-- **`ContactForm.jsx`**: Lead capture inputs (`name`, `phone`, `message`), Persian/English phone sanitizer, status feedback, and social links.
-- **`ContactKeyboard.jsx`**: 75% Mac ANSI mechanical keyboard rendered with CSS 3D transforms, ripple illumination, and key depression states.
-- **`keyboardData.js`**: Key matrices (`ROWS`, `BY_CODE`, `BY_CHAR`) and switch acoustic physics parameters (`VAR_MAP`).
-- **`useKeyboardAudio.js`**: Custom Web Audio API synthesizer. Dynamically constructs bandpass noise bursts and low-frequency sine resonance on every keystroke.
+### ۳.۱. ماژول کارها و دیواره سه‌بعدی (`src/components/features/Work/`)
+- **`Work.jsx`:** هماهنگ‌کننده پیشرفت اسکرول با فیزیک اسپرینگ (`useSpring`) جهت حذف پرش ماوس کاربر.
+- **`DriftWall.jsx`:** رندرینگ کاشی‌های سه‌بعدی با زاویه دید پرسپکتیو `perspective(1000px)`.
+  - **ستون‌های تطبیقی:** در موبایل به صورت خودکار به ۳ ستون و در دسکتاپ به ۵ ستون تبدیل می‌شود.
+  - **پخش خودکار کلیپ پیش‌نمایش:** در هاور دسکتاپ و تاچ موبایل، بخش ویدیویی سبک `hoverClip` اجرا می‌گردد.
+- **`ProjectPortalNav.jsx`:** ناوبری پرتال شناور گوشه صفحه:
+  - **در دسکتاپ:** تعقیب نشانگر ماوس با کارت متحرک در هاور دکمه‌های Next/Prev و هدایت با کلیک.
+  - **در موبایل:** تمایز هوشمند میان کلیک/لمس سریع (زیر ۶۰۰ میلی‌ثانیه برای جابجایی آنی) و نگه داشتن ۲ ثانیه‌ای (نمایش کارت بدون تغییر صفحه) به همراه محافظت کامل از اسکرول عادی دست.
 
-### 3.3. Project Case Studies (`src/pages/ProjectDetail.jsx` & `src/components/features/ProjectDetail/`)
-- **`ProjectDetail.jsx`**: Page container handling URL slug matching, dynamic transform-origin calculation, and full-page zoom expansion animations.
-- **`ProjectView.jsx`**: Composition wrapper rendering the full case study presentation.
-- **`ProjectHeader.jsx`**: Navigation bar with back-link and action CTA.
-- **`ProjectHero.jsx`**: Title, description, and responsive 4-column Bento metadata grid.
-- **`ProjectMedia.jsx`**: Custom 4K video player with sleek seek bar, time counter, mute toggle, and fullscreen controls, or fallback browser mockups.
-- **`ProjectServices.jsx`**: Deliverables list, technology pill tags, project inquiry CTA, and next case study teaser card.
+### ۳.۲. ماژول تماس و کیبورد مکانیکی (`src/components/features/Contact/`)
+- **`Contact.jsx`:** ارکستراتور اصلی که وظیفه تا شدن سه‌بعدی کیبورد و تایپ مجازی را بر عهده دارد.
+- **`ContactForm.jsx`:** فرم دریافت اطلاعات لید (نام، شماره تماس با فیلتر خودکار ارقام فارسی/انگلیسی، متن پیام) و پیوندهای شبکه‌های اجتماعی.
+- **`ContactKeyboard.jsx`:** چیدمان ۷۵٪ مکینتاش با نورپردازی شعاعی ریپل و افکت فرورفتگی کلیدها.
+- **`keyboardData.js`:** آرایه کلیدها، ردیف‌ها و ضرایب فرکانسی پروفایل‌های مختلف کلید (`VAR_MAP`).
+- **`useKeyboardAudio.js`:** هوک سینت‌سایزر صدا با **Web Audio API** بدون نیاز به فایل‌های صوتی سنگین خارجی (تولید صدای کلیک با ترکیب نویز سفید، فیلتر Bandpass و رزونانس سینوسی).
 
-### 3.4. Story & Founders Spotlight (`src/components/features/Story/`)
-- **`OurStory.jsx`**: Orchestrates sticky scroll container with progressive timeline.
-- **`src/data/founders.js`**: Structured roster of studio founders with spotlight coordinates (`box: { left, top, width, height }`) and scroll progress ranges (`range: [inStart, inEnd, outStart, outEnd]`).
+### ۳.۳. ماژول صفحات جزئیات پروژه‌ها (`src/components/features/ProjectDetail/`)
+- **`ProjectDetail.jsx`:** کانتینر اصلی صفحه؛ مسئولیت روتینگ با شناسه `slug`، بافر بدون پرش پروژه قبلی، و انیمیشن زوم تمام‌صفحه (Full-Page Zoom) از محل دقیق کلیک کاربر.
+- **`ProjectView.jsx`:** ترکیب‌کننده لایه‌ها و ساختار بصری کیس‌استادی.
+- **`ProjectHeader.jsx`:** نوار ناوبری بالای پروژه و بازگشت به صفحه کارهای اصلی.
+- **`ProjectHero.jsx`:** عنوان پروژه، شرح کانسپت و شبکه متادیتای بنتو (کلاینت، سال، حوزه تخصصی و خروجی).
+- **`ProjectMedia.jsx`:** پلیر سفارشی ویدیوهای ۴K با نوار پیمایش seekable، تایمر دقیق، کنترل صدا و دکمه فول‌اسکرین.
+- **`ProjectServices.jsx`:** لیست دستاوردها و دلیوربل‌ها، تگ‌های تکنولوژی، دعوت به همکاری و کارت پروژه بعدی.
+
+### ۳.۴. داستان استودیو و بنیان‌گذاران (`src/components/features/Story/`)
+- **`OurStory.jsx`:** سکشن استیکی عکاسی آنالوگ با تایم‌لاین روایی اسکرول.
+- **`src/data/founders.js`:** دیتابیس پروفایل بنیان‌گذاران شامل مختصات دقیق کادر اسپات‌لایت نئونی (`box`) و بازه‌های اسکرول ورود و خروج (`range`).
 
 ---
 
-## 4. 🚀 How to Extend the Project
+## ۴. 🚀 راهنمای گام‌به‌گام توسعه (How-to Guide)
 
-### Adding a New Case Study
-1. Place assets inside `src/assets/projects/` (prefer `.webp` for images, compressed `.mp4` for video).
-2. Open `src/data/projects.js` and add a new entry conforming to the `Project` schema:
+### ۴.۱. اضافه کردن یک پروژه جدید به پورتفولیو
+برای افزودن کار جدید، نیازی به دستکاری کدهای کامپوننت نیست:
+1. تصویر پروژه را ترجیحاً با فرمت مدرن `.webp` و ویدیوی تیزر را با فرمت `.mp4` در مسیر `src/assets/projects/` قرار دهید.
+2. فایل `src/data/projects.js` را باز کرده و یک آبجکت جدید طبق ساختار زیر به آرایه `projects` اضافه کنید:
+
 ```javascript
 {
-  id: "my-project",
-  slug: "my-project",
-  title: "My Project Title",
-  category: "Motion & Identity",
-  description: "A short synopsis of the case study.",
-  client: "Client Name",
-  year: "2025",
-  image: projectImg,
-  scrollImage: projectScrollWebp, // Optional 700px lightweight preview
-  video: projectVideoMp4,         // Optional 4K video file
-  hoverClip: projectPreviewMp4,   // Optional loop clip for DriftWall
-  services: ["Art Direction", "Full-Stack Dev"],
-  tags: ["React", "WebGL", "Tailwind CSS"],
+  slug: "new-brand-identity",         // شناسه منحصر‌به‌فرد در آدرس URL
+  title: "New Brand Identity",        // نام نمایشی پروژه
+  category: "Visual Identity",        // دسته‌بندی (Motion, Web, Visual Identity, Brand)
+  image: coverImg,                    // تصویر پوستر اصلی
+  scrollImage: previewWebp,           // (اختیاری) تصویر سبک ۷۰۰ پیکسلی برای اسکرول سریع دیواره
+  video: videoMp4,                    // (اختیاری) فایل ویدیوی باکیفیت برای پلیر کیس‌استادی
+  hoverClip: { start: 1, end: 4 },    // (اختیاری) ثانیه شروع و پایان کلیپ هاور در دیواره
+  client: "Client Name",              // نام کارفرما
+  year: "2025",                       // سال اجرای پروژه
+  services: ["Art Direction", "UI/UX", "3D Motion"],
+  description: "توضیح کامل فلسفه خلق پروژه و اهداف بصری...",
+  tags: ["Figma", "React", "WebGL", "Cinema4D"],
+  externalUrl: "https://example.com", // (اختیاری) لینک وب‌سایت زنده
 }
 ```
-3. The new project will automatically populate:
-   - 3D DriftWall in the Work section
-   - Next/Previous Portal Navigation
-   - Dedicated route at `/projects/my-project`
+3. پروژه شما به صورت خودکار در موارد زیر ظاهر می‌شود:
+   - دیواره سه‌بعدی متحرک در صفحه اصلی (`DriftWall`)
+   - سیستم ناوبری پرتال در گوشه صفحات (`ProjectPortalNav`)
+   - صفحه اختصاصی کیس‌استادی در آدرس `/projects/new-brand-identity`
 
-### Adding a New Team Member / Founder
-1. Add portrait asset to `src/assets/` as `.webp`.
-2. Add definition to `src/data/founders.js`:
+### ۴.۲. اضافه کردن عضو جدید به تیم
+1. عکس پرتره عضو جدید را به پوشه `src/assets/` اضافه کنید.
+2. در فایل `src/data/founders.js` یک ورودی جدید ایجاد کنید:
+
 ```javascript
 {
-  id: "name",
-  name: "Name",
-  role: "Creative Role",
-  tagline: "Studio Motto",
+  id: "member-id",
+  name: "نام عضو",
+  role: "عنوان تخصص استودیو",
+  tagline: "شعار شخصی یا فلسفه دیزاین",
   image: portraitImg,
-  quote: "Personal quote or philosophy.",
-  skills: ["Skill 1", "Skill 2"],
+  quote: "نقل‌قول ماندگار...",
+  skills: ["Skill 1", "Skill 2", "Skill 3"],
+  // موقعیت کادر نوری روی عکس اصلی تیم
   box: { left: "20%", top: "10%", width: "30%", height: "80%" },
-  range: [0.2, 0.28, 0.45, 0.52],
+  // بازه پیشرفت اسکرول برای روشن شدن و ورود کارت
+  range: [0.20, 0.28, 0.45, 0.52],
 }
 ```
 
 ---
 
-## 5. 🛠️ Development & Quality Assurance
+## ۵. 🛠️ دستورات خط فرمان و کنترل کیفیت
 
 ```bash
-# Start development server
+# اجرای سرور توسعه محلی
 npm run dev
 
-# Run ESLint validation
+# بررسی سلامت کد و استانداردهای لینتر (ESLint)
 npm run lint
 
-# Production build check
+# بیلد نهایی بهینه‌سازی‌شده برای محیط پروداکشن
 npm run build
 
-# Preview production build locally
+# پیش‌نمایش لوکال بیلد نهایی
 npm run preview
 ```
 
-> **Rule for Contributors**: Maintain zero ESLint errors and ensure bundle build succeeds prior to pushing to `main`.
+> **اصل توسعه در استودیو راک:** قبل از هر کامیت و پوش به برنچ `main`، اجرای دستورات `npm run lint` و `npm run build` اجباری است و خروجی باید کاملاً بدون خطا و اخطار (0 errors, 0 warnings) باشد.
