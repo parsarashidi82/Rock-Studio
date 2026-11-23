@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 import { projects } from "@/data/projects";
+import { useMobile } from "@/hooks/useMobile";
 import DriftWall from "./DriftWall";
 
 const items = projects.map((p) => ({
@@ -20,16 +21,7 @@ export default function Work() {
   const containerRef = useRef(null);
   const [active, setActive] = useState(null);
   const [last, setLast] = useState(null); // برای fade-out بدون پریدن متن
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < 768,
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 768px)");
-    const handler = (e) => setIsMobile(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const isMobile = useMobile(768);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,

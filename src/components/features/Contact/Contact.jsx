@@ -1,17 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { BY_CODE, BY_CHAR } from "./keyboardData";
+import { useKeyboardAudio } from "./useKeyboardAudio";
+import ContactKeyboard from "./ContactKeyboard";
+import ContactForm from "./ContactForm";
 
 const clamp = (v) => Math.min(1, Math.max(0, v));
 const win = (p, a, b) => clamp((p - a) / (b - a));
 
-const bez = (x1, y1, x2, y2) => (t) => {
+// Cubic bezier smoothing curve (0.22, 1, 0.36, 1)
+const ease = (t) => {
   if (t <= 0) return 0;
   if (t >= 1) return 1;
   let a = t;
-  const cx = 3 * x1;
-  const bx = 3 * (x2 - x1) - cx;
+  const cx = 3 * 0.22;
+  const bx = 3 * (0.36 - 0.22) - cx;
   const ax = 1 - cx - bx;
-  const cy = 3 * y1;
-  const by = 3 * (y2 - y1) - cy;
+  const cy = 3 * 1;
+  const by = 3 * (1 - 1) - cy;
   const ay = 1 - cy - by;
   for (let i = 0; i < 8; i++) {
     const x = ((ax * a + bx) * a + cx) * a - t;
@@ -22,101 +27,11 @@ const bez = (x1, y1, x2, y2) => (t) => {
   return ((ay * a + by) * a + cy) * a;
 };
 
-const ease = bez(0.22, 1, 0.36, 1);
-
-/* ---------- Keyboard Layout Data ---------- */
-const K = (code, label, sub, ch, w, kind = "n", snd = "normal") => ({
-  code,
-  label,
-  sub,
-  ch,
-  w,
-  kind,
-  snd,
-});
-const L = (c) => K("Key" + c.toUpperCase(), c.toUpperCase(), "", c, 1);
-const nums = "`~,1!,2@,3#,4$,5%,6^,7&,8*,9(,0),-_,=+".split(",");
-const numCodes = [
-  "Backquote",
-  "Digit1",
-  "Digit2",
-  "Digit3",
-  "Digit4",
-  "Digit5",
-  "Digit6",
-  "Digit7",
-  "Digit8",
-  "Digit9",
-  "Digit0",
-  "Minus",
-  "Equal",
-];
-
-const ROWS = [
-  [
-    K("Escape", "esc", "", "", 1.5, "mod", "modifier"),
-    ...Array.from({ length: 12 }, (_, i) => ({
-      ...K("F" + (i + 1), "F" + (i + 1), "", "", 1, "fn", "modifier"),
-      gap: i % 4 === 0,
-    })),
-  ],
-  [
-    ...nums.map((n, i) => K(numCodes[i], n[0], n[1], n[0], 1)),
-    K("Backspace", "⌫", "", "", 2, "mod", "delete"),
-  ],
-  [
-    K("Tab", "⇥", "", "\t", 1.5, "mod", "modifier"),
-    ..."qwertyuiop".split("").map(L),
-    K("BracketLeft", "[", "{", "[", 1),
-    K("BracketRight", "]", "}", "]", 1),
-    K("Backslash", "\\", "|", "\\", 1.5, "mod", "modifier"),
-  ],
-  [
-    K("CapsLock", "caps", "", "", 1.75, "mod", "modifier"),
-    ..."asdfghjkl".split("").map(L),
-    K("Semicolon", ";", ":", ";", 1),
-    K("Quote", "'", '"', "'", 1),
-    K("Enter", "return", "", "\n", 2.25, "mod", "enter"),
-  ],
-  [
-    K("ShiftLeft", "⇧", "", "", 2.25, "mod", "modifier"),
-    ..."zxcvbnm".split("").map(L),
-    K("Comma", ",", "<", ",", 1),
-    K("Period", ".", ">", ".", 1),
-    K("Slash", "/", "?", "/", 1),
-    K("ShiftRight", "⇧", "", "", 2.75, "mod", "modifier"),
-  ],
-  [
-    K("Fn", "fn", "", "", 1, "mod", "modifier"),
-    K("ControlLeft", "control", "", "", 1.5, "mod", "modifier"),
-    K("AltLeft", "option", "", "", 1.5, "mod", "modifier"),
-    K("MetaLeft", "⌘", "", "", 1.75, "mod", "modifier"),
-    K("Space", "", "", " ", 5, "n", "space"),
-    K("MetaRight", "⌘", "", "", 1.75, "mod", "modifier"),
-    K("AltRight", "option", "", "", 1.5, "mod", "modifier"),
-    K("ArrowLeft", "←", "", "", 1, "mod", "modifier"),
-    K("ArrowRight", "→", "", "", 1, "mod", "modifier"),
-  ],
-];
-
-const BY_CODE = {};
-const BY_CHAR = {};
-ROWS.forEach((row) => {
-  row.forEach((k) => {
-    BY_CODE[k.code] = k;
-    if (k.ch && k.ch.length === 1) BY_CHAR[k.ch] = k;
-  });
-});
-
-/* ---------- Audio Synthesis Parameters ---------- */
-const VAR_MAP = {
-  normal: [5400, 4.2, 0.0042, 0.5, 400, 1.1, 0.022, 0.82, 0.007, 280, 0.22],
-  space: [2200, 2.2, 0.01, 0.28, 148, 0.8, 0.048, 1.05, 0.012, 118, 0.3],
-  enter: [3700, 3.4, 0.006, 0.43, 275, 1, 0.032, 0.92, 0.009, 205, 0.26],
-  delete: [6100, 4.8, 0.0034, 0.55, 510, 1.3, 0.017, 0.73, 0.005, 345, 0.18],
-  modifier: [3000, 2.7, 0.005, 0.28, 210, 0.9, 0.019, 0.6, 0.007, 158, 0.15],
-};
-
+/**
+ * Contact section orchestrator.
+ * Combines lead capture, Web Audio API mechanical keyboard synthesis,
+ * 3D perspective fold scroll animation, and interactive virtual typing.
+ */
 export default function Contact() {
   const secRef = useRef(null);
   const glowRef = useRef(null);
@@ -128,18 +43,11 @@ export default function Contact() {
 
   const elsRef = useRef({});
   const timersRef = useRef({});
-  const acRef = useRef(null);
-
-  const [soundOn, setSoundOn] = useState(true);
-  const soundOnRef = useRef(soundOn);
-
-  useEffect(() => {
-    soundOnRef.current = soundOn;
-  }, [soundOn]);
-
   const focusedFieldRef = useRef(null);
   const shiftRef = useRef(false);
   const capsRef = useRef(false);
+
+  const { soundOn, setSoundOn, playKeySound } = useKeyboardAudio();
 
   useEffect(() => {
     const sec = secRef.current;
@@ -175,71 +83,7 @@ export default function Contact() {
     };
     F.phone?.addEventListener("input", handlePhoneInput);
 
-    /* ---------- Audio Synthesizer Functions ---------- */
-    const burst = (t, hz, q, dec, g, vol) => {
-      const ac = acRef.current;
-      if (!ac || g < 0.001) return;
-      const sr = ac.sampleRate;
-      const dur = Math.max(dec * 6.5, 0.014);
-      const len = Math.ceil(sr * dur);
-      const buf = ac.createBuffer(1, len, sr);
-      const d = buf.getChannelData(0);
-      const tc = dec * sr;
-      for (let i = 0; i < len; i++) {
-        d[i] = (Math.random() * 2 - 1) * Math.exp(-i / tc);
-      }
-      const s = ac.createBufferSource();
-      s.buffer = buf;
-      const f = ac.createBiquadFilter();
-      f.type = "bandpass";
-      f.frequency.value = hz * (0.92 + Math.random() * 0.16);
-      f.Q.value = q;
-      const gn = ac.createGain();
-      gn.gain.setValueAtTime(g * vol, t);
-      gn.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      s.connect(f);
-      f.connect(gn);
-      gn.connect(ac.destination);
-      s.start(t);
-      s.stop(t + dur + 0.01);
-    };
-
-    const clickSound = (v) => {
-      if (!soundOnRef.current) return;
-      try {
-        if (!acRef.current) {
-          const AudioContextClass =
-            window.AudioContext || window.webkitAudioContext;
-          if (AudioContextClass) acRef.current = new AudioContextClass();
-        }
-        const ac = acRef.current;
-        if (!ac) return;
-        if (ac.state === "suspended") ac.resume();
-
-        const p = VAR_MAP[v] || VAR_MAP.normal;
-        const n = ac.currentTime;
-        const vol = 0.35;
-        burst(n, p[0], p[1], p[2], p[3], vol);
-        burst(n + p[8], p[4], p[5], p[6], p[7], vol);
-
-        const o = ac.createOscillator();
-        const g = ac.createGain();
-        const t2 = n + p[8];
-        o.type = "sine";
-        o.frequency.setValueAtTime(p[9] * 1.35, t2);
-        o.frequency.exponentialRampToValueAtTime(p[9] * 0.52, t2 + 0.065);
-        g.gain.setValueAtTime(p[10] * vol, t2);
-        g.gain.exponentialRampToValueAtTime(0.0001, t2 + 0.085);
-        o.connect(g);
-        g.connect(ac.destination);
-        o.start(t2);
-        o.stop(t2 + 0.1);
-      } catch {
-        // absorb
-      }
-    };
-
-    /* ---------- Press & Ripple Effects ---------- */
+    /* ---------- Press & Ripple Key Lighting ---------- */
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ripple = (el) => {
@@ -264,7 +108,7 @@ export default function Contact() {
           { transform: "scale(.2)", opacity: 0.95 },
           { transform: "scale(9)", opacity: 0 },
         ],
-        { duration: 1100, easing: "cubic-bezier(.2,.8,.2,1)" },
+        { duration: 1100, easing: "cubic-bezier(.2,.8,.2,1)" }
       );
       a1.onfinish = () => r.remove();
 
@@ -283,7 +127,7 @@ export default function Contact() {
           { transform: "scale(.6)", opacity: 0.8 },
           { transform: "scale(1.4)", opacity: 0 },
         ],
-        { duration: 600, easing: "ease-out" },
+        { duration: 600, easing: "ease-out" }
       );
       a2.onfinish = () => g.remove();
     };
@@ -298,10 +142,10 @@ export default function Contact() {
       clearTimeout(timersRef.current[k.code]);
       timersRef.current[k.code] = setTimeout(
         () => el.classList.remove("on"),
-        130,
+        130
       );
       ripple(el);
-      clickSound(k.snd);
+      playKeySound(k.snd);
     };
 
     const handleFormKeydown = (e) => {
@@ -462,9 +306,8 @@ export default function Contact() {
       form.removeEventListener("submit", handleFormSubmit);
       kb.removeEventListener("mousedown", handleKbMousedown);
       kb.removeEventListener("pointerdown", handleKbPointerdown);
-      acRef.current?.close().catch(() => {});
     };
-  }, []);
+  }, [playKeySound]);
 
   return (
     <>
@@ -788,120 +631,15 @@ export default function Contact() {
         <div className="stage">
           <div className="glow" ref={glowRef} />
           <div className="wrap">
-            <div>
-              <div className="r" data-r="0,.12">
-                <p className="eyebrow">Contact</p>
-                <h2>
-                  Tell us what
-                  <br />
-                  you’re building.
-                </h2>
-              </div>
-
-              <form id="f" ref={formRef} noValidate>
-                <div className="r" data-r=".08,.22">
-                  <label className="fld">
-                    <span>Your name</span>
-                    <input name="name" dir="auto" autoComplete="name" />
-                  </label>
-                </div>
-                <div className="r" data-r=".15,.29">
-                  <label className="fld">
-                    <span>Phone number</span>
-                    <input
-                      name="phone"
-                      type="tel"
-                      inputMode="tel"
-                      dir="auto"
-                      autoComplete="tel"
-                    />
-                  </label>
-                </div>
-                <div className="r" data-r=".22,.36">
-                  <label className="fld">
-                    <span>Message</span>
-                    <textarea name="message" rows={3} dir="auto" />
-                  </label>
-                </div>
-                <div className="r row" data-r=".32,.44">
-                  <button className="send" type="submit">
-                    Send message
-                  </button>
-                  <p id="st" ref={stRef} aria-live="polite" />
-                </div>
-              </form>
-
-              <div className="r soc" data-r=".5,.64">
-                <a
-                  href="https://t.me/rokstudio"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  <span>Telegram</span>
-                  <b>@rokstudio</b>
-                </a>
-                <a
-                  href="https://instagram.com/rokstudio"
-                  target="_blank"
-                  rel="noreferrer noopener"
-                >
-                  <span>Instagram</span>
-                  <b>@rokstudio</b>
-                </a>
-              </div>
-            </div>
-
-            <div className="kbw" ref={kbwRef} id="kbw">
-              <div id="kb" ref={kbRef} aria-hidden="true">
-                <div className="rip" ref={ripRef} id="rip" />
-                <div className="rows" id="rows">
-                  {ROWS.map((row, ri) => (
-                    <div className="krow" key={ri}>
-                      {row.map((k) => (
-                        <div key={k.code} style={{ display: "contents" }}>
-                          {k.gap && <span className="gap" />}
-                          <button
-                            type="button"
-                            tabIndex={-1}
-                            data-code={k.code}
-                            ref={(el) => {
-                              if (el) elsRef.current[k.code] = el;
-                            }}
-                            aria-label={k.label || k.code}
-                            className={`key ${k.kind === "fn" ? "fn" : ""} ${k.kind === "mod" ? "mod" : ""} ${
-                              /Right$|^Enter$|^Backspace$/.test(k.code)
-                                ? "right"
-                                : ""
-                            }`}
-                            style={{ "--w": k.w }}
-                          >
-                            {k.code !== "Space" &&
-                              (k.sub && k.kind === "n" ? (
-                                <span className="l s">
-                                  <i>{k.sub}</i>
-                                  <span>{k.label}</span>
-                                </span>
-                              ) : (
-                                <span className="l">{k.label}</span>
-                              ))}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="cap">
-                <span>Type in the fields, or tap the keys</span>
-                <button
-                  id="snd"
-                  type="button"
-                  onClick={() => setSoundOn((prev) => !prev)}
-                >
-                  Sound {soundOn ? "on" : "off"}
-                </button>
-              </div>
-            </div>
+            <ContactForm formRef={formRef} stRef={stRef} />
+            <ContactKeyboard
+              kbwRef={kbwRef}
+              kbRef={kbRef}
+              ripRef={ripRef}
+              elsRef={elsRef}
+              soundOn={soundOn}
+              onToggleSound={() => setSoundOn((prev) => !prev)}
+            />
           </div>
         </div>
       </section>

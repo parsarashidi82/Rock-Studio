@@ -1,23 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import ProjectDetail from "./pages/ProjectDetail";
 import ScrollToTop from "./components/common/ScrollToTop";
 import DataRain from "./components/ui/data-rain";
 import { initImagePreloader } from "./lib/preloadImages";
+import { useMobile } from "./hooks/useMobile";
 
 function App() {
-  const [particleCount, setParticleCount] = useState(() =>
-    typeof window !== "undefined" && window.innerWidth < 768 ? 320 : 750,
-  );
+  const isMobile = useMobile(768);
+  const particleCount = isMobile ? 320 : 750;
 
   useEffect(() => {
     initImagePreloader();
-    const updateCount = () => {
-      setParticleCount(window.innerWidth < 768 ? 320 : 750);
-    };
-    window.addEventListener("resize", updateCount);
-    return () => window.removeEventListener("resize", updateCount);
   }, []);
 
   return (
