@@ -63,6 +63,15 @@ function RollLink({ href, label, onClick }) {
   );
 }
 
+/**
+ * نوبار اصلی و هوشمند استودیو راک (Navbar).
+ * 
+ * ویژگی‌ها:
+ * ۱. پنهان در ابتدای صفحه هیرو و پدیدار شدن نرم پس از ۲۰٪ اسکرول (OPEN_AT = 0.2).
+ * ۲. افکت باز شدن کرکره‌ای (Roll Effect) روی لینک‌ها هنگام هاور با رنگ شاخص #67E8F9.
+ * ۳. دراور تمام‌صفحه ریسپانسیو در دستگاه‌های موبایل با قفل کردن هوشمند اسکرول پس‌زمینه.
+ * ۴. اسکرول نرم خودکار با کلیک روی هر لینک به سکشن مربوطه.
+ */
 export default function Navbar() {
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);

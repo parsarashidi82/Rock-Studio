@@ -1,7 +1,9 @@
 import { motion, useTransform } from "framer-motion";
 
-// range = [شروع ورود، پایان ورود، شروع خروج، پایان خروج]
-// روی پیشرفت کل اسکرول Hero (۰ تا ۱)
+/**
+ * خطوط داستانی استودیو راک به ترتیب نمایش در اسکرول
+ * فرمت range: [شروع ورود، تکمیل ورود، شروع خروج، پایان خروج] بر مبنای پیشرفت ۰ تا ۱ اسکرول هیرو
+ */
 const MESSAGES = [
   { text: "It all starts with an idea", range: [0.06, 0.09, 0.17, 0.2] },
   { text: "Even we were once just an idea", range: [0.21, 0.24, 0.32, 0.35] },
@@ -13,9 +15,19 @@ const MESSAGES = [
   },
 ];
 
+/**
+ * کامپوننت پیام تکی که در بازه اسکرول اختصاصی خود به نرمی وارد و خارج می‌شود.
+ * 
+ * @param {Object} props
+ * @param {string} props.text - متن پیام
+ * @param {number[]} props.range - بازه‌های ۴گانه پیشرفت [a, b, c, d]
+ * @param {import("framer-motion").MotionValue<number>} props.progress - اسپرینگ اسکرول سراسری هیرو
+ */
 function Message({ text, range, progress }) {
   const [a, b, c, d] = range;
+  // شفافیت از ۰ به ۱ و سپس دوباره به ۰
   const opacity = useTransform(progress, [a, b, c, d], [0, 1, 1, 0]);
+  // جابجایی عمودی ظریف ۸ پیکسل جهت ایجاد حس بالا آمدن و سپس ادامه حرکت
   const y = useTransform(progress, [a, b, c, d], [8, 0, 0, -8]);
 
   return (
@@ -28,6 +40,12 @@ function Message({ text, range, progress }) {
   );
 }
 
+/**
+ * نگهدارنده مجموعه پیام‌های روایی استودیو در پایین صفحه هیرو
+ * 
+ * @param {Object} props
+ * @param {import("framer-motion").MotionValue<number>} props.progress - مقدار اسپرینگ اسکرول هیرو
+ */
 export default function HeroMessage({ progress }) {
   return (
     <div className="pointer-events-none absolute inset-0 z-10">

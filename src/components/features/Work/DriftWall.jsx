@@ -29,11 +29,23 @@ const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+/**
+ * تابع محاسبه ضریب متغیر سرعت ستون‌ها بر مبنای نسبت طلایی
+ * برای ایجاد حس حرکت ارگانیک چندلایه (Parallax Variance)
+ * 
+ * @param {number} index - شماره ستون
+ * @param {number} variance - شدت تفاوت سرعت
+ * @returns {number} ضریب سرعت ستون
+ */
 const columnFactor = (index, variance) => {
   const pseudo = ((index * 0.6180339887 + 0.35) % 1) * 2 - 1;
   return 1 + variance * pseudo;
 };
 
+/**
+ * کامپوننت پخش ویدیوی لوپ هاور روی کاشی‌های پروژه
+ * به محض هاور کاربر یا فوکوس، ویدیو از زمان شروع تعیین‌شده (hoverClip.start) پخش می‌شود.
+ */
 function TileVideo({ src, poster, hoverClip, isActive, className }) {
   const videoRef = useRef(null);
   const [showPoster, setShowPoster] = useState(true);
@@ -149,6 +161,23 @@ function DriftColumn({ c, scrollYProgress, children, className }) {
   );
 }
 
+/**
+ * کامپوننت دیواره سه‌بعدی و شناور کاشی‌های پروژه (3D DriftWall).
+ * 
+ * ویژگی‌های کلیدی:
+ * - آرایش ماتریس سه‌بعدی با زاویه دید پرسپکتیو (Perspective 3D Transform)
+ * - تفکیک ستون‌ها به ۳ ستون در موبایل و ۵ ستون در دسکتاپ
+ * - افکت پارالاکس حرکتی ماوس روی صفحه
+ * - تشخیص هوشمند ضربه و کلیک روی کاشی‌ها حتی در زوایای سه‌بعدی (elementFromPoint)
+ * - پخش خودکار پیش‌نمایش ویدیو با هاور کاربر و بازگشت نرم به پوستر اولیه
+ * 
+ * @param {Object} props
+ * @param {Array} [props.items] - آرایه آیتم‌های پروژه‌ها
+ * @param {number} [props.columns=5] - تعداد ستون‌های دیواره (۳ برای موبایل، ۵ برای دسکتاپ)
+ * @param {import("framer-motion").MotionValue<number>} [props.scrollYProgress] - پیشرفت اسکرول والد
+ * @param {number} [props.perspective=1200] - عمق پرسپکتیو سه‌بعدی به پیکسل
+ * @param {Function} [props.onActiveChange] - کال‌بک تغییر پروژه فعال در هاور
+ */
 const DriftWall = ({
   items = DEFAULT_ITEMS,
   columns = 5,

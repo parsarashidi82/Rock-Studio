@@ -26,6 +26,34 @@ import motoralityThumb from "@/assets/projects/motorality-thumb.webp";
 import jam42Video from "@/assets/projects/kinetic-motion-2025.mp4";
 import jam42Thumb from "@/assets/projects/jam-42-thumb.webp";
 
+/**
+ * @typedef {Object} HoverClip
+ * @property {number} start - ثانیه شروع پیش‌نمایش در هاور
+ * @property {number} end - ثانیه پایان پیش‌نمایش
+ */
+
+/**
+ * @typedef {Object} Project
+ * @property {string} slug - شناسه یکتا برای روت اختصاصی /projects/:slug
+ * @property {string} title - نام و عنوان نمایشی پروژه
+ * @property {string} category - حوزه تخصصی (Motion, Web, Visual Identity, Brand)
+ * @property {string} image - تصویر کاور اصلی پروژه
+ * @property {string} [scrollImage] - تصویر فشرده و بهینه ۷۰۰ پیکسل برای اسکرول دیواره
+ * @property {string} [fullImage] - تصویر باکیفیت و اسکرول‌پذیر وب‌سایت
+ * @property {string} [video] - مسیر فایل ویدیوی باکیفیت ۴K کیس‌استادی
+ * @property {HoverClip} [hoverClip] - بازه زمانی کلیپ پیش‌نمایش متحرک در هاور دیواره
+ * @property {string} client - نام مشتری یا کارفرما
+ * @property {string} year - سال تولید
+ * @property {string[]} services - لیست خدمات و دلیوربل‌های تحویل داده شده
+ * @property {string} description - شرح مانیفست و جزئیات خلق پروژه
+ * @property {string[]} tags - تگ‌های فنی و ابزارهای مورد استفاده
+ * @property {string} [externalUrl] - لینک وب‌سایت زنده (در صورت وجود)
+ */
+
+/**
+ * دیتابیس متمرکز پروژه‌های استودیو راک
+ * @type {Project[]}
+ */
 export const projects = [
   {
     slug: "babam-fit",

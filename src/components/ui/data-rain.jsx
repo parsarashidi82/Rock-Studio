@@ -79,6 +79,18 @@ const WAVE_2 = makeWave(900, 3.4, 0.35, 4.2, 10);
 
 /* ───────────────────────────── component ───────────────────────────── */
 
+/**
+ * کامپوننت پس‌زمینه باران داده‌های دیجیتال (Data Rain Particle Canvas).
+ * 
+ * سیستم پیشرفته رندرینگ ذرات شبیه به باران ماتریکس/سایبرپانک با فیزیک گرداب،
+ * ردپای تاریخی هر ذره (History Tail)، گرادیان‌های رنگی نئون فیروزه‌ای، و تعامل با ماوس.
+ * برای عملکرد سبک، این انیمیشن با گام‌های زمانی ثابت ۱/۶۰ ثانیه روی بوم Canvas رندر می‌شود.
+ * 
+ * @param {Object} props
+ * @param {number} [props.count=750] - تعداد ذرات فعال (۳۲۰ برای موبایل، ۷۵۰ برای دسکتاپ)
+ * @param {number} [props.flowSpeed=1.0] - ضریب سرعت سقوط جریان ذرات
+ * @param {string} [props.className] - کلاس‌های تیل‌ویند (مانند -z-50)
+ */
 export default function DataRain(props) {
   const rootRef = useRef(null);
   const mainRef = useRef(null);

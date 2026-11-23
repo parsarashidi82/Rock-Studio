@@ -7,6 +7,15 @@ import DataRain from "./components/ui/data-rain";
 import { initImagePreloader } from "./lib/preloadImages";
 import { useMobile } from "./hooks/useMobile";
 
+/**
+ * کامپوننت ریشه برنامه (App Root).
+ * 
+ * وظایف:
+ * ۱. مقداردهی اولیه سیستم پیش‌بارگذاری هوشمند تصاویر (initImagePreloader)
+ * ۲. تشخیص ابعاد صفحه با هوک اختصاصی useMobile جهت تنظیم هوشمند چگالی ذرات
+ * ۳. رندر پس‌زمینه زنده ذرات باران داده (DataRain) در عمیق‌ترین لایه z-index
+ * ۴. پیکربندی مسیرها (SPA Routing) بین صفحه اصلی و صفحات پروژه
+ */
 function App() {
   const isMobile = useMobile(768);
   const particleCount = isMobile ? 320 : 750;
