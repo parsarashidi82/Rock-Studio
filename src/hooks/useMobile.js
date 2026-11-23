@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { BREAKPOINTS } from "@/lib/constants";
 
 /**
- * Custom React hook to detect mobile viewport width.
- * SSR-safe with lazy initialization and clean event listener cleanup.
+ * هوک اختصاصی ری‌اکت جهت تشخیص ریسپانسیو ابعاد موبایل.
+ * کاملاً ایمن برای رندرینگ سمت سرور (SSR-Safe) با لود اولیه تنبل (Lazy State)
+ * و لغو رویدادهای matchMedia جهت جلوگیری از نشت حافظه.
  *
- * @param {number} [breakpoint=BREAKPOINTS.MOBILE] - Width in px below which is considered mobile
- * @returns {boolean} Whether the current viewport is mobile
+ * @param {number} [breakpoint=BREAKPOINTS.MOBILE] - عرض به پیکسل (پیش‌فرض ۷۶۸px)
+ * @returns {boolean} آیا اندازه ویوپورت کمتر از مقدار بریک‌پوینت است؟
  */
 export function useMobile(breakpoint = BREAKPOINTS.MOBILE) {
   const [isMobile, setIsMobile] = useState(() => {

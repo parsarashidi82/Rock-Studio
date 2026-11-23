@@ -1,9 +1,21 @@
 import { ROWS } from "./keyboardData";
 
 /**
- * 3D Mechanical Keyboard Component.
- * Features 75% ANSI layout, dynamic lighting ripples, key depression states,
- * and audio sound toggling.
+ * کامپوننت کیبورد مکانیکی سه‌بعدی استودیو راک (3D Mechanical Keyboard).
+ * 
+ * ویژگی‌ها:
+ * ۱. رندرینگ ماتریس ۷۵٪ مکینتاش با سایه‌های چندلایه و کلیدهای برجسته.
+ * ۲. ایجاد موج نوری شعاعی (Ripple Canvas) در محل ضربه هر کلید.
+ * ۳. اتصال به حالت‌های فرورفتگی کلید (Active State) هنگام تایپ واقعی در فرم یا تاچ مجازی.
+ * ۴. دکمه کنترل خاموش و روشن کردن افکت‌های صوتی وب‌اودیو.
+ * 
+ * @param {Object} props
+ * @param {React.RefObject} props.kbwRef - ارجاع والد کانتینر سه‌بعدی جهت چرخش پرسپکتیو
+ * @param {React.RefObject} props.kbRef - ارجاع بوم کیبورد
+ * @param {React.RefObject} props.ripRef - ارجاع لایه ریپل نوری
+ * @param {React.MutableRefObject<Object>} props.elsRef - دیکشنری کلیدها بر مبنای keyCode
+ * @param {boolean} props.soundOn - وضعیت فعال بودن صدا
+ * @param {() => void} props.onToggleSound - کال‌بک تغییر وضعیت صدا
  */
 export default function ContactKeyboard({
   kbwRef,

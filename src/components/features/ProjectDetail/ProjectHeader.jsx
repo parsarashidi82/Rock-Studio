@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 
 /**
- * Top navigation bar for Project Detail view.
- * Features back navigation to works section, studio badge, and direct call-to-action.
+ * نوار ناوبری اختصاصی بالای صفحه جزئیات پروژه (Project Header).
+ * شامل دکمه بازگشت به بخش کارها، پالس نوری لوگوی راک و دکمه اکشن (Visit Live یا شروع گفتگو).
+ * 
+ * @param {Object} props
+ * @param {string} [props.externalUrl] - لینک خارجی وب‌سایت در صورت وجود
  */
 export default function ProjectHeader({ externalUrl }) {
   return (

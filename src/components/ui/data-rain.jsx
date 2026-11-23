@@ -1,12 +1,11 @@
 import { useEffect, useRef } from "react";
 import "../../index.css";
 
-/* ───────────────────────────── constants ───────────────────────────── */
-
-const MAX = 7000; // particle capacity
-const L = 19; // history points per particle
-const STEP = 1 / 60; // fixed physics step
-const PUFFS = 32; // vortex pool size
+// ثابت‌های فیزیک شبیه‌سازی ذرات باران داده
+const MAX = 7000; // حداکثر ظرفیت بافر ذرات
+const L = 19; // تعداد نقاط ردپای تاریخی هر ذره (Tail)
+const STEP = 1 / 60; // گام زمانی ثابت فیزیک (۶۰ فریم بر ثانیه)
+const PUFFS = 32; // تعداد همزمان گرداب‌های تعاملی ماوس
 const TAU = Math.PI * 2;
 const AGE_BUCKETS = 6;
 const SEGS_PER_BUCKET = 3;
@@ -22,7 +21,7 @@ const BASE_WIDTH = [0.65, 0.85, 1.1];
 const ALPHA_GAIN = 1.0;
 const HEAD_WIDTH = 1.2;
 
-// precomputed per-step filter coefficients (the step is fixed)
+// ضرایب فیلتر محاسباتی از پیش آماده برای شبیه‌سازی اینرسی و اصطکاک
 const K_RELAX = 1 - Math.exp(-STEP / 0.12);
 const K_Q = 1 - Math.exp(-STEP * 8);
 const K_CURSOR = 1 - Math.exp(-STEP * 18);

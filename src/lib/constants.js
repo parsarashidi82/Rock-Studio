@@ -1,41 +1,42 @@
 /**
- * @file constants.js
- * @description Centralized design tokens, brand identities, theme colors,
- * animation easings, and contact/social metadata for Rock Studio.
+ * توکن‌های متمرکز طراحی و هویت بصری استودیو راک
+ * شامل پالت رنگی رسمی، فونت‌ها، منحنی‌های شتاب انیمیشن، شبکه‌های اجتماعی و بریک‌پوینت‌ها.
  */
 
 /**
- * Primary Brand Colors (Obsidian Cyber & Cyan Electric Theme)
+ * رنگ‌ها و تم اصلی برند (مشکی ابسیدین و فیروزه‌ای الکتریک)
  */
 export const THEME = {
-  // Electric Cyan accent
+  // رنگ فیروزه‌ای شاخص استودیو راک
   CYAN: "#67E8F9",
   CYAN_RGB: "103, 232, 249",
 
-  // Deep Obsidian Cyber backgrounds
+  // پس‌زمینه‌های مشکی مات سایبرپانک
   BG_OBSIDIAN: "#050508",
   BG_STAGE: "#080812",
   BG_CARD: "#0b0b14",
 
-  // Typography
+  // قلم‌های استاندارد
   FONT_SANS: "Inter, system-ui, -apple-system, sans-serif",
   FONT_MONO: "ui-monospace, SFMono-Regular, Menlo, monospace",
 };
 
 /**
- * Standard Framer Motion Easings
+ * منحنی‌های استاندارد انیمیشن فریمز موشن (Easing Curves)
  */
 export const EASINGS = {
-  // Smooth cubic bezier ease-out (smooth natural deceleration)
+  // منحنی سینماتیک برای توقف بسیار نرم و ارگانیک
   SMOOTH: [0.22, 1, 0.36, 1],
-  // Exponential fast entrance / deceleration
+  // منحنی اکسپوننشیال برای ورود پرشتاب و استقرار بدون پرش
   EXPO_OUT: [0.16, 1, 0.3, 1],
 };
 
 /**
- * Studio Social Links
+ * راه‌های ارتباطی و شبکه‌های اجتماعی استودیو
  */
 export const SOCIAL_LINKS = {
+  telegram: "https://t.me/rokstudio",
+  instagram: "https://instagram.com/rokstudio",
   TELEGRAM: {
     LABEL: "Telegram",
     HANDLE: "@rokstudio",
@@ -50,7 +51,7 @@ export const SOCIAL_LINKS = {
 };
 
 /**
- * Standard Responsive Breakpoints (in pixels)
+ * نقاط عطف ریسپانسیو و ابعاد نمایشگرها (بر حسب پیکسل)
  */
 export const BREAKPOINTS = {
   MOBILE: 768,

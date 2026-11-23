@@ -1,20 +1,23 @@
 /**
- * Mechanical Keyboard Layout Configuration & Audio Physics Parameters.
- * 75% Mac ANSI layout matrix with synthesized switch profiles.
+ * پیکربندی ماتریس چیدمان کیبورد مکانیکی و پارامترهای فیزیک صدا.
+ * چیدمان استاندارد ۷۵٪ مکینتاش (ANSI) همراه با پروفایل‌های آکوستیک سوییچ‌ها.
  */
 
+// تابع کمکی ساخت مشخصات هر کلید
 export const K = (code, label, sub, ch, w, kind = "n", snd = "normal") => ({
-  code,
-  label,
-  sub,
-  ch,
-  w,
-  kind,
-  snd,
+  code,   // کد رویداد کیبورد e.code
+  label,  // متن اصلی روی کلید
+  sub,    // کاراکتر ثانویه (Shift)
+  ch,     // کاراکتر خروجی هنگام تایپ
+  w,      // عرض کلید بر حسب ضریب استاندارد
+  kind,   // نوع کلید (عادی n، مدیفایر mod، فانکشن fn)
+  snd,    // پروفایل صوتی سوییچ (normal, space, enter, delete, modifier)
 });
 
+// تابع کمکی ساخت کلیدهای الفبا
 export const L = (c) => K("Key" + c.toUpperCase(), c.toUpperCase(), "", c, 1);
 
+// ردیف اعداد و کاراکترهای خاص
 export const nums = "`~,1!,2@,3#,4$,5%,6^,7&,8*,9(,0),-_,=+".split(",");
 
 export const numCodes = [
@@ -33,6 +36,7 @@ export const numCodes = [
   "Equal",
 ];
 
+// ماتریس کامل ردیف‌های کیبورد مکینتاش
 export const ROWS = [
   [
     K("Escape", "esc", "", "", 1.5, "mod", "modifier"),
@@ -80,6 +84,7 @@ export const ROWS = [
   ],
 ];
 
+// دیکشنری‌های سریع جستجوی کلید بر اساس کد رویداد یا کاراکتر
 export const BY_CODE = {};
 export const BY_CHAR = {};
 
@@ -91,8 +96,8 @@ ROWS.forEach((row) => {
 });
 
 /**
- * Switch Audio Synthesis Tuning Profile:
- * [hz1, q1, dec1, gain1, hz2, q2, dec2, gain2, offset2, sineHz, sineGain]
+ * پارامترهای سنتز آکوستیک سوییچ‌ها در Web Audio API:
+ * [فرکانس اول, ضریب Q اول, زمان محو اول, گین اول, فرکانس دوم, ضریب Q دوم, زمان محو دوم, گین دوم, تاخیر دوم, فرکانس موج سینوسی, گین سینوسی]
  */
 export const VAR_MAP = {
   normal: [5400, 4.2, 0.0042, 0.5, 400, 1.1, 0.022, 0.82, 0.007, 280, 0.22],

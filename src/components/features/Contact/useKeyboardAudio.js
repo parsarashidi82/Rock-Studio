@@ -2,8 +2,9 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { VAR_MAP } from "./keyboardData";
 
 /**
- * Custom hook for synthesizing mechanical keyboard switch audio using the Web Audio API.
- * Synthesizes click clack transients via dual bandpass bursts + low-frequency sine resonance.
+ * هوک اختصاصی سنتز صدای کیبورد مکانیکی با استفاده از Web Audio API مرورگر.
+ * بدون نیاز به دانلود فایل‌های صوتی سنگین، با ترکیب نویز فیلترشده (Bandpass)
+ * و رزونانس فرکانس پایین سینوسی، صدای واقعی ضربه سوییچ مکانیکی را تولید می‌کند.
  * 
  * @returns {{
  *   soundOn: boolean,
@@ -21,6 +22,7 @@ export function useKeyboardAudio() {
     soundOnRef.current = soundOn;
   }, [soundOn]);
 
+  // تولید پالس نویز سفید فیلترشده با رمپ نمایی گین
   const burst = useCallback((t, hz, q, dec, g, vol) => {
     const ac = acRef.current;
     if (!ac || g < 0.001) return;
@@ -49,6 +51,7 @@ export function useKeyboardAudio() {
     s.stop(t + dur + 0.01);
   }, []);
 
+  // پخش صدای سوییچ متناسب با نوع کلید
   const playKeySound = useCallback((v = "normal") => {
     if (!soundOnRef.current) return;
     try {
@@ -67,6 +70,7 @@ export function useKeyboardAudio() {
       burst(n, p[0], p[1], p[2], p[3], vol);
       burst(n + p[8], p[4], p[5], p[6], p[7], vol);
 
+      // ایجاد نوسان سینوسی فرکانس پایین برای شبیه‌سازی صدای ته‌نشینی کلید (Bottom-out Thud)
       const o = ac.createOscillator();
       const g = ac.createGain();
       const t2 = n + p[8];
@@ -80,10 +84,11 @@ export function useKeyboardAudio() {
       o.start(t2);
       o.stop(t2 + 0.1);
     } catch {
-      // absorb audio context restriction errors
+      // چشم‌پوشی از خطاهای محدودیت تعامل اولیه مرورگر
     }
   }, [burst]);
 
+  // بستن منبع صدا در زمان خروج از صفحه
   const closeAudio = useCallback(() => {
     acRef.current?.close().catch(() => {});
   }, []);

@@ -137,8 +137,8 @@ function TileVideo({ src, poster, hoverClip, isActive, className }) {
 }
 
 function DriftColumn({ c, scrollYProgress, children, className }) {
-  // Even columns (0, 2, 4) drift UP: enter from bottom (+320px), settle at 0, exit upward (-160px)
-  // Odd columns (1, 3) drift DOWN: enter from top (-320px), settle at 0, exit downward (+160px)
+  // ستون‌های زوج (۰، ۲، ۴) به سمت بالا حرکت می‌کنند: ورود از پایین (+320px)، استقرار در ۰، و خروج رو به بالا (-160px)
+  // ستون‌های فرد (۱، ۳) به سمت پایین حرکت می‌کنند: ورود از بالا (-320px)، استقرار در ۰، و خروج رو به پایین (+160px)
   const isUp = c % 2 === 0;
   const enterY = isUp ? 320 : -320;
   const exitY = isUp ? -160 : 160;

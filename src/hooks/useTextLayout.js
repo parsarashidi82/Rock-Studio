@@ -1,5 +1,19 @@
 import { useEffect, useState } from "react";
 
+/**
+ * هوک محاسبه و اندازه‌گیری دقیق هندسی حروف روی Canvas (Text Layout Engine).
+ * 
+ * این هوک مختصات دقیق پیکسلی، بیس‌لاین، و موقعیت هر کاراکتر از کلمه "Rok Studio" را بر اساس
+ * ابعاد صفحه اندازه‌گیری می‌کند تا حروف شناور دقیقا روی پیکسل‌های هم‌نام در کامپوننت TechText بنشینند.
+ * 
+ * @param {React.RefObject} ref - ارجاع DOM به استیج والد
+ * @param {Object} options - تنظیمات تایپوگرافی
+ * @param {string} options.text - متن مورد نظر جهت چینش
+ * @param {number} options.fontWeight - وزن فونت
+ * @param {number} options.fontSize - اندازه پایه فونت به پیکسل
+ * @param {number} options.letterSpacing - فاصله افقی بین حروف
+ * @returns {Object|null} مشخصات چیدمان شامل عرض، ارتفاع، سایز نهایی و آرایه حروف با مختصات x
+ */
 export function useTextLayout(
   ref,
   { text, fontWeight, fontSize, letterSpacing },
@@ -28,7 +42,7 @@ export function useTextLayout(
         ctx.textBaseline = "alphabetic";
       };
 
-      // همان fit که TechText انجام می‌دهد
+      // مقیاس‌بندی هوشمند متن برای جا شدن کامل در استیج (مشابه الگوریتم TechText)
       setFont(fontSize);
       let m = ctx.measureText(text);
       const fit = Math.min(
@@ -47,11 +61,12 @@ export function useTextLayout(
       const x0 = (w - inkW) / 2 + m.actualBoundingBoxLeft;
       const baseline = (h - inkH) / 2 + m.actualBoundingBoxAscent;
 
-      // با line-height: 1 باید baseline درون باکس span را بدانیم
+      // محاسبه بیس‌لاین داخلی کاراکترها در باکس با لاین‌هایت ۱
       const fA = m.fontBoundingBoxAscent ?? size * 0.8;
       const fD = m.fontBoundingBoxDescent ?? size * 0.2;
       const baselineInBox = (size - (fA + fD)) / 2 + fA;
 
+      // محاسبه مختصات افقی x برای هر کاراکتر غیرخالی
       const glyphs = [];
       let prefix = "";
       Array.from(text).forEach((char, index) => {
@@ -71,6 +86,7 @@ export function useTextLayout(
     };
 
     measure();
+    // رصد تغییر اندازه صفحه برای بروزرسانی مختصات
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     document.fonts?.ready.then(measure);

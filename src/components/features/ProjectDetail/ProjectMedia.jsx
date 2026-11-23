@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-// Formats seconds into mm:ss
+// تبدیل ثانیه‌ها به فرمت دقیقه و ثانیه (mm:ss)
 function formatTime(seconds) {
   if (isNaN(seconds)) return "00:00";
   const m = Math.floor(seconds / 60);
@@ -9,8 +9,12 @@ function formatTime(seconds) {
 }
 
 /**
- * ProjectMedia component handling full 4K video playback with custom sleek controls,
- * or fallback browser mockups / responsive hero imagery.
+ * کامپوننت نمایش مدیا و پلیر اختصاصی ویدیو در صفحه پروژه (Project Media Showcase).
+ * شامل پخش روان ویدیوی ۴K با کنترل‌های اختصاصی (Play/Pause, Seekable Progress Bar, Mute, Fullscreen)،
+ * یا نمایش موکاپ اسکرول‌پذیر مرورگر و تصاویر باکیفیت.
+ * 
+ * @param {Object} props
+ * @param {import("@/data/projects").Project} props.project - اطلاعات پروژه و فایل مدیا
  */
 export default function ProjectMedia({ project }) {
   const videoRef = useRef(null);

@@ -6,9 +6,13 @@ import ProjectPortalNav from "@/components/features/Work/ProjectPortalNav";
 import ProjectView from "@/components/features/ProjectDetail/ProjectView";
 
 /**
- * ProjectDetail Page Container.
- * Manages route slug state, full-page zoom expansion transitions,
- * seamless background project buffer, and corner portal navigation.
+ * کانتینر اصلی صفحه کیس‌استادی پروژه (Project Detail Page Container).
+ * 
+ * وظایف کلیدی:
+ * ۱. خواندن شناسه اسلاگ از آدرس URL و یافتن پروژه متناظر در دیتابیس
+ * ۲. هماهنگی ترنزیشن زوم تمام‌صفحه (Full-Page Zoom) از محل دقیق کلیک کاربر
+ * ۳. نگهداری بافر پروژه زیرین برای جلوگیری از سفید شدن یا پرش پس‌زمینه در حین ترنزیشن
+ * ۴. پشتیبانی از ناوبری شناور پرتال در گوشه‌های صفحه (ProjectPortalNav)
  */
 export default function ProjectDetail() {
   const { slug } = useParams();
@@ -18,7 +22,7 @@ export default function ProjectDetail() {
   const [underlyingProject, setUnderlyingProject] = useState(null);
   const [transitioning, setTransitioning] = useState(null); // { targetProject, origin, id }
 
-  // Target project reference during transition or active view
+  // پروژه مبنای فعلی در حال مشاهده یا مقصد ترنزیشن
   const focusProject =
     transitioning?.targetProject || underlyingProject || currentProject;
   const focusIndex = projects.findIndex((p) => p.slug === focusProject?.slug);
@@ -30,12 +34,12 @@ export default function ProjectDetail() {
       ? projects[(focusIndex - 1 + count) % count]
       : projects[count - 1];
 
-  // Scroll to top on slug route changes
+  // اسکرول آنی به بالای صفحه هنگام تغییر پروژه
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [slug]);
 
-  // Full-page zoom transition orchestration from cursor origin
+  // مدیریت ناوبری زوم روی کل صفحه مقصد بر اساس مختصات کلیک
   const handleNavigate = useCallback((targetProject, origin) => {
     if (!targetProject) return;
     setTransitioning((prev) => {
@@ -83,7 +87,7 @@ export default function ProjectDetail() {
     );
   }
 
-  // Calculate zoom transform-origin matching click coordinates
+  // محاسبه مرکز دوران و بزرگ‌نمایی زوم بر اساس سمت کلیک کاربر
   const originStyle = transitioning
     ? {
         transformOrigin:
@@ -97,7 +101,7 @@ export default function ProjectDetail() {
 
   return (
     <div className="relative min-h-screen bg-[#050508]">
-      {/* Current project view buffer (maintains seamless background during transition) */}
+      {/* نمای پروژه جاری (بافر پایدار در پس‌زمینه برای عدم پرش) */}
       <ProjectView
         project={underlyingProject || currentProject}
         nextProject={nextProject}
@@ -110,7 +114,7 @@ export default function ProjectDetail() {
         }
       />
 
-      {/* Direct Full-Page Zoom transition layer */}
+      {/* لایه زوم پویا و تمام‌صفحه به پروژه مقصد */}
       {transitioning && (
         <motion.div
           key={transitioning.targetProject.slug}
@@ -129,7 +133,7 @@ export default function ProjectDetail() {
           }}
           transition={{
             duration: 0.65,
-            ease: [0.16, 1, 0.3, 1], // Expo-out curve
+            ease: [0.16, 1, 0.3, 1], // منحنی اکسپوننشیال نرم
           }}
           onAnimationComplete={handleAnimationComplete}
           style={originStyle}
@@ -150,7 +154,7 @@ export default function ProjectDetail() {
         </motion.div>
       )}
 
-      {/* Floating portal navigation controls (Desktop & Mobile) */}
+      {/* کنترل‌های ناوبری پرتال در گوشه‌های صفحه (دسکتاپ و موبایل) */}
       <ProjectPortalNav
         nextProject={nextProject}
         prevProject={prevProject}

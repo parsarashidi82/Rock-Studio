@@ -4,28 +4,27 @@ import samanImg from "@/assets/saman.webp";
 
 /**
  * @typedef {Object} FounderBox
- * @property {string} left - Percentage position from left
- * @property {string} top - Percentage position from top
- * @property {string} width - Percentage width
- * @property {string} height - Percentage height
+ * @property {string} left - موقعیت درصدی از لبه چپ عکس
+ * @property {string} top - موقعیت درصدی از لبه بالای عکس
+ * @property {string} width - عرض درصدی کادر فوکوس
+ * @property {string} height - ارتفاع درصدی کادر فوکوس
  */
 
 /**
  * @typedef {Object} Founder
- * @property {string} id - Unique identifier
- * @property {string} name - Founder display name
- * @property {string} role - Professional title / studio role
- * @property {string} tagline - Poetic identity / signature philosophy
- * @property {string} image - Path to founder portrait asset
- * @property {string} quote - Personal mission quote or manifesto statement
- * @property {string[]} skills - Core domain skills and specializations
- * @property {FounderBox} box - Spotlight overlay bounding box on team photo
- * @property {number[]} range - [inStart, inEnd, outStart, outEnd] scroll progress values
+ * @property {string} id - شناسه یکتا
+ * @property {string} name - نام نمایشی بنیان‌گذار
+ * @property {string} role - نقش تخصصی و مسئولیت استودیو
+ * @property {string} tagline - شعار شخصی یا هویت روایی
+ * @property {string} image - تصویر پرتره باکیفیت و فوکوس‌شده
+ * @property {string} quote - مانیفست یا نقل‌قول شخصی
+ * @property {string[]} skills - مهارت‌ها و تخصص‌های کلیدی
+ * @property {FounderBox} box - مختصات کادر اسپات‌لایت نئونی روی عکس اصلی تیم
+ * @property {number[]} range - نقاط عطف ورود و خروج اسکرول [شروع ورود، تکمیل ورود، شروع خروج، پایان خروج]
  */
 
 /**
- * Co-founders roster & narrative scroll milestone coordinates.
- * Used by OurStory for cinematic scroll spotlight synchronization.
+ * اطلاعات متمرکز هم‌بنیان‌گذاران استودیو راک و زمان‌بندی اسپات‌لایت در اسکرول
  * @type {Founder[]}
  */
 export const FOUNDERS = [
@@ -38,7 +37,7 @@ export const FOUNDERS = [
     quote:
       "Every project starts as an emotion. My obsession is uncovering that emotion, crafting its narrative heartbeat, and directing every visual nuance so audiences don't just watch — they feel it.",
     skills: ["Film Directing", "Visual Storytelling", "Cinematography", "Creative Direction"],
-    // Nima spotlight position (right side in beanie)
+    // موقعیت دقیق نیما (سمت راست عکس با کلاه بافتنی)
     box: {
       left: "60%",
       top: "2%",
@@ -56,7 +55,7 @@ export const FOUNDERS = [
     quote:
       "Code is the canvas where design impossibilities become fluid, living interactions. Clean engineering, reactive physics, and ultra-smooth performance turn digital spaces into unforgettable experiences.",
     skills: ["Creative Engineering", "Full-Stack Dev", "UI Physics & Motion", "Performance Architecture"],
-    // Parsa spotlight position (center)
+    // موقعیت دقیق پارسا (وسط عکس)
     box: {
       left: "37%",
       top: "16%",
@@ -74,7 +73,7 @@ export const FOUNDERS = [
     quote:
       "Motion without rhythm is just visual noise. In the edit suite, I shape the tempo, sculpt the soundscapes, and calibrate every cut to release pure kinetic energy.",
     skills: ["Video Editing", "Motion Graphics", "Sound Architecture", "Pacing & Tempo"],
-    // Saman spotlight position (left side in brimmed hat)
+    // موقعیت دقیق سامان (سمت چپ عکس با کلاه لبه‌دار)
     box: {
       left: "1%",
       top: "4%",

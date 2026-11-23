@@ -27,7 +27,7 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-      {/* Dynamic Background Data Rain strictly behind everything */}
+      {/* باران متحرک پس‌زمینه دقیقاً در عمیق‌ترین لایه پشت تمام المان‌ها */}
       <DataRain className="-z-50" count={particleCount} flowSpeed={0.85} />
       <div className="relative z-10 isolate">
         <Routes>

@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 
 /**
- * ProjectServices component displaying:
- * 1. Services Provided checklist
- * 2. Technologies & tags pill badges
- * 3. Inquiry callout card
- * 4. Next Case Study teaser card
+ * کامپوننت خدمات، تگ‌ها و کارت پروژه بعدی در صفحه کیس‌استادی (Project Services & Next Case Study).
+ * 
+ * شامل ۴ بخش اصلی:
+ * ۱. چک‌لیست خدمات ارائه شده (Services Provided)
+ * ۲. بج‌های تکنولوژی‌ها و ابزارهای مورد استفاده (Technologies & Tags)
+ * ۳. کارت دعوت به همکاری و شروع پروژه (Project Inquiry)
+ * ۴. پیش‌نمایش تعاملی کیس‌استادی بعدی (Next Case Study) با پشتیبانی از ترنزیشن زوم
+ * 
+ * @param {Object} props
+ * @param {import("@/data/projects").Project} props.project - اطلاعات پروژه جاری
+ * @param {import("@/data/projects").Project} [props.nextProject] - اطلاعات پروژه بعدی در حلقه
+ * @param {(targetProject: any) => void} [props.onNextClick] - کال‌بک هدایت و زوم به پروژه بعدی
  */
 export default function ProjectServices({ project, nextProject, onNextClick }) {
   return (

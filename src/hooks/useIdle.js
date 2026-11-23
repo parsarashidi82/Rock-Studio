@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 
-// وقتی enabled است و روی element به مدت delay میلی‌ثانیه موس حرکت نکرده، true می‌شود
+/**
+ * هوک تشخیص عدم تحرک ماوس (Idle Detector).
+ * هرگاه کاربر برای مدت زمان تعیین‌شده (delay) روی المان مورد نظر حرکتی انجام ندهد، مقدار true برمی‌گرداند
+ * تا افکت‌های انیمیشن خودکار (مانند جاروب نوری TechText) فعال شوند.
+ * 
+ * @param {React.RefObject} ref - ارجاع DOM به المان استیج مورد نظر
+ * @param {number} [delay=2000] - زمان انتظار به میلی‌ثانیه قبل از حالت Idle
+ * @param {boolean} [enabled=true] - فعال یا غیرفعال بودن هوک
+ * @returns {boolean} آیا کاربر در وضعیت بی‌حرکت است؟
+ */
 export function useIdle(ref, delay = 2000, enabled = true) {
   const [idle, setIdle] = useState(false);
 
@@ -21,7 +30,7 @@ export function useIdle(ref, delay = 2000, enabled = true) {
       arm();
     };
 
-    arm(); // از لحظه‌ی فعال شدن، ۲ ثانیه شمارش شروع می‌شود
+    arm(); // آغاز شمارش تایمر از لحظه فعال‌سازی
     el.addEventListener("pointermove", onActivity, { passive: true });
     el.addEventListener("pointerdown", onActivity, { passive: true });
 

@@ -39,6 +39,21 @@ const noise = (...values) => {
 const signed = (value) =>
   value > 0 ? `+${value}` : value < 0 ? `−${-value}` : "0";
 
+/**
+ * کامپوننت افکت سایبری و تعاملی تایپوگرافی راک استودیو (Cybernetic Canvas HUD Text).
+ * 
+ * ویژگی‌ها:
+ * ۱. رندرینگ مستقیم روی بوم Canvas با فونت‌های دقیق پیکسلی و خطوط خط‌چین فنی (Dashed Lines).
+ * ۲. تعقیب موقعیت ماوس با ایجاد اعوجاج مغناطیسی و هایلایت حروف نزدیک به نشانگر.
+ * ۳. لیبل‌های فنی مختصات [X, Y] و زاویه به سبک رابط‌های کاربری آینده‌نگرانه (Sci-Fi HUD).
+ * ۴. اجرای انیمیشن جاروب نوری خودکار (Sweep Animation) در زمان بی‌حرکتی کاربر (Idle).
+ * 
+ * @param {Object} props
+ * @param {string} [props.text="Rok Studio"] - متن نمایشی
+ * @param {number} [props.fontSize=150] - اندازه پایه فونت
+ * @param {string} [props.color="#ffffff"] - رنگ متون و خطوط
+ * @param {boolean} [props.sweep=false] - فعال‌سازی انیمیشن جاروب خودکار
+ */
 const TechText = ({
   text = "Rok Studio",
   fontFamily = "",

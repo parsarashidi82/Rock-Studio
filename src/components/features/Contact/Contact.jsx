@@ -7,7 +7,9 @@ import ContactForm from "./ContactForm";
 const clamp = (v) => Math.min(1, Math.max(0, v));
 const win = (p, a, b) => clamp((p - a) / (b - a));
 
-// Cubic bezier smoothing curve (0.22, 1, 0.36, 1)
+/**
+ * محاسبات ریاضی منحنی نرم بزیر کوبیک (0.22, 1, 0.36, 1) با تقریب نیوتن-رافسون
+ */
 const ease = (t) => {
   if (t <= 0) return 0;
   if (t >= 1) return 1;
@@ -28,9 +30,13 @@ const ease = (t) => {
 };
 
 /**
- * Contact section orchestrator.
- * Combines lead capture, Web Audio API mechanical keyboard synthesis,
- * 3D perspective fold scroll animation, and interactive virtual typing.
+ * ارکستراتور اصلی سکشن تماس استودیو راک (Contact Section).
+ * 
+ * تلفیق ۴ ویژگی پیشرفته:
+ * ۱. تا شدن و چرخش سه‌بعدی پرسپکتیو کیبورد مکانیکی با اسکرول کاربر.
+ * ۲. سینت‌سایزر آکوستیک سوییچ‌های مکانیکی با Web Audio API.
+ * ۳. تایپ تعاملی مجازی روی کیبورد به اینپوت‌های فعال فرم.
+ * ۴. دریافت پیام، فیلتر شماره تماس و ایجاد ریپل‌های نوری هم‌مرکز.
  */
 export default function Contact() {
   const secRef = useRef(null);

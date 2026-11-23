@@ -1,9 +1,13 @@
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 /**
- * ContactForm component containing lead capture inputs, submission status,
- * and direct social communication channels.
- * Uses `data-r` attributes for scroll-driven milestone reveals.
+ * کامپوننت فرم ثبت پیام و اطلاعات ارتباطی استودیو راک (Contact Form).
+ * شامل اینپوت‌های نام، شماره تماس، متن پیام، وضعیت ارسال و لینک‌های مستقیم شبکه‌های اجتماعی.
+ * از ویژگی‌های `data-r` برای پدیدار شدن تدریجی متناسب با اسکرول استفاده می‌کند.
+ * 
+ * @param {Object} props
+ * @param {React.RefObject} props.formRef - ارجاع DOM به فرم
+ * @param {React.RefObject} props.stRef - ارجاع DOM به متن وضعیت ارسال (پیام خطا یا موفقیت)
  */
 export default function ContactForm({ formRef, stRef }) {
   return (
