@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 /**
  * نوار ناوبری اختصاصی بالای صفحه جزئیات پروژه (Project Header).
- * شامل دکمه بازگشت به بخش کارها، پالس نوری لوگوی راک و دکمه اکشن (Visit Live یا شروع گفتگو).
+ * شامل دکمه بازگشت به بخش کارها، پالس نوری لوگوی رُک و دکمه اکشن (Visit Live یا شروع گفتگو).
  * 
  * @param {Object} props
  * @param {string} [props.externalUrl] - لینک خارجی وب‌سایت در صورت وجود

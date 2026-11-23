@@ -51,7 +51,7 @@ import jam42Thumb from "@/assets/projects/jam-42-thumb.webp";
  */
 
 /**
- * دیتابیس متمرکز پروژه‌های استودیو راک
+ * دیتابیس متمرکز پروژه‌های استودیو رُک
  * @type {Project[]}
  */
 export const projects = [

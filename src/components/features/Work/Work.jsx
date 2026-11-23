@@ -18,7 +18,7 @@ const items = projects.map((p) => ({
 }));
 
 /**
- * سکشن کارهای برگزیده استودیو راک (Selected Works).
+ * سکشن کارهای برگزیده استودیو رُک (Selected Works).
  * دیواره سه‌بعدی شناور DriftWall با پرسپکتیو پویا، فیزیک اسپرینگ و عنوان ثابت.
  */
 export default function Work() {

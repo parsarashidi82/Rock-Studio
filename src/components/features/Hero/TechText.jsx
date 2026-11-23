@@ -40,7 +40,7 @@ const signed = (value) =>
   value > 0 ? `+${value}` : value < 0 ? `−${-value}` : "0";
 
 /**
- * کامپوننت افکت سایبری و تعاملی تایپوگرافی راک استودیو (Cybernetic Canvas HUD Text).
+ * کامپوننت افکت سایبری و تعاملی تایپوگرافی استودیو رُک (Cybernetic Canvas HUD Text).
  * 
  * ویژگی‌ها:
  * ۱. رندرینگ مستقیم روی بوم Canvas با فونت‌های دقیق پیکسلی و خطوط خط‌چین فنی (Dashed Lines).

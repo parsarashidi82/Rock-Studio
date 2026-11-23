@@ -6,7 +6,7 @@ import Work from "@/components/features/Work/Work";
 import Contact from "@/components/features/Contact/Contact";
 
 /**
- * صفحه اصلی استودیو راک (Home Page Orchestrator).
+ * صفحه اصلی استودیو رُک (Home Page Orchestrator).
  * 
  * چیدمان زنجیره‌ای سکشن‌های اصلی بدون حاشیه یا پرش:
  * ۱. Navbar: نوار ناوبری شیشه‌ای چسبان با پدیدار شدن بر مبنای اسکرول

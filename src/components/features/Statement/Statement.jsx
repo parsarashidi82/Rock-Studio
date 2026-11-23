@@ -67,7 +67,7 @@ function Letter({ char, i, progress, tint = null }) {
 }
 
 /**
- * سکشن بیانیه مانیفست استودیو راک (Statement).
+ * سکشن بیانیه مانیفست استودیو رُک (Statement).
  * پدیدار شدن تدریجی کاراکترهای تیتر با اسکرول و نمایش خدمات و دلیوربل‌های اصلی استودیو.
  */
 export default function Statement() {
